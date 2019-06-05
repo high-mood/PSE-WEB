@@ -59,3 +59,8 @@ typings/
 
 # next.js build output
 .next
+
+# don't be a dumb dumb and upload to git
+config.js
+
+.idea/
