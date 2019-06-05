@@ -61,6 +61,6 @@ typings/
 .next
 
 # don't be a dumb dumb and upload to git
-config.js
+/config.js
 
 .idea/
