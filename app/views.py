@@ -9,7 +9,10 @@ from app.API import spotify
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    return "Hello World"
+    if not "json_info" in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template("index.html", **locals())
 
 
 @app.route("/login")
