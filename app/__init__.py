@@ -25,9 +25,9 @@ spotifysso = oauth.remote_app('spotify',
                                                               'user-library-read',
                                                               'user-read-birthdate',
                                                               'user-read-private',
-                                                              'user-top-read',
+                                                              # 'user-top-read',
+                                                              # TODO: https://github.com/spotify/web-api/issues/1262
                                                               'user-read-currently-playing'
-
                                                               )
 
                                                     },
@@ -36,5 +36,4 @@ spotifysso = oauth.remote_app('spotify',
 oauth.init_app(app)
 
 from app import views
-
 
