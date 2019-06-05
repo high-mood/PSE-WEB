@@ -23,6 +23,8 @@ from app import db
 }"""
 
 
+# TODO: Should user data be deleted after access revokeD?
+# if not, boolean is active
 class User(db.Model):
     user_id = db.Column(db.String(200),primary_key=True)
     email = db.Column(db.String(200))
@@ -32,3 +34,4 @@ class User(db.Model):
     country = db.Column(db.String(5))
     is_premium = db.Column(db.Boolean(),default=False)
     refresh_token = db.Column(db.String(300))
+    user_is_active = db.Column(db.Boolean())
