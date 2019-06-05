@@ -6,5 +6,9 @@
 </head>
 <body>
 
+{% for key, value in session["json_info"].items() %}
+    {{ key }} :   {{ value }} <br>
+{% endfor %}
+
 </body>
 </html>
