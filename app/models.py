@@ -46,7 +46,7 @@ class User(db.Model):
                         image_url=None,
                         birthdate=datetime.datetime.strptime(json_info['birthdate'], "%Y-%m-%d"),
                         country=json_info['country'],
-                        is_premium=(json_info['product'] is "premium"),
+                        is_premium=(json_info['product'] is "premium"),  # TODO this doens't work
                         refresh_token=refresh_token,
                         user_is_active=True)
 
