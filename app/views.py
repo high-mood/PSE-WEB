@@ -39,7 +39,7 @@ def authorized():
     scopes = resp['scope'].split(" ")
 
     json_user_info = spotify.get_user_info(access_token)
-    models.User.create_if_not_exist(json_user_info)
+    models.User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
     session['json_info'] = json_user_info  # TODO change this laziness
 
     return redirect(url_for('index'))
