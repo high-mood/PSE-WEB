@@ -10,7 +10,7 @@ from app.API import spotify
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if not "json_info" in session:
-        return redirect(url_for("login"))
+        return render_template("login.html", **locals())
     else:
         return render_template("index.html", **locals())
 
@@ -18,6 +18,7 @@ def index():
 @app.route("/login")
 def login():
     return spotifysso.authorize(callback="http://localhost:5000/callback")
+
     # return spotifysso.authorize(callback=url_for('authorized', _external=True, _scheme="https"))
 
 
