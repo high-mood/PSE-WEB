@@ -20,7 +20,7 @@ def index():
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
         recently_played = spotify.get_recently_played(access_token)
-        top_songs = query.get_top_songs(client, userid, 10)
+        top_songs = query.get_top_songs(client, userid, 10,access_token)
         top_genres = query.get_top_genres(client, userid, 10)
         all_genres = query.get_genres(client, userid)
         total_listening_time = query.total_time_spent(client, userid)
