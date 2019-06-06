@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>PSE</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<link rel="stylesheet" href="{{ url_for('.static', filename='css/main.css') }}" />
+
+		<noscript><link rel="stylesheet" href="{{ url_for ('.static', filename='css/noscript.css') }}" /></noscript>
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+
+                     <section id="main">
+						<header>
+							<span class="avatar"><img src="{{ url_for('.static', filename ='img/logo.png') }}" alt="" width="122"/></span>
+							<h1>LOGGED OUT</h1>
+							<a href="/login"><img src="{{ url_for('.static', filename ='img/ssolarge.png') }}" alt="" /></a>
+						</header>
+						<!--
+
+						-->
+						<footer>
+
+						</footer>
+					</section>
+
+
+				<!-- Footer -->
+					<footer id="footer">
+						 <ul class="copyright">
+							<li>&copy; PSE</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+			<script>
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+			</script>
+
+
+	</body>
+</html>
