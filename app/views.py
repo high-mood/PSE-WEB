@@ -6,12 +6,31 @@ from app import models
 from app import spotifysso
 from app.API import spotify
 
+# TODO: Remove this later
+from resources import query
+
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if not "json_info" in session:
         return render_template("login.html", **locals())
     else:
+        client = query.create_client('localhost', 8086)
+        userid = session['json_info']['id']
+        access_token = spotify.get_access_token(session['json_info']['refresh_token'])
+
+        recently_played = spotify.get_recently_played(access_token)
+        top_songs = query.get_top_songs(client, userid, 10)
+        top_genres = query.get_top_genres(client, userid, 10)
+        all_genres = query.get_genres(client, userid)
+        total_listening_time = query.total_time_spent(client, userid)
+
+        print(recently_played)
+        print(top_songs)
+        print(top_genres)
+        print(all_genres)
+        print(total_listening_time)
+
         return render_template("index.html", **locals())
 
 
@@ -42,5 +61,6 @@ def authorized():
     json_user_info = spotify.get_user_info(access_token)
     models.User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
     session['json_info'] = json_user_info  # TODO change this laziness
+    session['json_info']['refresh_token'] = refresh_token
 
     return redirect(url_for('index'))
