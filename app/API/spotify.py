@@ -3,7 +3,7 @@ from requests.auth import HTTPBasicAuth
 from config import SPOTIFY_CLIENT, SPOTIFY_SECRET
 
 
-def get_artists(access_token, *artistids):
+def get_artists(access_token, artistids):
     """
     Get Spotify catalog information for several artists based on their Spotify IDs.
 
@@ -25,7 +25,7 @@ def get_artists(access_token, *artistids):
     return _get_basic_request(access_token, url)
 
 
-def get_audio_features(access_token, *trackids):
+def get_audio_features(access_token, trackids):
     url = "https://api.spotify.com/v1/audio-features/?ids={}".format(",".join(trackids))
 
     return _get_basic_request(access_token, url)
