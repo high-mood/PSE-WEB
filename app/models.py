@@ -26,13 +26,13 @@ import datetime
 # TODO: Should user data be deleted after access revokeD?
 # if not, boolean is active
 class User(db.Model):
-    user_id = db.Column(db.String(200),primary_key=True)
+    user_id = db.Column(db.String(200), primary_key=True)
     email = db.Column(db.String(200))
     display_name = db.Column(db.String(200))
     image_url = db.Column(db.String(200))
     birthdate = db.Column(db.DateTime(20))
     country = db.Column(db.String(5))
-    is_premium = db.Column(db.Boolean(),default=False)
+    is_premium = db.Column(db.Boolean(), default=False)
     refresh_token = db.Column(db.String(300))
     user_is_active = db.Column(db.Boolean())
 
@@ -52,3 +52,8 @@ class User(db.Model):
 
             db.session.add(user)
             db.session.commit()
+
+    @staticmethod
+    def get_all_tokes():
+        query = db.session.query("refresh_token FROM users")
+        return [row[0] for row in query]

@@ -6,10 +6,11 @@ from app import models
 from app import spotifysso
 from app.API import spotify
 
+
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    if not "json_info" in session:
+    if "json_info" not in session:
         return redirect(url_for("login"))
     else:
         return render_template("index.html", **locals())
