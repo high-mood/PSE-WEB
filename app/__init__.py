@@ -6,7 +6,7 @@ from flask_oauthlib.client import OAuth
 
 app = Flask(__name__)
 app.config.from_object('config')
-app.secret_key = os.environ.get("APP_SECRET", config.SECRET) # THIS SHOULD BE SOMETHING RANDOM
+app.secret_key = os.environ.get("APP_SECRET", config.SECRET)  # THIS SHOULD BE SOMETHING RANDOM
 db = SQLAlchemy(app)
 
 # TODO: Make this dynamic, allow user to select scopes
