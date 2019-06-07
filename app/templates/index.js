@@ -9,8 +9,16 @@ function randomColor() {
   return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
 }
 
-var songs_colors = [for (i of songs) randomColor()];
-var genres_colors = [for (i of genres) randomColor()]
+var songs_colors = [];
+var genres_colors = [];
+
+for (var i in songs) {
+  songs_colors.push(randomColor())
+}
+
+for (var i in genres) {
+  genres_colors.push(randomColor())
+}
 
 new Chart(document.getElementById("barchart"), {
   type: 'bar',
