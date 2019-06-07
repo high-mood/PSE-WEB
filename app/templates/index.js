@@ -1,13 +1,13 @@
-var songs = {{ top_songs }}
+var songs = {{ songs }}
+var count = {{count }}
 new Chart(document.getElementById("barchart"), {
   type: 'bar',
   data: {
-    labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+    labels: songs,
     datasets: [
       {
-        label: "Population (millions)",
-        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-        data: [2478,5267,734,784,433]
+        label: "Count",
+        data: count
       }
     ]
   },
@@ -15,16 +15,10 @@ new Chart(document.getElementById("barchart"), {
     legend: { display: false },
     title: {
       display: true,
-      text: 'Predicted world population (millions) in 2050'
+      text: 'Top 10 most listened to songs'
     }
   }
 });
 
-var songs = {{ top_songs }}
-console.log(songs[0])
-
-var par = document.createElement("p");
-var node = document.createTextNode('{{ top_songs[0][0] }}');
-par.appendChild(node);
-var element = document.getElementById("div1")
-element.appendChild(par);
+console.log(songs);
+console.log(count)
