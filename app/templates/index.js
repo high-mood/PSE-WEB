@@ -4,6 +4,14 @@ var genres = {{ genres }}
 var genre_count = {{ genre_count }}
 var timestamps = {{ timestamps }}
 var duration = {{ duration }}
+
+function randomColor() {
+  return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
+}
+
+var songs_colors = [for (i of songs) randomColor()];
+var genres_colors = [for (i of genres) randomColor()]
+
 new Chart(document.getElementById("barchart"), {
   type: 'bar',
   data: {
@@ -11,6 +19,7 @@ new Chart(document.getElementById("barchart"), {
     datasets: [
       {
         label: "Count",
+        backgroundColor: songs_colors,
         data: song_count
       }
     ]
@@ -30,6 +39,7 @@ new Chart(document.getElementById("piechart"), {
     labels: genres,
     datasets: [{
       label: "count",
+      backgroundColor: genres_colors,
       data: genre_count
     }]
   },
