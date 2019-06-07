@@ -69,9 +69,21 @@ new Chart(document.getElementById("linechart"), {
         }]
   },
   options: {
-    title: {
-      display: true,
-      text: 'Total listening time over time'
+    scales: {
+      xAxes: [{
+        type: 'time',
+        distribution: 'series',
+        ticks: {
+          source: 'data',
+          autoSkip: true
+        }
+      }],
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Time in minutes'
+        }
+      }]
     }
   }
 });
