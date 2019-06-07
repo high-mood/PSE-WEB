@@ -65,25 +65,14 @@ new Chart(document.getElementById("linechart"), {
     labels: timestamps,
     datasets: [{ 
         data: duration,
+        borderColor: "#0643a5",
         label: "listen time (min)",
         }]
   },
   options: {
-    scales: {
-      xAxes: [{
-        type: 'time',
-        distribution: 'series',
-        ticks: {
-          source: 'data',
-          autoSkip: true
-        }
-      }],
-      yAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Time in minutes'
-        }
-      }]
+    title: {
+      display: true,
+      text: 'Total listening time over time'
     }
   }
 });
