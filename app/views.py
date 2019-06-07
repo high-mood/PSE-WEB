@@ -25,14 +25,23 @@ def index():
         all_genres = query.get_genres(client, userid)
         total_listening_time = query.total_time_spent(client, userid)
 
-        print(type(recently_played))
-        print(type(top_songs))
-        print(type(top_genres))
-        print(type(all_genres))
-        print(type(total_listening_time))
+        # print(type(recently_played))
+        # print(type(top_songs))
+        # print(type(top_genres))
+        # print(type(all_genres))
+        # print(type(total_listening_time))
 
         return render_template("index.html", **locals())
 
+@app.route("/index_js")
+def index_js():
+    client = query.create_client('localhost', 8086)
+    userid = session['json_info']['id']
+    access_token = spotify.get_access_token(session['json_info']['refresh_token'])
+    top_songs = query.get_top_songs(client, userid, 10,access_token)
+    print('here', top_songs)
+    top_songs = [list(x) for x in top_songs]
+    return render_template("index.js", top_songs=top_songs)
 
 @app.route("/login")
 def login():

@@ -8,7 +8,7 @@ def total_time_spent(client, userid):
     result = client.query('select cumulative_sum(duration_ms) from "' + userid + '"').raw
     cumsum = result['series'][0]['values']
     timestamp, listen_time = [list(x) for x in list(zip(*cumsum))]
-    print(timestamp, listen_time)
+    return(timestamp, listen_time)
 
 def create_client(host, port):
     """Create the connection to the influxdatabase songs."""
@@ -33,7 +33,7 @@ def get_top(items, count):
 def get_top_genres(client, userid, count):
     """Get the top 'count' genres of user"""
     genres = get_genres(client, userid)[1]
-    print(get_top(genres, count))
+    return(get_top(genres, count))
 
 
 def get_songs(client, userid, token):
@@ -50,7 +50,7 @@ def get_songs(client, userid, token):
 def get_top_songs(client, userid, count, token):
     """Get the top 'count' songs of user"""
     _, songs = get_songs(client, userid, token)
-    print(get_top(songs, count))
+    return(get_top(songs, count))
 
 
 def main(argv):
