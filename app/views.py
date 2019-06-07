@@ -25,18 +25,18 @@ def index():
         all_genres = query.get_genres(client, userid)
         total_listening_time = query.total_time_spent(client, userid)
 
-        print(recently_played)
-        print(top_songs)
-        print(top_genres)
-        print(all_genres)
-        print(total_listening_time)
+        print(type(recently_played))
+        print(type(top_songs))
+        print(type(top_genres))
+        print(type(all_genres))
+        print(type(total_listening_time))
 
         return render_template("index.html", **locals())
 
 
 @app.route("/login")
 def login():
-    return spotifysso.authorize(callback="http://localhost:5000/callback")
+    return spotifysso.authorize(callback="http://pse-ssh.diallom.com:5000/callback")
 
     # return spotifysso.authorize(callback=url_for('authorized', _external=True, _scheme="https"))
 
