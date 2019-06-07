@@ -11,7 +11,7 @@ new Chart(document.getElementById("barchart"), {
     datasets: [
       {
         label: "Count",
-        data: count
+        data: song_count
       }
     ]
   },
