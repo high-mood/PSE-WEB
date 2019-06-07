@@ -8,7 +8,7 @@
 <canvas id="myChart"></canvas>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="test.js"></script>
-{% for key, value in session["json_info"].items() %}
+{% comment %} {% for key, value in session["json_info"].items() %}
     {{ key }} :   {{ value }} <br>
 {% endfor %}
 
@@ -17,6 +17,6 @@
 {{ recently_played }}
 
 
-{{ all_genres }}
+{{ all_genres }} {% endcomment %}
 </body>
 </html>
