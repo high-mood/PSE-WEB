@@ -33,7 +33,6 @@ def get_top(items, count):
 def get_top_genres(client, userid, count):
     """Get the top 'count' genres of user"""
     genres = get_genres(client, userid)[1]
-    genres = [list(x) for x in genres]
     return(get_top(genres, count))
 
 
@@ -51,7 +50,6 @@ def get_songs(client, userid, token):
 def get_top_songs(client, userid, count, token):
     """Get the top 'count' songs of user"""
     _, songs = get_songs(client, userid, token)
-    songs = [list(x) for x in songs]
     return(get_top(songs, count))
 
 

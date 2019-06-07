@@ -39,8 +39,7 @@ def index_js():
     userid = session['json_info']['id']
     access_token = spotify.get_access_token(session['json_info']['refresh_token'])
     top_songs = query.get_top_songs(client, userid, 10,access_token)
-    print('here', top_songs)
-    top_songs = [list(x) for x in top_songs]
+    songs, count = [list(x) for x in list(zip(*top_songs))]
     return render_template("index.js", top_songs=top_songs)
 
 @app.route("/login")
