@@ -38,9 +38,16 @@ def index_js():
     client = query.create_client('localhost', 8086)
     userid = session['json_info']['id']
     access_token = spotify.get_access_token(session['json_info']['refresh_token'])
+    
     top_songs = query.get_top_songs(client, userid, 10,access_token)
-    songs, count = [list(x) for x in list(zip(*top_songs))]
-    return render_template("index.js", songs=songs, count=count)
+    timestamps, duration = query.total_time_spent(client, userid)
+    top_genres = query.get_top_genres(client, userid, 10)
+    duration = [time/60000 for time in duration]
+    songs, song_count = [list(x) for x in list(zip(*top_songs))]
+    genres, genre_count = [list(x) for x in list(zip(*top_genres))]
+    return render_template("index.js", songs=songs, count=song_count, 
+                            genres=genres, genre_count=genre_count,
+                            timestamps=timestamps, duration=duration)
 
 @app.route("/login")
 def login():
