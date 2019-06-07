@@ -45,7 +45,7 @@ def index_js():
     duration = [time/60000 for time in duration]
     songs, song_count = [list(x) for x in list(zip(*top_songs))]
     genres, genre_count = [list(x) for x in list(zip(*top_genres))]
-    return render_template("index.js", songs=songs, count=song_count, 
+    return render_template("index.js", songs=songs, song_count=song_count, 
                             genres=genres, genre_count=genre_count,
                             timestamps=timestamps, duration=duration)
 
