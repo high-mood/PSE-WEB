@@ -26,7 +26,7 @@ def add_audio_features(tracks, ids, access_token):
         tracks[audio_features["id"]]["fields"]["acousticness"] = audio_features["acousticness"]
         tracks[audio_features["id"]]["fields"]["danceability"] = audio_features["danceability"]
         tracks[audio_features["id"]]["fields"]["energy"] = audio_features["energy"]
-        tracks[audio_features["id"]]["fields"]["instrumentalness"] = audio_features["instrumentalness"]
+        tracks[audio_features["id"]]["fields"]["instrumentalness"] = float(audio_features["instrumentalness"])
         tracks[audio_features["id"]]["fields"]["liveness"] = audio_features["liveness"]
         tracks[audio_features["id"]]["fields"]["loudness"] = audio_features["loudness"]
         tracks[audio_features["id"]]["fields"]["speechiness"] = audio_features["speechiness"]
@@ -61,7 +61,9 @@ def update_user_tracks(access_token):
     client.switch_database('songs')
 
     user_id = spotify.get_user_info(access_token)["id"]
+    print("getting data for " + user_id)
 
     tracks = get_latest_tracks(user_id, access_token)
-
-    client.write_points(list(tracks.values()))
+    if tracks:
+        print(list(tracks.values())[0]["measurement"])
+        client.write_points(list(tracks.values()))

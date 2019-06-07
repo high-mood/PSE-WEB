@@ -55,7 +55,6 @@ def get_access_token(refresh_token):
             "refresh_token": refresh_token}
 
     response = requests.post(url, data=body, auth=HTTPBasicAuth(SPOTIFY_CLIENT, SPOTIFY_SECRET))
-
     return response.json()["access_token"]
 
 # response.content

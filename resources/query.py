@@ -40,7 +40,7 @@ def get_songs(client, userid, token):
     """Return all songs listened to by the user specified by userid."""
     result = client.query('select songid from "' + userid + '"').raw
     timestamps, songs = [list(x) for x in list(zip(*result['series'][0]['values']))]
-    ids = ",".join(songs)
+    ids = ",".join(songs[:10])
     endpoint = "https://api.spotify.com/v1/tracks?ids="
     r = requests.get(endpoint + ids, headers={"Authorization": f"Bearer {token}"}).json()
     songs = [track['name'] for track in r['tracks'] if track]
