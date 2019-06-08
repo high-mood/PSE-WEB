@@ -6,6 +6,7 @@ from config import SPOTIFY_CLIENT, SPOTIFY_SECRET
 def get_artists(access_token, artistids):
     """
     Get Spotify catalog information for several artists based on their Spotify IDs.
+
     Parameters
     ----------
     access_token : string
@@ -58,7 +59,7 @@ def get_access_token(refresh_token):
     return response.json()["access_token"]
 
 # response.content
-# {"access_token":"....",
-# "token_type":"Bearer",
-# "expires_in":3600,
-# "scope":"user-library-read user-library-modify ...."}
+#   {"access_token":"....",
+#    "token_type":"Bearer",
+#    "expires_in":3600,
+#    "scope":"user-library-read user-library-modify ...."}

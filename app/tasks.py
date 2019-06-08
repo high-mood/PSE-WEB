@@ -1,69 +1,88 @@
 from influxdb import InfluxDBClient
 from app.API import spotify
+import config
+import sys
 
 
 def add_genres(tracks, ids, access_token):
+    if not ids:
+        return
     artists_info = spotify.get_artists(access_token, ids)
 
-    for artist_info in artists_info["artists"]:
+    for artist_info in artists_info['artists']:
         for track in tracks:
-            if tracks[track]["fields"]["artistid"] != artist_info["id"]:
+            if track['fields']['artistsids'].split(',')[0] != artist_info['id']:
                 continue
 
-            tracks[track]["fields"]["genres"] = ",".join(artist_info["genres"])
-            if not len(tracks[track]["fields"]["genres"]) > 0:
-                tracks[track]["fields"]["genres"] = "None"
+            track['fields']['genres'] = ','.join(artist_info['genres'])
+
+    for track in tracks:
+        if 'genres' not in track['fields'] or not len(track['fields']['genres']) > 0:
+            track['fields']['genres'] = "None"
 
 
 def add_audio_features(tracks, ids, access_token):
+    if not ids:
+        return
     features = spotify.get_audio_features(access_token, ids)
 
-    for audio_features in features["audio_features"]:
-        tracks[audio_features["id"]]["fields"]["duration_ms"] = audio_features["duration_ms"]
-        tracks[audio_features["id"]]["fields"]["key"] = audio_features["key"]
-        tracks[audio_features["id"]]["fields"]["mode"] = audio_features["mode"]
-        tracks[audio_features["id"]]["fields"]["time_signature"] = audio_features["time_signature"]
-        tracks[audio_features["id"]]["fields"]["acousticness"] = audio_features["acousticness"]
-        tracks[audio_features["id"]]["fields"]["danceability"] = audio_features["danceability"]
-        tracks[audio_features["id"]]["fields"]["energy"] = audio_features["energy"]
-        tracks[audio_features["id"]]["fields"]["instrumentalness"] = float(audio_features["instrumentalness"])
-        tracks[audio_features["id"]]["fields"]["liveness"] = audio_features["liveness"]
-        tracks[audio_features["id"]]["fields"]["loudness"] = audio_features["loudness"]
-        tracks[audio_features["id"]]["fields"]["speechiness"] = audio_features["speechiness"]
-        tracks[audio_features["id"]]["fields"]["valence"] = audio_features["valence"]
-        tracks[audio_features["id"]]["fields"]["tempo"] = audio_features["tempo"]
+    for audio_features in features['audio_features']:
+        for track in tracks:
+            if track['fields']['songid'] != audio_features['id']:
+                continue
+            # We explicitly cast these to the sure there are no type conflicts in our database.
+            track['fields']['duration_ms'] = int(audio_features['duration_ms'])
+            track['fields']['key'] = int(audio_features['key'])
+            track['fields']['mode'] = int(audio_features['mode'])
+            track['fields']['time_signature'] = int(audio_features['time_signature'])
+            track['fields']['acousticness'] = float(audio_features['acousticness'])
+            track['fields']['danceability'] = float(audio_features['danceability'])
+            track['fields']['energy'] = float(audio_features['energy'])
+            track['fields']['instrumentalness'] = float(audio_features['instrumentalness'])
+            track['fields']['liveness'] = float(audio_features['liveness'])
+            track['fields']['loudness'] = float(audio_features['loudness'])
+            track['fields']['speechiness'] = float(audio_features['speechiness'])
+            track['fields']['valence'] = float(audio_features['valence'])
+            track['fields']['tempo'] = float(audio_features['tempo'])
 
 
 def get_latest_tracks(user_id, access_token):
     recently_played = spotify.get_recently_played(access_token)
 
-    if not len(recently_played["items"]) > 0:
+    if not len(recently_played['items']) > 0:
         return
 
-    tracks = {}
-    artists = []
-    for track in recently_played["items"]:
-        tracks[track["track"]["id"]] = {"measurement": user_id,
-                                        "time": track["played_at"],
-                                        "fields": {"songid": track["track"]["id"],
-                                                   "artistid": track["track"]["artists"][0]["id"]}}
-        # We only get the main artist
-        artists.append(track["track"]["artists"][0]["id"])
+    tracks = []
+    trackids = {}
+    artistids = {}
+    for track in recently_played['items']:
+        tracks.append({'measurement': user_id,
+                       'time': track['played_at'],
+                       'fields': {'songid': track['track']['id'],
+                                  'artistsids': ','.join([artist['id'] for artist in track['track']['artists']])}})
+        # We store the artist and track ids in dics to
+        # prefent requesting them multiple time from Spotify.
+        # We only get the genre from the main artist
+        artistids[track['track']['artists'][0]['id']] = 0
+        trackids[track['track']['id']] = 0
 
-    add_audio_features(tracks, list(tracks.keys()), access_token)
-    add_genres(tracks, artists, access_token)
+    add_audio_features(tracks, list(trackids.keys()), access_token)
+    add_genres(tracks, list(artistids.keys()), access_token)
 
     return tracks
 
 
 def update_user_tracks(access_token):
-    client = InfluxDBClient(host='localhost', port=8086)
-    client.switch_database('songs')
+    client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
+                            password=config.influx_pswd, database='songs')
 
-    user_id = spotify.get_user_info(access_token)["id"]
-    print("getting data for " + user_id)
+    user_data = spotify.get_user_info(access_token)
 
-    tracks = get_latest_tracks(user_id, access_token)
+    tracks = get_latest_tracks(user_data['id'], access_token)
+
+    # If the user does not have listened to any tracks we just skip them.
     if tracks:
-        print(list(tracks.values())[0]["measurement"])
-        client.write_points(list(tracks.values()))
+        client.write_points(tracks)
+        print(f"Succesfully stored the data for '{user_data['display_name']}'")
+    else:
+        print(f"Could not find any tracks for '{user_data['display_name']}', skipping", file=sys.stderr)

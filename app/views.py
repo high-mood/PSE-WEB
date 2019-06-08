@@ -9,10 +9,11 @@ import os
 # TODO: Remove this later
 from resources import query
 
+
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    if not "json_info" in session:
+    if "json_info" not in session:
         return render_template("login.html", **locals())
     else:
         client = query.create_client('localhost', 8086)
@@ -21,7 +22,7 @@ def index():
 
         print(userid)
         recently_played = spotify.get_recently_played(access_token)
-        top_songs = query.get_top_songs(client, userid, 10,access_token)
+        top_songs = query.get_top_songs(client, userid, 10, access_token)
         top_genres = query.get_top_genres(client, userid, 10)
         all_genres = query.get_genres(client, userid)
         total_listening_time = query.total_time_spent(client, userid)
@@ -34,25 +35,28 @@ def index():
 
         return render_template("index.html", **locals())
 
+
 @app.route("/index_js")
 def index_js():
     client = query.create_client('localhost', 8086)
     userid = session['json_info']['id']
     access_token = spotify.get_access_token(session['json_info']['refresh_token'])
-    
-    top_songs = query.get_top_songs(client, userid, 10,access_token)
+
+    top_songs = query.get_top_songs(client, userid, 10, access_token)
     timestamps, duration = query.total_time_spent(client, userid)
     top_genres = query.get_top_genres(client, userid, 10)
-    duration = [time/60000 for time in duration]
+    duration = [time / 60000 for time in duration]
     songs, song_count = [list(x) for x in list(zip(*top_songs))]
     genres, genre_count = [list(x) for x in list(zip(*top_genres))]
-    return render_template("index.js", songs=songs, song_count=song_count, 
-                            genres=genres, genre_count=genre_count,
-                            timestamps=timestamps, duration=duration)
+
+    return render_template("index.js", songs=songs, song_count=song_count,
+                           genres=genres, genre_count=genre_count,
+                           timestamps=timestamps, duration=duration)
+
 
 @app.route("/login")
 def login():
-    return spotifysso.authorize(callback="http://pse-ssh.diallom.com:5000/callback")
+    return spotifysso.authorize(callback="http://localhost:5000/callback")
 
     # return spotifysso.authorize(callback=url_for('authorized', _external=True, _scheme="https"))
 

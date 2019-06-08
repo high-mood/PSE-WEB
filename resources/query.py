@@ -1,7 +1,7 @@
 from influxdb import InfluxDBClient
-import json
 import requests
 import sys
+
 
 def total_time_spent(client, userid):
     """Return the cumulative time spent listening to songs paired per timestamp."""
@@ -10,11 +10,13 @@ def total_time_spent(client, userid):
     timestamp, listen_time = [list(x) for x in list(zip(*cumsum))]
     return(timestamp, listen_time)
 
+
 def create_client(host, port):
     """Create the connection to the influxdatabase songs."""
     client = InfluxDBClient(host=host, port=port)
     client.switch_database('songs')
     return client
+
 
 def get_genres(client, userid):
     """Return all genres listened to by the user."""
@@ -40,7 +42,7 @@ def get_songs(client, userid, token):
     """Return all songs listened to by the user specified by userid."""
     result = client.query('select songid from "' + userid + '"').raw
     timestamps, songs = [list(x) for x in list(zip(*result['series'][0]['values']))]
-    ids = ",".join(songs[:10])
+    ids = ','.join(songs[:10])
     endpoint = "https://api.spotify.com/v1/tracks?ids="
     r = requests.get(endpoint + ids, headers={"Authorization": f"Bearer {token}"}).json()
     songs = [track['name'] for track in r['tracks'] if track]
@@ -77,8 +79,9 @@ topgenres: get the top <count> genres""")
         get_top_genres(client, userid, count)
     return 0
 
-if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] == 'help':
+
+if __name__ == '__main__':
+    if len(sys.argv) < 3 or sys.argv[1] == "help":
         exit("""Usage: query.py <query> <userid> <count> <token>
 topsongs: get the top <count> songs
 topgenres: get the top <count> genres
