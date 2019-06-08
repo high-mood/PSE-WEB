@@ -1,4 +1,5 @@
 from influxdb import InfluxDBClient
+from datetime import datetime
 from app.API import spotify
 import config
 import sys
@@ -81,8 +82,9 @@ def update_user_tracks(access_token):
     tracks = get_latest_tracks(user_data['id'], access_token)
 
     # If the user does not have listened to any tracks we just skip them.
+    current_time = datetime.now().strftime("%H:%M:%S")
     if tracks:
         client.write_points(tracks)
-        print(f"Succesfully stored the data for '{user_data['display_name']}'")
+        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
-        print(f"Could not find any tracks for '{user_data['display_name']}', skipping", file=sys.stderr)
+        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping", file=sys.stderr)
