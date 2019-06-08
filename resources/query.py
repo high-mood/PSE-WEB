@@ -8,13 +8,15 @@ def total_time_spent(client, userid):
     result = client.query('select cumulative_sum(duration_ms) from "' + userid + '"').raw
     cumsum = result['series'][0]['values']
     timestamp, listen_time = [list(x) for x in list(zip(*cumsum))]
+
     return(timestamp, listen_time)
 
 
 def create_client(host, port):
     """Create the connection to the influxdatabase songs."""
-    client = InfluxDBClient(host=host, port=port)
-    client.switch_database('songs')
+    client = InfluxDBClient(host=host, port=port, username=config.influx_usr,
+                            password=config.influx_pswd, database='songs')
+
     return client
 
 
@@ -22,6 +24,7 @@ def get_genres(client, userid):
     """Return all genres listened to by the user."""
     result = client.query('select genres from "' + userid + '"').raw
     timestamps, genres = [list(x) for x in list(zip(*result['series'][0]['values']))]
+
     return timestamps, genres
 
 
@@ -29,12 +32,14 @@ def get_top(items, count):
     """Return the top items based on their occurrences."""
     items_count = [(item, items.count(item)) for item in items if item != 'None']
     top_items = sorted(set(items_count), key=lambda x: x[1], reverse=True)
+
     return top_items[:count]
 
 
 def get_top_genres(client, userid, count):
     """Get the top 'count' genres of user"""
     genres = get_genres(client, userid)[1]
+
     return(get_top(genres, count))
 
 
@@ -46,12 +51,14 @@ def get_songs(client, userid, token):
     endpoint = "https://api.spotify.com/v1/tracks?ids="
     r = requests.get(endpoint + ids, headers={"Authorization": f"Bearer {token}"}).json()
     songs = [track['name'] for track in r['tracks'] if track]
+
     return timestamps, songs
 
 
 def get_top_songs(client, userid, count, token):
     """Get the top 'count' songs of user"""
     _, songs = get_songs(client, userid, token)
+
     return(get_top(songs, count))
 
 
@@ -62,6 +69,7 @@ def main(argv):
 
     if query == 'timespent':
         total_time_spent(client, userid)
+
         return 0
 
     if len(argv) < 4:
@@ -77,6 +85,7 @@ topgenres: get the top <count> genres""")
         get_top_songs(client, userid, count, token)
     elif query == 'topgenres':
         get_top_genres(client, userid, count)
+
     return 0
 
 
@@ -86,4 +95,7 @@ if __name__ == '__main__':
 topsongs: get the top <count> songs
 topgenres: get the top <count> genres
 timespent: get the total time spent on spotify sampeled by timestamps of songs listened""")
+    from ... import config
     main(sys.argv)
+else:
+    import config
