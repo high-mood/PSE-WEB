@@ -5,6 +5,7 @@ from app import db
 from app import models
 from app import spotifysso
 from app.API import spotify
+from app.tasks import update_user_tracks
 import os
 # TODO: Remove this later
 from resources import query
@@ -81,5 +82,7 @@ def authorized():
     models.User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
     session['json_info'] = json_user_info  # TODO change this laziness
     session['json_info']['refresh_token'] = refresh_token
+
+    update_user_tracks(access_token)
 
     return redirect(url_for('index'))
