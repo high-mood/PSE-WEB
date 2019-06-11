@@ -46,6 +46,9 @@ def add_audio_features(tracks, ids, access_token):
             track['fields']['valence'] = float(audio_features['valence'])
             track['fields']['tempo'] = float(audio_features['tempo'])
 
+def get_last_n_minutes(duration, userid):
+    client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
+                            password=config.influx_pswd, database='songs')
 
 def get_latest_tracks(user_id, access_token):
     recently_played = spotify.get_recently_played(access_token)
