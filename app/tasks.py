@@ -1,6 +1,7 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
+import models
 import config
 import sys
 
@@ -60,6 +61,9 @@ def get_latest_tracks(user_id, access_token):
     trackids = {}
     artistids = {}
     for track in recently_played['items']:
+        models.Songs.create_if_not_exist({'songid':track['track']['id'],
+                                          'name':'pietje'
+                                         })
         tracks.append({'measurement': user_id,
                        'time': track['played_at'],
                        'fields': {'songid': track['track']['id'],
@@ -90,4 +94,5 @@ def update_user_tracks(access_token):
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
+        pass
         print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping", file=sys.stderr)
