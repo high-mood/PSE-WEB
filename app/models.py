@@ -27,7 +27,7 @@ import datetime
 # if not, boolean is active
 class User(db.Model):
     __tablename__ = "users"
-    user_id = db.Column(db.String(200), primary_key=True)
+    userid = db.Column(db.String(200), primary_key=True)
     email = db.Column(db.String(200))
     display_name = db.Column(db.String(200))
     image_url = db.Column(db.String(200))
@@ -39,9 +39,9 @@ class User(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info, refresh_token):
-        user = User.query.filter_by(user_id=json_info['id']).first()
+        user = User.query.filter_by(userid=json_info['id']).first()
         if user is None:
-            user = User(user_id=json_info['id'],
+            user = User(userid=json_info['id'],
                         email=json_info['email'],
                         display_name=json_info['display_name'],
                         image_url=None,
@@ -62,14 +62,14 @@ class User(db.Model):
 
 class Song(db.Model):
     __tablename__ = "songs"
-    song_id = db.Column(db.String(200), primary_key=True)
+    songid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
 
     @staticmethod
     def create_if_not_exist(json_info):
-        song = Song.query.filter_by(song_id=json_info['songid']).first()
+        song = Song.query.filter_by(songid=json_info['songid']).first()
         if song is None:
-            song = Song(song_id=json_info['songid'],
+            song = Song(songid=json_info['songid'],
                         name=json_info['name'])
 
             db.session.add(song)
