@@ -1,7 +1,7 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
-import models
+from app import models
 import config
 import sys
 
@@ -50,6 +50,11 @@ def add_audio_features(tracks, ids, access_token):
 def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                             password=config.influx_pswd, database='songs')
+    
+    song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw
+
+
+
 
 def get_latest_tracks(user_id, access_token):
     recently_played = spotify.get_recently_played(access_token)
