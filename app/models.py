@@ -58,3 +58,39 @@ class User(db.Model):
     def get_all_tokes():
         query = db.session.query("refresh_token FROM users")
         return [row[0] for row in query]
+
+
+class Song(db.Model):
+    __tablename__ = "songs"
+    song_id = db.Column(db.String(200), primary_key=True)
+    name = db.Column(db.String(300))
+
+    @staticmethod
+    def create_if_not_exist(json_info):
+        song = Song.query.filter_by(song_id=json_info['songid']).first()
+        if song is None:
+            song = Song(song_id=json_info['songid'],
+                        name=json_info['name'])
+
+            db.session.add(song)
+            db.session.commit()
+
+
+class Artist(db.Model):
+    __tablename__ = "artists"
+    artist_id = db.Column(db.String(200), primary_key=True)
+    name = db.Column(db.String(300))
+    genres = db.Column(db.String(300))
+    popularity = db.Column(db.Integer())
+
+    @staticmethod
+    def create_if_not_exist(json_info):
+        artist = Artist.query.filter_by(artist_id=json_info['artistid']).first()
+        if artist is None:
+            artist = Song(artist_id=json_info['artistid'],
+                          name=json_info['name'],
+                          genres=json_info['genres'],
+                          popularity=json_info['popularity'])
+
+            db.session.add(artist)
+            db.session.commit()
