@@ -1,7 +1,7 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
-import models
+import app.models
 import config
 import sys
 
@@ -58,6 +58,7 @@ def get_latest_tracks(user_id, access_token):
     trackids = {}
     artistids = {}
     for track in recently_played['items']:
+        print(track)
         models.Songs.create_if_not_exist({'songid':track['track']['id'],
                                           'name':'pietje'
                                          })

@@ -17,7 +17,7 @@ def index():
     if "json_info" not in session:
         return render_template("login.html", **locals())
     else:
-        client = query.create_client('pse-ssh.diallom', 8086)
+        client = query.create_client('pse-ssh.diallom.com', 8086)
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
@@ -38,7 +38,7 @@ def index():
 
 @app.route("/index_js")
 def index_js():
-    client = query.create_client('localhost', 8086)
+    client = query.create_client('pse-ssh.diallom.com', 8086)
     userid = session['json_info']['id']
     access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
