@@ -78,19 +78,19 @@ class Song(db.Model):
 
 class Artist(db.Model):
     __tablename__ = "artists"
-    artist_id = db.Column(db.String(200), primary_key=True)
+    artistid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
     genres = db.Column(db.String(300))
     popularity = db.Column(db.Integer())
 
     @staticmethod
     def create_if_not_exist(json_info):
-        artist = Artist.query.filter_by(artist_id=json_info['artistid']).first()
+        artist = Artist.query.filter_by(artistid=json_info['artistid']).first()
         if artist is None:
-            artist = Song(artist_id=json_info['artistid'],
-                          name=json_info['name'],
-                          genres=json_info['genres'],
-                          popularity=json_info['popularity'])
+            artist = Artist(artistid=json_info['artistid'],
+                            name=json_info['name'],
+                            genres=json_info['genres'],
+                            popularity=json_info['popularity'])
 
             db.session.add(artist)
             db.session.commit()

@@ -12,7 +12,11 @@ def add_genres(tracks, ids, access_token):
     artists_info = spotify.get_artists(access_token, ids)
 
     for artist_info in artists_info['artists']:
-        print(artist_info)
+        Artist.create_if_not_exist({'artistid':artist_info['id'],
+                                    'name':artist_info['name'],
+                                    'genres':', '.join(artist_info['genres']),
+                                    'popularity': artist_info['popularity']})
+
         for track in tracks:
             if track['fields']['artistsids'].split(',')[0] != artist_info['id']:
                 continue
