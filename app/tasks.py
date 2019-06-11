@@ -75,8 +75,8 @@ def get_last_n_minutes(duration, userid):
                          'excitedness': excitedness,
                          'happiness': happiness
                      }})
-
-    client.write_points(data)
+    print(data)
+    # client.write_points(data)
 
 
 
