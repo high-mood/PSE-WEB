@@ -1,7 +1,8 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
-from app import models
+
+from app.models import Song, Artist
 import config
 import sys
 
@@ -12,6 +13,7 @@ def add_genres(tracks, ids, access_token):
     artists_info = spotify.get_artists(access_token, ids)
 
     for artist_info in artists_info['artists']:
+        print(artist_info)
         for track in tracks:
             if track['fields']['artistsids'].split(',')[0] != artist_info['id']:
                 continue
@@ -65,10 +67,11 @@ def get_latest_tracks(user_id, access_token):
     tracks = []
     trackids = {}
     artistids = {}
+    # print(recently_played['items'][0]['track']['name'])
     for track in recently_played['items']:
-        models.Songs.create_if_not_exist({'songid':track['track']['id'],
-                                          'name':'pietje'
-                                         })
+        Song.create_if_not_exist({'songid':track['track']['id'],
+                                          'name':track['track']['name']
+                                 })
         tracks.append({'measurement': user_id,
                        'time': track['played_at'],
                        'fields': {'songid': track['track']['id'],
