@@ -58,6 +58,7 @@ def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                             password=config.influx_pswd, database='moods')
     
+    print(client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw)
     song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw['series'][0]['values']
     _, songids = list(zip(*song_history))
     moods = Songmood.get_moods(songids)
