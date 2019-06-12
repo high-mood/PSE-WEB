@@ -10,6 +10,9 @@ import os
 # TODO: Remove this later
 from resources import query
 
+@app.route("/test")
+def indexer():
+    return render_template("dashboard.html",**locals())
 
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
