@@ -5,7 +5,7 @@ from app import db
 from app import models
 from app import spotifysso
 from app.API import spotify
-from app.tasks import update_user_tracks
+from app.tasks import update_user_tracks, get_last_n_minutes
 import os
 # TODO: Remove this later
 from resources import query
@@ -21,6 +21,8 @@ def index():
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
+        get_last_n_minutes('1h', userid)
+
         recently_played = spotify.get_recently_played(access_token)
         top_songs = query.get_top_songs(client, userid, 10, access_token)
         top_genres = query.get_top_genres(client, userid, 10)
@@ -32,7 +34,7 @@ def index():
         # print(type(top_genres))
         # print(type(all_genres))
         # print(type(total_listening_time))
-
+    
         return render_template("index.html", **locals())
 
 
@@ -41,6 +43,8 @@ def index_js():
     client = query.create_client('pse-ssh.diallom.com', 8086)
     userid = session['json_info']['id']
     access_token = spotify.get_access_token(session['json_info']['refresh_token'])
+
+    print(get_last_n_minutes('1w', userid))
 
     top_songs = query.get_top_songs(client, userid, 10, access_token)
     timestamps, duration = query.total_time_spent(client, userid)

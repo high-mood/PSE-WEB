@@ -1,11 +1,12 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
+import numpy as np
 
-from app.models import Song, Artist
+from app.models import Song, Artist, Songmood
 import config
 import sys
-
+from time import time
 
 def add_genres(tracks, ids, access_token):
     if not ids:
@@ -55,10 +56,27 @@ def add_audio_features(tracks, ids, access_token):
 
 def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
-                            password=config.influx_pswd, database='songs')
+                            password=config.influx_pswd, database='moods')
     
-    song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw
+    song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw['series'][0]['values']
+    _, songids = list(zip(*song_history))
+    moods = Songmood.get_moods(songids)
 
+    excitedness, happiness = list(zip(*moods))
+    excitedness = np.mean(excitedness)
+    happiness = np.mean(happiness)
+
+    data = []
+
+    for mood in moods:
+        data.append({'measurement': userid,
+                     'time': time(),
+                     'fields': {
+                         'excitedness': excitedness,
+                         'happiness': happiness
+                     }})
+    print(data)
+    # client.write_points(data)
 
 
 
