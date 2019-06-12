@@ -94,3 +94,45 @@ class Artist(db.Model):
 
             db.session.add(artist)
             db.session.commit()
+
+
+class SongArtist(db.Model):
+    __tablename__ = "songartist"
+    songid = db.Column(db.String(200), db.ForeignKey("songs.songid"))
+    artistid = db.Column(db.String(200), db.ForeignKey("artists.artistid"))
+
+    __table_args__ = db.UniqueConstraint('songid', 'artistid', name='key')
+
+    @staticmethod
+    def create_if_not_exist(json_info):
+        songmood = Songmood.query.filter_by(songid=json_info['songid']).first()
+        if songmood is None:
+            songmood = Songmood(songid=json_info['songid'],
+                                artist=json_info['artistid'])
+
+            db.session.add(songmood)
+            db.session.commit()
+
+
+class Songmood(db.Model):
+    __tablename__ = "songmoods"
+    songid = db.Column(db.String(200), primary_key=True)
+    excitedness = db.Column(db.Float())
+    happiness = db.Column(db.Float())
+
+    @staticmethod
+    def create_if_not_exist(json_info):
+        songmood = Songmood.query.filter_by(songid=json_info['songid']).first()
+        if songmood is None:
+            songmood = Songmood(songid=json_info['songid'],
+                                excitedness=json_info['excitedness'],
+                                happiness=json_info['happiness'])
+
+            db.session.add(songmood)
+            db.session.commit()
+
+    def get_moods(songids):
+        querystring = '(' + ','.join(["'{}'" for id in songids]) + ');'
+        excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
+        happiness = db.session.query('happiness FROM songmood where songid in ' + querystring)
+        return list(zip(excitedness, happiness))
