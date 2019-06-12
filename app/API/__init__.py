@@ -13,7 +13,8 @@ blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
 app.register_blueprint(blueprint)
 
-name_space = api.namespace('User', description='User information')
+user_name_space = api.namespace('User', description='User information')
+
 
 model = api.model('UserInfo', {
     'userid': fields.String,
@@ -28,8 +29,8 @@ model = api.model('UserInfo', {
 })
 
 
-@name_space.route("/<string:userid>")
-class MoodData(Resource):
+@user_name_space.route("/<string:userid>")
+class User(Resource):
 
     @api.marshal_with(model, envelope='resource')
     def get(self, userid):
