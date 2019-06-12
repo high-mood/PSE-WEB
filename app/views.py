@@ -36,7 +36,7 @@ def index():
         print(session)
         print(session['json_info']['display_name'])
 
-        return render_template("index.html", **locals())
+        return render_template("index.html", **locals(), text=session['json_info']['display_name'])
 
 
 @app.route("/index_js")

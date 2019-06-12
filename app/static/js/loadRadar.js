@@ -23,7 +23,7 @@ function createRadarChart(userdata) {
 
 
   document.title = userdata.username + "\'s  Mood";
-  var x = document.getElementById("userwelcome").innerHTML = "Welcome " + userdata.username + ", here's your mood";
+  // var x = document.getElementById("userwelcome").innerHTML = "Welcome " + userdata.username + ", here's your mood";
 
   var finaldata = [];
   var song;

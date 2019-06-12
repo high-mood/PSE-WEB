@@ -33,7 +33,10 @@
 </head>
   <body>
 
-    <h1 id="userwelcome" align="center">Welcome</h1>
+
+    {% if text %}
+      <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+    {% endif %}
 
     <div class="radarChart"></div>
 
