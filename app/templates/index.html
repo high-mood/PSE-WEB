@@ -12,7 +12,17 @@
     <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
     <script src="{{ url_for('static',filename='js/loadRadar.js') }}"></script>
 
-    
+    <!-- Placeholder Javascript #1-->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+
+    <!-- Placeholder Javascript #2-->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+
+    <!-- Placeholder Javascript #3-->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
 
     <!-- Google fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -28,8 +38,23 @@
     <div class="radarChart"></div>
 
     <script>
-      createRadarChart();
+
+      var request = new XMLHttpRequest()
+
+      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      request.onload = function() {
+        var userdata = JSON.parse(this.response)
+
+        if (request.status >= 200 && request.status < 400) {
+          createRadarChart(userdata);
+        }
+      }
+      request.send()
+
+
     </script>
+
+
     <canvas id="barchart"></canvas>
     <canvas id="piechart"></canvas>
     <canvas id="linechart"></canvas>
