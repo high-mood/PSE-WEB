@@ -96,24 +96,6 @@ class Artist(db.Model):
             db.session.commit()
 
 
-class SongArtist(db.Model):
-    __tablename__ = "songartist"
-    songid = db.Column(db.String(200), db.ForeignKey("songs.songid"))
-    artistid = db.Column(db.String(200), db.ForeignKey("artists.artistid"))
-
-    __table_args__ = db.UniqueConstraint('songid', 'artistid', name='key')
-
-    @staticmethod
-    def create_if_not_exist(json_info):
-        songmood = Songmood.query.filter_by(songid=json_info['songid']).first()
-        if songmood is None:
-            songmood = Songmood(songid=json_info['songid'],
-                                artist=json_info['artistid'])
-
-            db.session.add(songmood)
-            db.session.commit()
-
-
 class Songmood(db.Model):
     __tablename__ = "songmoods"
     songid = db.Column(db.String(200), primary_key=True)
@@ -134,5 +116,24 @@ class Songmood(db.Model):
     def get_moods(songids):
         querystring = '(' + ','.join(["'{}'" for id in songids]) + ');'
         excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
-        happiness = db.session.query('happiness FROM songmood where songid in ' + querystring)
+        happiness = db.session.query('happiness FROM songmoods where songid in ' + querystring)
         return list(zip(excitedness, happiness))
+
+
+class SongArtist(db.Model):
+    __tablename__ = "songs_artists"
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    songid = db.Column(db.String(200), db.ForeignKey("songs.songid"))
+    artistid = db.Column(db.String(200), db.ForeignKey("artists.artistid"))
+
+    __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
+
+    @staticmethod
+    def create_if_not_exist(json_info):
+        songartist = SongArtist.query(f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
+        if songartist is None:
+            songartist = SongArtist(songid=json_info['songid'],
+                                  artistid=json_info['artistid'])
+
+            db.session.add(songartist)
+            db.session.commit()
