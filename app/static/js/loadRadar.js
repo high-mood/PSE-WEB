@@ -1,6 +1,6 @@
 
 
-function createRadarChart(username) {
+function createRadarChart(userdata) {
 
   /* Radar chart design created by Nadieh Bremer - VisualCinnamon.com */
   var margin = {top: 100, right: 100, bottom: 100, left: 100},

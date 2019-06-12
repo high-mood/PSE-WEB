@@ -33,6 +33,8 @@ def index():
         # print(type(top_genres))
         # print(type(all_genres))
         # print(type(total_listening_time))
+        print(session)
+        print(session['json_info']['display_name'])
 
         return render_template("index.html", **locals())
 
