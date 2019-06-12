@@ -65,6 +65,8 @@ def get_last_n_minutes(duration, userid):
     _, songids = list(zip(*song_history))
     moods = Songmood.get_moods(songids)
 
+    print(list(zip(*moods)))
+
     excitedness, happiness = list(zip(*moods))
     excitedness = np.mean(excitedness)
     happiness = np.mean(happiness)
