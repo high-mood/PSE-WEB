@@ -63,9 +63,28 @@ class BasicUserData(Resource):
         """
         Obtain basic aggregated statistics for a user.
         """
+        # TODO: CHANGE THIS
+        from resources import query
+        client = query.create_client('pse-ssh.diallom.com', 8086)
 
         user = models.User.query.filter_by(userid=userid).first()
-        return user
+        from app.API.spotify import get_access_token
+        songs = query.get_songs(client, userid, get_access_token(user.refresh_token))
+        print(songs)
+
+        return {
+            'userid': userid,
+            'username': user.display_name,
+            # 'mean_excitedness': fields.String,
+            # 'mean_happiness': fields.String,
+            # 'songs': fields.Nested(api.model('song', {
+            #     'songname': fields.String,
+            #     'timestamp': fields.Integer,
+            #     'excitedness': fields.Integer,
+            #     'happiness': fields.Integer
+            # }))
+
+        }
 
 # def post(self):
 #     return {
