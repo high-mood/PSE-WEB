@@ -56,11 +56,16 @@ def add_audio_features(tracks, ids, access_token):
 
 def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
-                            password=config.influx_pswd, database='moods')
+                            password=config.influx_pswd)
+
+    client.switch_database('songs')
     
+    print(client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw)
     song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw['series'][0]['values']
     _, songids = list(zip(*song_history))
     moods = Songmood.get_moods(songids)
+
+    print(list(zip(*moods)))
 
     excitedness, happiness = list(zip(*moods))
     excitedness = np.mean(excitedness)
@@ -76,7 +81,9 @@ def get_last_n_minutes(duration, userid):
                          'happiness': happiness
                      }})
     print(data)
-    # client.write_points(data)
+
+    client.switch_database('moods')
+    client.write_points(data)
 
 
 

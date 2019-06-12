@@ -21,7 +21,7 @@ def index():
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
-        get_last_n_minutes('1h', userid)
+        get_last_n_minutes('1w', userid)
 
         recently_played = spotify.get_recently_played(access_token)
         top_songs = query.get_top_songs(client, userid, 10, access_token)
@@ -60,7 +60,7 @@ def index_js():
 
 @app.route("/login")
 def login():
-    return spotifysso.authorize(callback="http://localhost:5000/callback")
+    return spotifysso.authorize(callback="http://pse-ssh.diallom.com:5000/callback")
 
     # return spotifysso.authorize(callback=url_for('authorized', _external=True, _scheme="https"))
 
