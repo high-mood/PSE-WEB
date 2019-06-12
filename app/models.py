@@ -114,7 +114,7 @@ class Songmood(db.Model):
             db.session.commit()
 
     def get_moods(songids):
-        querystring = '(' + ','.join(["'{}'" for id in songids]) + ');'
+        querystring = '(' + ','.join([f"'{id}'". for id in songids]) + ');'
         excitedness = db.session.query('select excitedness FROM songmoods where songid in ' + querystring)
         happiness = db.session.query('select happiness FROM songmoods where songid in ' + querystring)
         return list(zip(excitedness, happiness))
