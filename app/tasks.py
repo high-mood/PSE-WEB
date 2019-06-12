@@ -140,5 +140,4 @@ def update_user_tracks(access_token):
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
-        pass
         print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping", file=sys.stderr)
