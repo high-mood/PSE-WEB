@@ -13,10 +13,9 @@ blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
 app.register_blueprint(blueprint)
 
-user_name_space = api.namespace('User', description='User information')
+user_name_space = api.namespace('user', description='User information', path="user")
 
-
-model = api.model('UserInfo', {
+user_info = api.model('UserInfo', {
     'userid': fields.String,
     'email': fields.String,
     'display_name': fields.String,
@@ -32,7 +31,7 @@ model = api.model('UserInfo', {
 @user_name_space.route("/<string:userid>")
 class User(Resource):
 
-    @api.marshal_with(model, envelope='resource')
+    @api.marshal_with(user_info, envelope='resource')
     def get(self, userid):
         """
         Obtain all of a user's account information.
@@ -40,6 +39,34 @@ class User(Resource):
 
         user = models.User.query.filter_by(userid=userid).first()
         return user
+
+
+user_statistics = api.model('User Statistics', {
+    'userid': fields.String,
+    'username': fields.String,
+    'mean_excitedness': fields.String,
+    'mean_happiness': fields.String,
+    'songs': fields.Nested(api.model('song', {
+        'songname': fields.String,
+        'timestamp': fields.Integer,
+        'excitedness': fields.Integer,
+        'happiness': fields.Integer
+    }))
+
+})
+
+
+@user_name_space.route('statistics/<string:userid>')
+class BasicUserData(Resource):
+    @api.marshal_with(user_statistics, envelope='resource')
+    def get(self, userid):
+        """
+        Obtain basic aggregated statistics for a user.
+        """
+
+        user = models.User.query.filter_by(userid=userid).first()
+        return user
+
 # def post(self):
 #     return {
 #         "status": "Posted new data"
