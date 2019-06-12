@@ -59,6 +59,11 @@ class User(db.Model):
         query = db.session.query("refresh_token FROM users")
         return [row[0] for row in query]
 
+    @staticmethod
+    def get_all_users():
+        query = db.session.query("userid FROM users")
+        return [row[0] for row in query]
+
 
 class Song(db.Model):
     __tablename__ = "songs"

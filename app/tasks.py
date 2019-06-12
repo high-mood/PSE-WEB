@@ -58,8 +58,8 @@ def get_last_n_minutes(duration, userid):
                             password=config.influx_pswd)
 
     client.switch_database('songs')
-    
-    song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw
+
+    song_history = client.query('select songid from \"{}\" where time > now()-{}'.format(userid, duration)).raw
     if 'series' not in song_history:
         print(f'no recent history found, last {duration}')
         return
@@ -67,31 +67,29 @@ def get_last_n_minutes(duration, userid):
         song_history = song_history['series'][0]['values']
 
     _, songids = list(zip(*song_history))
-    moods = Songmood.get_moods(songids)
+    # moods = Songmood.get_moods(songids)
 
-    if not moods:
-        print('no moods found')
-        return
+    # if not moods:
+    #     print('no moods found')
+    #     return
 
-    songcount = len(moods)
+    # songcount = len(moods)
 
-    excitedness, happiness = list(zip(*moods))
-    excitedness = np.random.uniform(0, 10)
-    happiness = np.random.uniform(0, 10)
+    # excitedness, happiness = list(zip(*moods))
     # excitedness = np.mean(excitedness)
     # happiness = np.mean(happiness)
 
-    data = []
+    songcount = len(songids)
+    excitedness = np.random.uniform(0, 10)
+    happiness = np.random.uniform(0, 10)
 
-    for mood in moods:
-        data.append({'measurement': userid,
+    data = [{'measurement': userid,
                      'time': datetime.now().isoformat(),
                      'fields': {
                          'excitedness': excitedness,
                          'happiness': happiness,
                          'songcount': songcount
-                     }})
-    print(data)
+                     }}]
 
     client.switch_database('moods')
     client.write_points(data)
