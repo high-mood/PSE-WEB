@@ -60,14 +60,26 @@ def get_last_n_minutes(duration, userid):
 
     client.switch_database('songs')
     
-    print(client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw)
-    song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw['series'][0]['values']
+    song_history = client.query('select songid from {} where time > now()-{}'.format(userid, duration)).raw
+    if 'series' not in song_history:
+        print(f'no recent history found, last {duration}')
+        return
+    else:
+        song_history = song_history['series'][0]['values']
+
     _, songids = list(zip(*song_history))
     moods = Songmood.get_moods(songids)
 
+    if not moods:
+        print('no moods found')
+        return
+
+    songcount = len(moods)
     excitedness, happiness = list(zip(*moods))
-    excitedness = np.mean(excitedness)
-    happiness = np.mean(happiness)
+    excitedness = np.random.uniform(0, 10)
+    happiness = np.random.uniform(0, 10)
+    # excitedness = np.mean(excitedness)
+    # happiness = np.mean(happiness)
 
     data = []
 
@@ -76,7 +88,8 @@ def get_last_n_minutes(duration, userid):
                      'time': time(),
                      'fields': {
                          'excitedness': excitedness,
-                         'happiness': happiness
+                         'happiness': happiness,
+                         'songcount': songcount
                      }})
     print(data)
 
