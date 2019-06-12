@@ -6,7 +6,6 @@ import numpy as np
 from app.models import Song, Artist, Songmood
 import config
 import sys
-from time import time
 
 def add_genres(tracks, ids, access_token):
     if not ids:
@@ -75,6 +74,7 @@ def get_last_n_minutes(duration, userid):
         return
 
     songcount = len(moods)
+
     excitedness, happiness = list(zip(*moods))
     excitedness = np.random.uniform(0, 10)
     happiness = np.random.uniform(0, 10)
@@ -85,7 +85,7 @@ def get_last_n_minutes(duration, userid):
 
     for mood in moods:
         data.append({'measurement': userid,
-                     'time': time(),
+                     'time': datetime.now().isoformat(),
                      'fields': {
                          'excitedness': excitedness,
                          'happiness': happiness,
