@@ -65,7 +65,7 @@ def get_top_songs(client, userid, count, token):
 def main(argv):
     query = argv[1]
     userid = str(argv[2])
-    client = create_client('localhost', 8086)
+    client = create_client('pse-ssh.diallom.com', 8086)
 
     if query == 'timespent':
         total_time_spent(client, userid)

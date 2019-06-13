@@ -3,7 +3,7 @@ from datetime import datetime
 from app.API import spotify
 import numpy as np
 from app import db
-
+from moodanalysis.serverMoodAnalysis import analyse_mood
 from app.models import Song, Artist, Songmood
 import config
 import sys
@@ -83,8 +83,8 @@ def get_last_n_minutes(duration, userid):
     # happiness = np.mean(happiness)
 
     songcount = len(songids)
-    excitedness = np.random.uniform(0, 10)
-    happiness = np.random.uniform(0, 10)
+    excitedness = np.random.uniform(-10, 10)
+    happiness = np.random.uniform(-10, 10)
 
     data = [{'measurement': userid,
                      'time': datetime.now().isoformat(),
@@ -143,10 +143,14 @@ def update_user_tracks(access_token):
     if tracks:
         querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
         duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        
         analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
 
-        analyze_mood(analysis_tracks)
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            print(moods)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
+
 
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
