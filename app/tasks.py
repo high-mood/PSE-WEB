@@ -2,6 +2,7 @@ from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
 import numpy as np
+from app import db
 
 from app.models import Song, Artist, Songmood
 import config
@@ -140,6 +141,13 @@ def update_user_tracks(access_token):
     current_time = datetime.now().strftime("%H:%M:%S")
     
     if tracks:
+        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        
+        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+
+        analyze_mood(analysis_tracks)
+
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
