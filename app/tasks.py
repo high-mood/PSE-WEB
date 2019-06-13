@@ -83,8 +83,8 @@ def get_last_n_minutes(duration, userid):
     # happiness = np.mean(happiness)
 
     songcount = len(songids)
-    excitedness = np.random.uniform(0, 10)
-    happiness = np.random.uniform(0, 10)
+    excitedness = np.random.uniform(-10, 10)
+    happiness = np.random.uniform(-10, 10)
 
     data = [{'measurement': userid,
                      'time': datetime.now().isoformat(),
@@ -143,13 +143,13 @@ def update_user_tracks(access_token):
     if tracks:
         querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
         duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        
         analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
 
-        moods = analyse_mood(analysis_tracks)
-        print(moods)
-        for mood in moods:
-            Songmood.create_if_not_exist(mood)
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            print(moods)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
 
 
         client.write_points(tracks)
