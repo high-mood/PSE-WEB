@@ -8,7 +8,7 @@ body {
   font-weight: 300;
   fill: #ffffff;
   text-align: center;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+  /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
   cursor: default;
 }
 
