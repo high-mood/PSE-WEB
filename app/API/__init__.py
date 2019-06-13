@@ -141,7 +141,7 @@ class Metric(Resource):
         if metrics:
             metriclist = list(metrics.get_points(measurement=userid))
             for timed_metric in metriclist:
-                timed_metric['value'] = timed_metric.pop('tempo')
+                timed_metric['value'] = timed_metric.pop(metric)
             print(metriclist)
             return {
                 'userid': userid,
