@@ -25,8 +25,8 @@ function lineGraph(data, id) {
     }
 
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 150, bottom: 30, left: 50};
-    var width = 630 - margin.left - margin.right;
+    var margin = {top: 20, right: 150, bottom: 30, left: 150};
+    var width = 900 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
     // 5. X scale will use the index of our data
@@ -102,10 +102,10 @@ function lineGraph(data, id) {
 
 
     // Handmade legend
-    svg.append("circle").attr("cx",450).attr("cy",130).attr("r", 6).style("fill", "#ffab00")
-    svg.append("circle").attr("cx",450).attr("cy",160).attr("r", 6).style("fill", "steelblue")
-    svg.append("text").attr("x", 470).attr("y", 130).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    svg.append("text").attr("x", 470).attr("y", 160).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",650).attr("cy",130).attr("r", 6).style("fill", "#ffab00")
+    svg.append("circle").attr("cx",650).attr("cy",160).attr("r", 6).style("fill", "steelblue")
+    svg.append("text").attr("x", 670).attr("y", 130).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 670).attr("y", 160).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
 
     // 12. Appends a circle for each datapoint 
     // svg.selectAll(".dot")
