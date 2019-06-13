@@ -136,7 +136,7 @@ class Metric(Resource):
 
         client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                                 password=config.influx_pswd, database='songs')
-        metrics = client.query(f"select {metric} from {userid} where time > {start} and time < {end}")
+        metrics = client.query(f'select {metric} from "{userid}" where time > {start} and time < {end}')
 
         if metrics:
             metriclist = list(metrics.get_points(measurement=userid))
