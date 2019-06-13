@@ -3,7 +3,7 @@ from datetime import datetime
 from app.API import spotify
 import numpy as np
 from app import db
-
+from moodanalysis.serverMoodAnalysis import analyse_mood
 from app.models import Song, Artist, Songmood
 import config
 import sys
@@ -146,7 +146,11 @@ def update_user_tracks(access_token):
         
         analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
 
-        analyze_mood(analysis_tracks)
+        moods = analyse_mood(analysis_tracks)
+        print(moods)
+        for mood in moods:
+            Songmood.create_if_not_exist(mood)
+
 
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")

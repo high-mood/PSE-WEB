@@ -4,10 +4,10 @@ import numpy as np
 
 ''' Mood classification for server, requires the .joblib files imported hereunder.'''
 
-E_est = load('Trained-Energy.joblib')
-H_est = load('Trained-Happiness.joblib')
+E_est = load('moodanalysis/Trained-Excitedness.joblib')
+H_est = load('moodanalysis/Trained-Happiness.joblib')
 features = ["mode", "time_signature", "acousticness",
-        "danceability", "energy", "instrumentalness", "liveness", "loudness",
+        "danceability", "excitedness", "instrumentalness", "liveness", "loudness",
         "speechiness", "valence", "tempo"]
 
 def analyse_mood(songs):
@@ -22,12 +22,12 @@ def analyse_mood(songs):
         for feature in features:
             inputdata.append(song[feature])
         input.append(inputdata)
-    EnergyPredictions = E_est.predict(input)
+    ExcitednessPredictions = E_est.predict(input)
     HappinessPredictions = H_est.predict(input)
     for i in range(len(songtitles)):
         outputdata = {}
         outputdata['songid'] = songtitles[i]
-        outputdata['energy'] = EnergyPredictions[i]
+        outputdata['excitedness'] = ExcitednessPredictions[i]
         outputdata['happiness'] = HappinessPredictions[i]
         output.append(outputdata)
     return output
