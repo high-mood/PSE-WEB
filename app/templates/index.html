@@ -44,17 +44,41 @@
     <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
 
 </head>
-  <body>
+  <body class='body'>
+
+    <div class="navigation-bar" id='myNavigationBar'>
+        <div class="navItems">
+            <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
+            <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
+            <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
+            <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
+        </div>
+    </div>
 
 
-    {% if text %}
-      <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
-      <p id="username" hidden>{{ id }}</p>
-    {% endif %}
+    <div id="Welcome-User">
+      {% if text %}
+        <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+        <p id="username" hidden>{{ id }}</p>
+      {% endif %}
+    </div>
 
-    <div class="radarChart"></div>
-    <div class="lineGraph"></div>
-    <div id="heatmap"></div>
+
+    <div class="mainPage" id="Radar-Graph">
+        <div class="radarChart inner-div"></div>
+    </div>
+
+    <div class="mainPage" id="Line-Graph">
+        <div class="lineGraph inner-div"></div>
+    </div>
+
+    <div class="mainPage" id="Heat-Graph">
+        <div class="inner-div" id="heatmap"></div>
+    </div>
+
+
+
+
 
     <script>
 
