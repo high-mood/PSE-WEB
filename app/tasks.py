@@ -138,7 +138,6 @@ def update_user_tracks(access_token):
     # If the user does not have listened to any tracks we just skip them.
     current_time = datetime.now().strftime("%H:%M:%S")
     if tracks:
-
         querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
         duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
         
