@@ -9,6 +9,7 @@
 
 
     <!-- Radar Chart -->
+    <!-- <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script> -->
     <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
     <script src="{{ url_for('static',filename='js/loadRadar.js') }}"></script>
 
@@ -24,12 +25,23 @@
     <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
     <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
 
+    <!-- Heatmap-->
+    <script src="{{ url_for('static',filename='js/heatmap2.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/heatmapData.js') }}"></script>
+
+    <!-- lineChart-->
+    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
+
     <!-- Google fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
     <!-- D3.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
+    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
+
 </head>
   <body>
 
@@ -39,6 +51,8 @@
     {% endif %}
 
     <div class="radarChart"></div>
+    <div class="lineGraph"></div>
+    <div id="heatmap"></div>
 
     <script>
 
@@ -50,6 +64,12 @@
 
         if (request.status >= 200 && request.status < 400) {
           createRadarChart(userdata);
+
+          createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
+                        ,-10,10,5,"exitedness",-10,10,5,"happiness"
+                        ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
+
+          lineGraph(userdata, ".lineGraph");
         }
       }
       request.send()
@@ -57,10 +77,10 @@
 
     </script>
 
-
+<!-- 
     <canvas id="barchart"></canvas>
     <canvas id="piechart"></canvas>
-    <canvas id="linechart"></canvas>
+    <canvas id="linechart"></canvas> -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="{{ url_for('index_js') }}"></script>
   </body>
