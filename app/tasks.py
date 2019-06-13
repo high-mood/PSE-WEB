@@ -56,12 +56,14 @@ def add_audio_features(tracks, ids, access_token):
 def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                             password=config.influx_pswd)
-
     client.switch_database('songs')
+    
+    song_history = client.query(f'select songid from \"{userid}\" where time > now()-{duration}').raw
+     
+    current_time = datetime.now().strftime("%H:%M:%S")
 
-    song_history = client.query('select songid from \"{}\" where time > now()-{}'.format(userid, duration)).raw
     if 'series' not in song_history:
-        print(f'no recent history found, last {duration}')
+        print(f'[{current_time}] no recent history found for {userid} in the last {duration}')
         return
     else:
         song_history = song_history['series'][0]['values']
@@ -70,7 +72,7 @@ def get_last_n_minutes(duration, userid):
     # moods = Songmood.get_moods(songids)
 
     # if not moods:
-    #     print('no moods found')
+    #     print(f'[{currenttime}] no moods found for {userid}')
     #     return
 
     # songcount = len(moods)
@@ -136,6 +138,7 @@ def update_user_tracks(access_token):
 
     # If the user does not have listened to any tracks we just skip them.
     current_time = datetime.now().strftime("%H:%M:%S")
+    
     if tracks:
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
