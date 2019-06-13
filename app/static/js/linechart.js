@@ -6,22 +6,22 @@ function lineGraph(data, id) {
 
 //    console.log(data);
 
-    var dataset = d3.range(20).map(function(d) { return {"y": d3.randomUniform(1)() } });
+    var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
 //    console.log(dataset);
 
     var datasetExcite = []
     var datasetHappy = []
 
     // number of data points
-    var n = 20;
+    var n = data.moods.length;
 
     // for (var i in d3.range(20)) {
     //     dataset.push({'y': d3.randomUniform(-10, 10)()})
     // }
 
     for (var i in d3.range(n)) {
-        datasetExcite.push({'y': data.songdata[i].excitedness})
-        datasetHappy.push({'y': data.songdata[i].happiness})
+        datasetExcite.push({'y': data.moods[i].excitedness})
+        datasetHappy.push({'y': data.moods[i].happiness})
     }
 
     // set the dimensions and margins of the graph
@@ -31,7 +31,7 @@ function lineGraph(data, id) {
 
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
-        .domain([0, 20]) // input
+        .domain([0, data.moods.length]) // input
         .range([0, width]); // output
 
     // 6. Y scale will use the randomly generate number

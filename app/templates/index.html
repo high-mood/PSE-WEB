@@ -49,6 +49,7 @@
 
     {% if text %}
       <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+      <p id="username" hidden>{{ id }}</p>
     {% endif %}
 
     <div class="radarChart"></div>
@@ -57,16 +58,20 @@
 
     <script>
 
-
-
+      var userid = document.getElementById("username").textContent;
+      console.log((userid));
       var request = new XMLHttpRequest()
 
 
-      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
       request.onload = function() {
-        var userdata = JSON.parse(this.response)
+        var alldata = JSON.parse(this.response)
+        var userdata = alldata.resource
 
         if (request.status >= 200 && request.status < 400) {
+          console.log(userdata.userid);
+          console.log(userdata);
           createRadarChart(userdata);
 
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
@@ -81,7 +86,7 @@
 
     </script>
 
-<!-- 
+<!--
     <canvas id="barchart"></canvas>
     <canvas id="piechart"></canvas>
     <canvas id="linechart"></canvas> -->
