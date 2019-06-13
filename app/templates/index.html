@@ -44,58 +44,29 @@
     <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
 
 </head>
-  <body class='body'>
-
-    <div class="navigation-bar" id='myNavigationBar'>
-        <div class="navItems">
-            <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
-            <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
-            <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
-            <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
-        </div>
-    </div>
+  <body>
 
 
-    <div id="Welcome-User">
-      {% if text %}
-        <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
-        <p id="username" hidden>{{ id }}</p>
-      {% endif %}
-    </div>
+    {% if text %}
+      <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+    {% endif %}
 
-
-    <div class="mainPage" id="Radar-Graph">
-        <div class="radarChart inner-div"></div>
-    </div>
-
-    <div class="mainPage" id="Line-Graph">
-        <div class="lineGraph inner-div"></div>
-    </div>
-
-    <div class="mainPage" id="Heat-Graph">
-        <div class="inner-div" id="heatmap"></div>
-    </div>
-
-
-
-
+    <div class="radarChart"></div>
+    <div class="lineGraph"></div>
+    <div id="heatmap"></div>
 
     <script>
 
-      var userid = document.getElementById("username").textContent;
-      console.log((userid));
+
+
       var request = new XMLHttpRequest()
 
 
-      // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
-      request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
+      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
       request.onload = function() {
-        var alldata = JSON.parse(this.response)
-        var userdata = alldata.resource
+        var userdata = JSON.parse(this.response)
 
         if (request.status >= 200 && request.status < 400) {
-          console.log(userdata.userid);
-          console.log(userdata);
           createRadarChart(userdata);
 
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
@@ -110,7 +81,7 @@
 
     </script>
 
-<!--
+<!-- 
     <canvas id="barchart"></canvas>
     <canvas id="piechart"></canvas>
     <canvas id="linechart"></canvas> -->
