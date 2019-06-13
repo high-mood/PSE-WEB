@@ -5,7 +5,7 @@ import sys
 
 if __name__ == '__main__':
     # We Limit the traceback to keep the log files clear.
-    sys.tracebacklimit = 0
+    # sys.tracebacklimit = 0
     refresh_tokens = User.get_all_tokes()
     for refresh_token in refresh_tokens:
         access_token = get_access_token(refresh_token)
