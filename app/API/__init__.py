@@ -88,7 +88,7 @@ class Mood(Resource):
 
         client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                                 password=config.influx_pswd, database='moods')
-        moods = client.query(f"select excitedness, happiness, songcount from {userid} where time > {start} and time < {end}")
+        moods = client.query(f'select excitedness, happiness, songcount from "{userid}" where time > {start} and time < {end}')
 
         if moods:
             moodlist = list(moods.get_points(measurement=userid))
