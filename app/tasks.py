@@ -2,7 +2,8 @@ from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
 import numpy as np
-
+from app import db
+from moodanalysis.serverMoodAnalysis import analyse_mood
 from app.models import Song, Artist, Songmood
 import config
 import sys
@@ -56,12 +57,14 @@ def add_audio_features(tracks, ids, access_token):
 def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                             password=config.influx_pswd)
-
     client.switch_database('songs')
+    
+    song_history = client.query(f'select songid from \"{userid}\" where time > now()-{duration}').raw
+     
+    current_time = datetime.now().strftime("%H:%M:%S")
 
-    song_history = client.query('select songid from \"{}\" where time > now()-{}'.format(userid, duration)).raw
     if 'series' not in song_history:
-        print(f'no recent history found, last {duration}')
+        print(f'[{current_time}] no recent history found for {userid} in the last {duration}')
         return
     else:
         song_history = song_history['series'][0]['values']
@@ -70,7 +73,7 @@ def get_last_n_minutes(duration, userid):
     # moods = Songmood.get_moods(songids)
 
     # if not moods:
-    #     print('no moods found')
+    #     print(f'[{currenttime}] no moods found for {userid}')
     #     return
 
     # songcount = len(moods)
@@ -80,8 +83,8 @@ def get_last_n_minutes(duration, userid):
     # happiness = np.mean(happiness)
 
     songcount = len(songids)
-    excitedness = np.random.uniform(0, 10)
-    happiness = np.random.uniform(0, 10)
+    excitedness = np.random.uniform(-10, 10)
+    happiness = np.random.uniform(-10, 10)
 
     data = [{'measurement': userid,
                      'time': datetime.now().isoformat(),
@@ -136,7 +139,19 @@ def update_user_tracks(access_token):
 
     # If the user does not have listened to any tracks we just skip them.
     current_time = datetime.now().strftime("%H:%M:%S")
+    
     if tracks:
+        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            print(moods)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
+
+
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
