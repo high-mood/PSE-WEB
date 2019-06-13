@@ -2,13 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Template</title>
+    <title>Welcom To Highmood</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
+    <link rel='icon' href="{{ url_for('static',filename='img/favicon.ico') }}" type='image/x-icon'/ >
+
+
+    <!-- Radar Chart -->
+    <!-- <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script> -->
+    <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/loadRadar.js') }}"></script>
+
+    <!-- Placeholder Javascript #1-->
+    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+
+    <!-- Placeholder Javascript #2-->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+
+    <!-- Placeholder Javascript #3-->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+
+    <!-- Heatmap-->
+    <script src="{{ url_for('static',filename='js/heatmap2.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/heatmapData.js') }}"></script>
+
+    <!-- lineChart-->
+    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
+
+    <!-- Google fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+
+    <!-- D3.js -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
+    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
+
 </head>
-<body>
-<canvas id="barchart"></canvas>
-<canvas id="piechart"></canvas>
-<canvas id="linechart"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<script src="{{ url_for('index_js') }}"></script>
-</body>
+  <body>
+
+
+    {% if text %}
+      <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+    {% endif %}
+
+    <div class="radarChart"></div>
+    <div class="lineGraph"></div>
+    <div id="heatmap"></div>
+
+    <script>
+
+
+
+      var request = new XMLHttpRequest()
+
+
+      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      request.onload = function() {
+        var userdata = JSON.parse(this.response)
+
+        if (request.status >= 200 && request.status < 400) {
+          createRadarChart(userdata);
+
+          createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
+                        ,-10,10,5,"exitedness",-10,10,5,"happiness"
+                        ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
+
+          lineGraph(userdata, ".lineGraph");
+        }
+      }
+      request.send()
+
+
+    </script>
+
+<!-- 
+    <canvas id="barchart"></canvas>
+    <canvas id="piechart"></canvas>
+    <canvas id="linechart"></canvas> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="{{ url_for('index_js') }}"></script>
+  </body>
 </html>
