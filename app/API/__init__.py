@@ -9,11 +9,16 @@ from flask_restplus import Api, Resource, fields
 from flask import Blueprint, jsonify
 from app import models
 
+from influxdb import InfluxDBClient
+import config
+import numpy as np
+
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
 app.register_blueprint(blueprint)
 
-user_name_space = api.namespace('user', description='User information', path="user")
+user_name_space = api.namespace('user', description='User information', path="/user")
+mood_name_space = api.namespace('mood', description='Mood over time', path="/mood")
 
 user_info = api.model('UserInfo', {
     'userid': fields.String,
@@ -41,52 +46,52 @@ class User(Resource):
         return user
 
 
-user_statistics = api.model('User Statistics', {
+moods = api.model('Mood over time', {
     'userid': fields.String,
-    'username': fields.String,
-    'mean_excitedness': fields.String,
-    'mean_happiness': fields.String,
-    'songs': fields.Nested(api.model('song', {
-        'songname': fields.String,
-        'timestamp': fields.Integer,
-        'excitedness': fields.Integer,
-        'happiness': fields.Integer
-    }))
+    'mean_excitedness': fields.Float,
+    'mean_happiness': fields.Float,
+    'sum_song_count': fields.Integer,
+    'moods': fields.Nested(api.model('mood', {
+            'time': fields.String,
+            'excitedness': fields.Float,
+            'happiness': fields.Float,
+            'songcount' : fields.Integer
+        }))
+    })
 
-})
 
-
-@user_name_space.route('statistics/<string:userid>')
-class BasicUserData(Resource):
-    @api.marshal_with(user_statistics, envelope='resource')
-    def get(self, userid):
+@mood_name_space.route('/<string:userid>/<string:start>/<string:end>')
+class Mood(Resource):
+    @api.marshal_with(moods, envelope='resource')
+    def get(self, userid, start="'1678-09-21T00:20:43.145224194Z'",
+            end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
         """
-        Obtain basic aggregated statistics for a user.
+        Obtain moods of a user within a given timeframe. Append '/' after every parameter.
         """
-        # TODO: CHANGE THIS
-        from resources import query
-        client = query.create_client('pse-ssh.diallom.com', 8086)
+        print('===========================================')
+        print(userid, start, end)
 
-        user = models.User.query.filter_by(userid=userid).first()
-        from app.API.spotify import get_access_token
-        songs = query.get_songs(client, userid, get_access_token(user.refresh_token))
-        print(songs)
+        if start == '0' or 'begin' or 'beginning of time':
+            start = "'1678-09-21T00:20:43.145224194Z'"
 
-        return {
-            'userid': userid,
-            'username': user.display_name,
-            # 'mean_excitedness': fields.String,
-            # 'mean_happiness': fields.String,
-            # 'songs': fields.Nested(api.model('song', {
-            #     'songname': fields.String,
-            #     'timestamp': fields.Integer,
-            #     'excitedness': fields.Integer,
-            #     'happiness': fields.Integer
-            # }))
+        if end == 'now':
+            end = str("'" + datetime.datetime.now().isoformat() + "Z'")
 
-        }
+        print(start, end)
+        client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
+                                password=config.influx_pswd, database='moods')
+        moods = client.query(f"select excitedness, happiness, songcount from {userid} where time > {start} and time < {end}")
+        moodlist = list(moods.get_points(measurement=userid))
 
-# def post(self):
-#     return {
-#         "status": "Posted new data"
-#     }
+        v = [[mood['excitedness'], mood['happiness'], mood['songcount']] for mood in moodlist]
+        mean_happiness, mean_excitedness, _ = np.mean(v, axis=0)
+        _, _, sum_song_count = np.sum(v, axis=0)
+
+        if moods:
+            return {
+                'userid': userid,
+                'mean_excitedness': mean_excitedness,
+                'mean_happiness': mean_happiness,
+                'sum_song_count': sum_song_count,
+                'moods': moodlist
+            }
