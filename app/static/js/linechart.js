@@ -1,5 +1,7 @@
 // Code by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
 
+// Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html
+
 function lineGraph(data, id) {
 
     console.log(data);
@@ -23,8 +25,8 @@ function lineGraph(data, id) {
     }
 
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 20, bottom: 30, left: 50};
-    var width = 500 - margin.left - margin.right;
+    var margin = {top: 20, right: 150, bottom: 30, left: 50};
+    var width = 630 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
     // 5. X scale will use the index of our data
@@ -74,7 +76,12 @@ function lineGraph(data, id) {
     // .x(function(data) {return xScale(dayArray)})
     // .y(function(data) {return yScale(excitedArray)});
     
-    var line = d3.line()
+    var lineExcite = d3.line()
+    .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+    var lineHappy = d3.line()
     .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
     .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
     .curve(d3.curveMonotoneX) // apply smoothing to the line
@@ -82,16 +89,41 @@ function lineGraph(data, id) {
     svg.append("path")
         .data([datasetExcite])
         .attr("class", "line")
-        .attr("d", line);
+        .attr("id", "exciteLine")
+        .attr("d", lineExcite);
+
+    svg.append("path")
+        .data([datasetHappy])
+        .attr("class", "line")
+        .attr("id", "happyLine")
+        .attr("d", lineHappy);
+
+    
+
+
+    // Handmade legend
+    svg.append("circle").attr("cx",450).attr("cy",130).attr("r", 6).style("fill", "#ffab00")
+    svg.append("circle").attr("cx",450).attr("cy",160).attr("r", 6).style("fill", "steelblue")
+    svg.append("text").attr("x", 470).attr("y", 130).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 470).attr("y", 160).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
 
     // 12. Appends a circle for each datapoint 
-    svg.selectAll(".dot")
-    .data(datasetExcite)
-    .enter().append("circle") // Uses the enter().append() method
-    .attr("class", "dot") // Assign a class for styling
-    .attr("cx", function(d, i) { return xScale(i) })
-    .attr("cy", function(d) { return yScale(d.y) })
-    .attr("r", 5)
+    // svg.selectAll(".dot")
+    // .data(datasetExcite)
+    // .enter().append("circle") // Uses the enter().append() method
+    // .attr("class", "dot") // Assign a class for styling
+    // .attr("cx", function(d, i) { return xScale(i) })
+    // .attr("cy", function(d) { return yScale(d.y) })
+    // .attr("r", 5)
+
+
+    // svg.selectAll(".dot")
+    // .data(datasetHappy)
+    // .enter().append("circle") // Uses the enter().append() method
+    // .attr("class", "dot") // Assign a class for styling
+    // .attr("cx", function(d, i) { return xScale(i) })
+    // .attr("cy", function(d) { return yScale(d.y) })
+    // .attr("r", 5)
     // .on("mouseover", function(a, b, c) { 
     //         console.log(a) 
     //     this.attr('class', 'focus')
