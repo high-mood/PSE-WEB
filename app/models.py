@@ -60,6 +60,12 @@ class User(db.Model):
         return [row[0] for row in query]
 
 
+    @staticmethod
+    def get_all_users():
+        query = db.session.query("userid FROM users")
+        return [row[0] for row in query]
+
+
 class Song(db.Model):
     __tablename__ = "songs"
     songid = db.Column(db.String(200), primary_key=True)
@@ -136,4 +142,5 @@ class SongArtist(db.Model):
                                   artistid=json_info['artistid'])
 
             db.session.add(songartist)
+
             db.session.commit()
