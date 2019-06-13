@@ -16,11 +16,11 @@ def analyse_mood(songs):
     output = []
     for song in songs:
         # Make list of titles.
-        songtitles.append(song['songid'])
+        songtitles.append(song['fields']['songid'])
         # Make list matrix of inpudat data for algorithm.
         inputdata = []
         for feature in features:
-            inputdata.append(song[feature])
+            inputdata.append(song['fields'][feature])
         input.append(inputdata)
     ExcitednessPredictions = E_est.predict(input)
     HappinessPredictions = H_est.predict(input)
