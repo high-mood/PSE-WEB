@@ -36,7 +36,7 @@ def index():
         # print(type(top_genres))
         # print(type(all_genres))
         # print(type(total_listening_time))
-        print(session['json_info'])
+        # print(session['json_info'])
         return render_template("index.html", **locals(), text=session['json_info']['display_name'], id=session['json_info']['id'])
 
 

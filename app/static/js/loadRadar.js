@@ -28,7 +28,7 @@ function createRadarChart(userdata) {
   var finaldata = [];
   var song;
   for (i = 0; i < userdata.moods.length; i++) {
-    console.log(userdata.moods[i].excitedness);
+    // console.log(userdata.moods[i].excitedness);
     song = {
       name : 'Song',
       axes : [
