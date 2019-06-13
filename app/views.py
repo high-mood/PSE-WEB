@@ -5,7 +5,7 @@ from app import db
 from app import models
 from app import spotifysso
 from app.API import spotify
-from app.tasks import update_user_tracks
+from app.tasks import update_user_tracks, get_last_n_minutes
 import os
 import config
 # TODO: Remove this later
@@ -33,10 +33,9 @@ def index():
         # print(type(top_genres))
         # print(type(all_genres))
         # print(type(total_listening_time))
-        print(session)
-        print(session['json_info']['display_name'])
 
         return render_template("index.html", **locals(), text=session['json_info']['display_name'])
+
 
 
 @app.route("/index_js")

@@ -1,0 +1,23 @@
+#exciteLine {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+}
+
+#happyLine {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 3;
+}
+  
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+
+.focus circle {
+    fill: none;
+    stroke: steelblue;
+}
