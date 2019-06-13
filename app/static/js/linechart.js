@@ -1,18 +1,32 @@
 // Code by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
 
-function lineGraph(userdata, id) {
+function lineGraph(data, id) {
 
-    console.log(userdata);
+    console.log(data);
+
+    var dataset = d3.range(20).map(function(d) { return {"y": d3.randomUniform(1)() } });
+    console.log(dataset);
+    
+    var datasetExcite = []
+    var datasetHappy = []
+
+    // number of data points
+    var n = 20;
+
+    // for (var i in d3.range(20)) {
+    //     dataset.push({'y': d3.randomUniform(-10, 10)()})
+    // }
+
+    for (var i in d3.range(n)) {
+        datasetExcite.push({'y': data.songdata[i].excitedness})
+        datasetHappy.push({'y': data.songdata[i].happiness})
+    }
 
     // set the dimensions and margins of the graph
     var margin = {top: 20, right: 20, bottom: 30, left: 50};
     var width = 500 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
-    // number of data points
-    var n = 20
-
-    console.log(data)
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
         .domain([0, 20]) // input
@@ -23,7 +37,7 @@ function lineGraph(userdata, id) {
         .domain([-10, 10]) // input 
         .range([height, 0]); // output 
 
-    var svg = d3.select(".linegraph").append("svg")
+    var svg = d3.select(id).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -43,26 +57,45 @@ function lineGraph(userdata, id) {
 
     console.log(data.songdata);
 
-    var dayArray = [];
-    var excitedArray = [];
-    var counter = 0;
-    for (var i in userdata.songdata) {
-        console.log(userdata.songdata[i]);
-        dayArray.push(counter);
-        excitedArray.push(userdata.songdata[i].excitedness);
-        counter += 1;
-    }
+    // var dayArray = [];
+    // var excitedArray = [];
+    // var counter = 0;
+    // for (var i in userdata.songdata) {
+    //     console.log(userdata.songdata[i]);
+    //     dayArray.push(counter);
+    //     excitedArray.push(userdata.songdata[i].excitedness);
+    //     counter += 1;
+    // }
 
-    console.log(dayArray);
-    console.log(excitedArray);
+    // console.log(dayArray);
+    // console.log(excitedArray);
 
+    // var line = d3.line()
+    // .x(function(data) {return xScale(dayArray)})
+    // .y(function(data) {return yScale(excitedArray)});
+    
     var line = d3.line()
-        .x(function(data) {return xScale(dayArray)})
-        .y(function(data) {return yScale(excitedArray)});
-
+    .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX) // apply smoothing to the line
+    
     svg.append("path")
-        .data([data.songdata])
+        .data([datasetExcite])
         .attr("class", "line")
         .attr("d", line);
+
+    // 12. Appends a circle for each datapoint 
+    svg.selectAll(".dot")
+    .data(datasetExcite)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 5)
+    // .on("mouseover", function(a, b, c) { 
+    //         console.log(a) 
+    //     this.attr('class', 'focus')
+    //     })
+    // .on("mouseout", function() {  })
 }
 
