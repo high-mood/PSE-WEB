@@ -6,8 +6,8 @@ import csv
 ''' Mood classification for server, requires the .joblib files imported hereunder.'''
 
 def analyse_mood(songs):
-    E_est = load('Trained-Excitedness.joblib')
-    H_est = load('Trained-Happiness.joblib')
+    E_est = load('moodanalysis/Trained-Excitedness.joblib')
+    H_est = load('moodanalysis/Trained-Happiness.joblib')
     features = ["mode", "time_signature", "acousticness",
                 "danceability", "energy", "instrumentalness", "liveness", "loudness",
                 "speechiness", "valence", "tempo"]
