@@ -12,8 +12,3 @@ if __name__ == '__main__':
     for refresh_token in refresh_tokens:
         access_token = get_access_token(refresh_token)
         update_user_tracks(access_token)
-
-    # Update user mood
-    userids = User.get_all_users()
-    for userid in userids:
-        get_last_n_minutes('15m', userid)
