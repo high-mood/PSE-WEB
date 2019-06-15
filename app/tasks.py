@@ -146,7 +146,6 @@ def update_user_tracks(access_token):
 
         if analysis_tracks:
             moods = analyse_mood(analysis_tracks)
-            print(moods)
             for mood in moods:
                 Songmood.create_if_not_exist(mood)
 
