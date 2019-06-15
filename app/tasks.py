@@ -132,15 +132,13 @@ def get_latest_tracks(user_id, access_token):
 
 
 def update_user_tracks(access_token):
-    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-
     user_data = spotify.get_user_info(access_token)
-
     tracks = get_latest_tracks(user_data['id'], access_token)
 
     # If the user does not have listened to any tracks we just skip them.
     current_time = datetime.now().strftime("%H:%M:%S")
-    
+
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     if tracks:
         querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
         duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]

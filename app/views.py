@@ -1,16 +1,9 @@
-from flask import render_template, redirect, request, session, url_for
+from flask import render_template, redirect, request, session, url_for, flash
 from app import app
 # Refactor later
 from app import spotifysso
 from app.API import spotify, influx
 from app.tasks import update_user_tracks
-
-
-# TODO: Remove this later
-
-@app.route("/test")
-def indexer():
-    return render_template("dashboard.html", **locals())
 
 
 @app.route("/index", methods=['GET', 'POST'])
@@ -68,14 +61,13 @@ def login():
 def authorized():
     resp = spotifysso.authorized_response()
 
-    # TODO: EXception handling (if exception or if None#)
+    # TODO: Exception handling (if exception or if None#)
     if resp is None:
-        return 'Access denied: reason=%s error=%s' % (
-            request.args['error_reason'],
-            request.args['error_description']
-        )
+        flash(f"Access denied: {request.args['error']}", 'error')
+        return redirect(url_for('index'))
     if isinstance(resp, Exception):
-        return 'Access denied: error=%s' % str(resp)
+        flash(f"Access denied: error={str(resp)}", 'error')
+        return redirect(url_for('index'))
 
     access_token = resp['access_token']
     refresh_token = resp['refresh_token']

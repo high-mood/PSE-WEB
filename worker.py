@@ -1,6 +1,7 @@
 from app.API.spotify import get_access_token
-from app.tasks import update_user_tracks, get_last_n_minutes
+from app.tasks import update_user_tracks
 from app.models import User
+import requests
 import sys
 
 if __name__ == '__main__':
@@ -10,5 +11,10 @@ if __name__ == '__main__':
     # Update user tracks
     refresh_tokens = User.get_all_tokes()
     for refresh_token in refresh_tokens:
-        access_token = get_access_token(refresh_token)
-        update_user_tracks(access_token)
+        try:
+            access_token = get_access_token(refresh_token)
+            update_user_tracks(access_token)
+        except requests.exceptions.RequestException as e:
+            print("Requests exception: {e}", file=sys.stderr)
+        except ValueError as e:
+            print(e, file=sys.stderr)

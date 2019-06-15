@@ -3,6 +3,11 @@ from requests.auth import HTTPBasicAuth
 from config import SPOTIFY_CLIENT, SPOTIFY_SECRET
 
 
+class StatusCodeError(requests.exceptions.RequestException):
+    """An request did not return an 200 status code."""
+    pass
+
+
 def get_artists(access_token, artistids):
     """
     Get Spotify catalog information for several artists based on their Spotify IDs.
@@ -45,6 +50,10 @@ def get_user_info(access_token):
 def _get_basic_request(access_token, url):
     headers = {'Authorization': "Bearer {}".format(access_token)}
     response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise StatusCodeError(f"Received status code: {response.status_code}")
+
     return response.json()
 
 
@@ -55,7 +64,16 @@ def get_access_token(refresh_token):
             "refresh_token": refresh_token}
 
     response = requests.post(url, data=body, auth=HTTPBasicAuth(SPOTIFY_CLIENT, SPOTIFY_SECRET))
-    return response.json()["access_token"]
+
+    if response.status_code != 200:
+        raise StatusCodeError(f"Received status code: {response.status_code}")
+
+    try:
+        access_token = response.json()["access_token"]
+    except KeyError:
+        raise ValueError("refresh_token was not valid")
+
+    return access_token
 
 # response.content
 #   {"access_token":"....",
