@@ -96,6 +96,8 @@ def get_last_n_minutes(duration, userid):
     client.switch_database('moods')
     client.write_points(data)
 
+    print(f'[{current_time}] updated moods for {userid}')
+
 
 def get_latest_tracks(user_id, access_token):
     recently_played = spotify.get_recently_played(access_token)
