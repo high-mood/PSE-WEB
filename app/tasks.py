@@ -1,11 +1,10 @@
-from influxdb import InfluxDBClient
 from datetime import datetime
-from app.API import spotify
+from app.API import spotify, influx
 import numpy as np
 from app import db
 from moodanalysis.moodAnalysis import analyse_mood
 from app.models import Song, Artist, Songmood
-import config
+from app import app
 import sys
 
 
@@ -57,8 +56,7 @@ def add_audio_features(tracks, ids, access_token):
 
 
 def get_last_n_minutes(duration, userid):
-    client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
-                            password=config.influx_pswd)
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     client.switch_database('songs')
     
     song_history = client.query(f'select songid from \"{userid}\" where time > now()-{duration}').raw
@@ -132,8 +130,7 @@ def get_latest_tracks(user_id, access_token):
 
 
 def update_user_tracks(access_token):
-    client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
-                            password=config.influx_pswd, database='songs')
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
 
     user_data = spotify.get_user_info(access_token)
 

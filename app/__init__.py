@@ -1,8 +1,8 @@
-import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import config
 from flask_oauthlib.client import OAuth
+import config
+import os
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -15,8 +15,8 @@ spotifysso = oauth.remote_app('spotify',
                               base_url='https://accounts.spotify.com',
                               access_token_url='https://accounts.spotify.com/api/token',
                               authorize_url='https://accounts.spotify.com/authorize',
-                              consumer_key=config.SPOTIFY_CLIENT,
-                              consumer_secret=config.SPOTIFY_SECRET,
+                              consumer_key=app.config['SPOTIFY_CLIENT'],
+                              consumer_secret=app.config['SPOTIFY_SECRET'],
                               request_token_params={'scope': ('user-read-recently-played,'
                                                               'user-library-modify,'
                                                               'user-read-email',
@@ -36,5 +36,5 @@ spotifysso = oauth.remote_app('spotify',
 oauth.init_app(app)
 
 from app import views
-from app import API
+from app.API import REST
 

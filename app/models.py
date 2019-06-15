@@ -59,7 +59,6 @@ class User(db.Model):
         query = db.session.query("refresh_token FROM users")
         return [row[0] for row in query]
 
-
     @staticmethod
     def get_all_users():
         query = db.session.query("userid FROM users")
@@ -119,8 +118,9 @@ class Songmood(db.Model):
             db.session.add(songmood)
             db.session.commit()
 
+    @staticmethod
     def get_moods(songids):
-        querystring = '(' + ','.join([f"'{id}'" for id in songids]) + ');'
+        querystring = '(' + ','.join([f"'{songid}'" for songid in songids]) + ');'
         excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
         happiness = db.session.query('happiness FROM songmoods where songid in ' + querystring)
         return list(zip(excitedness, happiness))
@@ -139,7 +139,7 @@ class SongArtist(db.Model):
         songartist = SongArtist.query(f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
         if songartist is None:
             songartist = SongArtist(songid=json_info['songid'],
-                                  artistid=json_info['artistid'])
+                                    artistid=json_info['artistid'])
 
             db.session.add(songartist)
 
