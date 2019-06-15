@@ -3,10 +3,11 @@ from datetime import datetime
 from app.API import spotify
 import numpy as np
 from app import db
-from moodanalysis.serverMoodAnalysis import analyse_mood
+from moodanalysis.moodAnalysis import analyse_mood
 from app.models import Song, Artist, Songmood
 import config
 import sys
+
 
 def add_genres(tracks, ids, access_token):
     if not ids:
@@ -14,9 +15,9 @@ def add_genres(tracks, ids, access_token):
     artists_info = spotify.get_artists(access_token, ids)
 
     for artist_info in artists_info['artists']:
-        Artist.create_if_not_exist({'artistid':artist_info['id'],
-                                    'name':artist_info['name'],
-                                    'genres':', '.join(artist_info['genres']),
+        Artist.create_if_not_exist({'artistid': artist_info['id'],
+                                    'name': artist_info['name'],
+                                    'genres': ', '.join(artist_info['genres']),
                                     'popularity': artist_info['popularity']})
 
         for track in tracks:
@@ -54,6 +55,7 @@ def add_audio_features(tracks, ids, access_token):
             track['fields']['valence'] = float(audio_features['valence'])
             track['fields']['tempo'] = float(audio_features['tempo'])
 
+
 def get_last_n_minutes(duration, userid):
     client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                             password=config.influx_pswd)
@@ -70,33 +72,31 @@ def get_last_n_minutes(duration, userid):
         song_history = song_history['series'][0]['values']
 
     _, songids = list(zip(*song_history))
-    # moods = Songmood.get_moods(songids)
+    moods = Songmood.get_moods(songids)
 
-    # if not moods:
-    #     print(f'[{currenttime}] no moods found for {userid}')
-    #     return
+    if not moods:
+        print(f'[{current_time}] no moods found for {userid}')
+        return
 
-    # songcount = len(moods)
+    song_count = len(moods)
+    excitedness, happiness = list(zip(*moods))
+    excitedness_mean = np.mean(excitedness)
+    happiness_mean = np.mean(happiness)
 
-    # excitedness, happiness = list(zip(*moods))
-    # excitedness = np.mean(excitedness)
-    # happiness = np.mean(happiness)
-
-    songcount = len(songids)
-    excitedness = np.random.uniform(-10, 10)
-    happiness = np.random.uniform(-10, 10)
+    # songcount = len(songids)
+    # excitedness = np.random.uniform(-10, 10)
+    # happiness = np.random.uniform(-10, 10)
 
     data = [{'measurement': userid,
-                     'time': datetime.now().isoformat(),
-                     'fields': {
-                         'excitedness': excitedness,
-                         'happiness': happiness,
-                         'songcount': songcount
-                     }}]
+             'time': datetime.now().isoformat(),
+             'fields': {
+                 'excitedness': excitedness_mean,
+                 'happiness': happiness_mean,
+                 'songcount': song_count
+             }}]
 
     client.switch_database('moods')
     client.write_points(data)
-
 
 
 def get_latest_tracks(user_id, access_token):
@@ -110,13 +110,15 @@ def get_latest_tracks(user_id, access_token):
     artistids = {}
     # print(recently_played['items'][0]['track']['name'])
     for track in recently_played['items']:
-        Song.create_if_not_exist({'songid':track['track']['id'],
-                                          'name':track['track']['name']
-                                 })
+        Song.create_if_not_exist({'songid': track['track']['id'],
+                                  'name': track['track']['name']
+                                  })
         tracks.append({'measurement': user_id,
                        'time': track['played_at'],
                        'fields': {'songid': track['track']['id'],
-                                  'artistsids': ','.join([artist['id'] for artist in track['track']['artists']])}})
+                                  'artistsids': ','.join([artist['id'] for artist in track['track']['artists']])
+                                  }
+                       })
         # We store the artist and track ids in dics to
         # prefent requesting them multiple time from Spotify.
         # We only get the genre from the main artist
@@ -141,17 +143,18 @@ def update_user_tracks(access_token):
     current_time = datetime.now().strftime("%H:%M:%S")
     
     if tracks:
-        # querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
-        # duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        # analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
 
-        # if analysis_tracks:
-        #     moods = analyse_mood(analysis_tracks)
-        #     print(moods)
-        #     for mood in moods:
-        #         Songmood.create_if_not_exist(mood)
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            print(moods)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
 
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
-        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping", file=sys.stderr)
+        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
+              file=sys.stderr)
