@@ -3,6 +3,10 @@ import pytest
 from app import app
 
 
+class ConfigException(Exception):
+    pass
+
+
 @pytest.fixture
 def client():
     client = app.test_client()
@@ -12,8 +16,9 @@ def client():
 
 
 def test_debug_mode(client):
-    with open("../config.py") as f:
-        assert "DEBUG = True" not in f.read()
+    with open("config.py") as f:
+        if "DEBUG = False" not in f.read():
+            raise ConfigException("Build should not be in DEBUG mode.")
 
 
 def test_main_page(client):
