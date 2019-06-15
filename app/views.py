@@ -5,11 +5,15 @@ from app import db
 from app import models
 from app import spotifysso
 from app.API import spotify
-from app.tasks import update_user_tracks
+from app.tasks import update_user_tracks, get_last_n_minutes
 import os
+import config
 # TODO: Remove this later
 from resources import query
 
+@app.route("/test")
+def indexer():
+    return render_template("dashboard.html",**locals())
 
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
@@ -17,7 +21,7 @@ def index():
     if "json_info" not in session:
         return render_template("login.html", **locals())
     else:
-        client = query.create_client('142.93.238.35', 8086)
+        client = query.create_client('pse-ssh.diallom.com', 8086)
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
@@ -32,13 +36,14 @@ def index():
         # print(type(top_genres))
         # print(type(all_genres))
         # print(type(total_listening_time))
+        # print(session['json_info'])
+        return render_template("index.html", **locals(), text=session['json_info']['display_name'], id=session['json_info']['id'])
 
-        return render_template("index.html", **locals())
 
 
 @app.route("/index_js")
 def index_js():
-    client = query.create_client('142.93.238.35', 8086)
+    client = query.create_client('pse-ssh.diallom.com', 8086)
     userid = session['json_info']['id']
     access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
@@ -79,7 +84,7 @@ def authorized():
     scopes = resp['scope'].split(" ")
 
     json_user_info = spotify.get_user_info(access_token)
-    models.User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
+    # models.User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
     session['json_info'] = json_user_info  # TODO change this laziness
     session['json_info']['refresh_token'] = refresh_token
 

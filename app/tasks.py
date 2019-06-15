@@ -1,9 +1,12 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 from app.API import spotify
+import numpy as np
+from app import db
+from moodanalysis.serverMoodAnalysis import analyse_mood
+from app.models import Song, Artist, Songmood
 import config
 import sys
-
 
 def add_genres(tracks, ids, access_token):
     if not ids:
@@ -11,6 +14,11 @@ def add_genres(tracks, ids, access_token):
     artists_info = spotify.get_artists(access_token, ids)
 
     for artist_info in artists_info['artists']:
+        Artist.create_if_not_exist({'artistid':artist_info['id'],
+                                    'name':artist_info['name'],
+                                    'genres':', '.join(artist_info['genres']),
+                                    'popularity': artist_info['popularity']})
+
         for track in tracks:
             if track['fields']['artistsids'].split(',')[0] != artist_info['id']:
                 continue
@@ -46,6 +54,50 @@ def add_audio_features(tracks, ids, access_token):
             track['fields']['valence'] = float(audio_features['valence'])
             track['fields']['tempo'] = float(audio_features['tempo'])
 
+def get_last_n_minutes(duration, userid):
+    client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
+                            password=config.influx_pswd)
+    client.switch_database('songs')
+    
+    song_history = client.query(f'select songid from \"{userid}\" where time > now()-{duration}').raw
+     
+    current_time = datetime.now().strftime("%H:%M:%S")
+
+    if 'series' not in song_history:
+        print(f'[{current_time}] no recent history found for {userid} in the last {duration}')
+        return
+    else:
+        song_history = song_history['series'][0]['values']
+
+    _, songids = list(zip(*song_history))
+    # moods = Songmood.get_moods(songids)
+
+    # if not moods:
+    #     print(f'[{currenttime}] no moods found for {userid}')
+    #     return
+
+    # songcount = len(moods)
+
+    # excitedness, happiness = list(zip(*moods))
+    # excitedness = np.mean(excitedness)
+    # happiness = np.mean(happiness)
+
+    songcount = len(songids)
+    excitedness = np.random.uniform(-10, 10)
+    happiness = np.random.uniform(-10, 10)
+
+    data = [{'measurement': userid,
+                     'time': datetime.now().isoformat(),
+                     'fields': {
+                         'excitedness': excitedness,
+                         'happiness': happiness,
+                         'songcount': songcount
+                     }}]
+
+    client.switch_database('moods')
+    client.write_points(data)
+
+
 
 def get_latest_tracks(user_id, access_token):
     recently_played = spotify.get_recently_played(access_token)
@@ -56,7 +108,11 @@ def get_latest_tracks(user_id, access_token):
     tracks = []
     trackids = {}
     artistids = {}
+    # print(recently_played['items'][0]['track']['name'])
     for track in recently_played['items']:
+        Song.create_if_not_exist({'songid':track['track']['id'],
+                                          'name':track['track']['name']
+                                 })
         tracks.append({'measurement': user_id,
                        'time': track['played_at'],
                        'fields': {'songid': track['track']['id'],
@@ -83,7 +139,18 @@ def update_user_tracks(access_token):
 
     # If the user does not have listened to any tracks we just skip them.
     current_time = datetime.now().strftime("%H:%M:%S")
+    
     if tracks:
+        # querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        # duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        # analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+
+        # if analysis_tracks:
+        #     moods = analyse_mood(analysis_tracks)
+        #     print(moods)
+        #     for mood in moods:
+        #         Songmood.create_if_not_exist(mood)
+
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:

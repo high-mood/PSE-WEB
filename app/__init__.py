@@ -36,4 +36,5 @@ spotifysso = oauth.remote_app('spotify',
 oauth.init_app(app)
 
 from app import views
+from app import API
 
