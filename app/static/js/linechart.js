@@ -4,7 +4,7 @@
 
 function lineGraph(data, id) {
 
-//    console.log(data);
+   console.log(data);
 
     var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
 //    console.log(dataset);
@@ -24,13 +24,15 @@ function lineGraph(data, id) {
     for (var i in d3.range(n)) {
         datasetExcite.push({'y': data.moods[i].excitedness})
         datasetHappy.push({'y': data.moods[i].happiness})
-        meanExcite.push({'y': data['mean-excitedness']})
-        meanHappy.push({'y': data['mean-happiness']})
+        meanExcite.push({'y': data['mean_excitedness']})
+        meanHappy.push({'y': data['mean_happiness']})
     }
 
+    console.log(meanExcite)
+
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 150, bottom: 30, left: 50};
-    var width = 630 - margin.left - margin.right;
+    var margin = {top: 20, right: 200, bottom: 30, left: 200};
+    var width = 900 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
     // 5. X scale will use the index of our data

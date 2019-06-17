@@ -11,7 +11,8 @@ Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
 #exciteMean {
     fill: none;
     stroke: #ffab00;
-    stroke-width: 1;
+    stroke-width: 4;
+    opacity: 0.5;
 }
 #exciteLegend {
     fill: none;
@@ -21,7 +22,8 @@ Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
 #exciteLegendMean {
     fill: none;
     stroke: #ffab00;
-    stroke-width: 1;
+    stroke-width: 4;
+    opacity: 0.5;
 }
 
 #happyLine {
@@ -32,7 +34,8 @@ Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
 #happyMean {
     fill: none;
     stroke: steelblue;
-    stroke-width: 1;
+    stroke-width: 4;
+    opacity: 0.5;
 }
 #happyLegend {
     fill: none;
@@ -42,7 +45,8 @@ Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
 #happyLegendMean {
     fill: none;
     stroke: steelblue;
-    stroke-width: 1;
+    stroke-width: 4;
+    opacity: 0.5;
 }
   
 
