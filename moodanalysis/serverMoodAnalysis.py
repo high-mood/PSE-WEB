@@ -1,4 +1,4 @@
-from sklearn.ensemble import GradientBoostingClassifier as GBC
+from sklearn.ensemble import GradientBoostingRegressor as GBR
 from joblib import load
 import numpy as np
 import csv
@@ -30,7 +30,7 @@ def analyse_mood(songs):
     for i in range(len(songtitles)):
         outputdata = {}
         outputdata['songid'] = songtitles[i]
-        outputdata['excitedness'] = float(ExcitednessPredictions[i]) / 100
-        outputdata['happiness'] = float(HappinessPredictions[i]) / 100
+        outputdata['excitedness'] = ExcitednessPredictions[i]
+        outputdata['happiness'] = HappinessPredictions[i]
         output.append(outputdata)
     return output
