@@ -11,6 +11,8 @@ function lineGraph(data, id) {
 
     var datasetExcite = []
     var datasetHappy = []
+    var meanExcite = []
+    var meanHappy = []
 
     // number of data points
     var n = data.moods.length;
@@ -22,6 +24,8 @@ function lineGraph(data, id) {
     for (var i in d3.range(n)) {
         datasetExcite.push({'y': data.moods[i].excitedness})
         datasetHappy.push({'y': data.moods[i].happiness})
+        meanExcite.push({'y': data['mean-excitedness']})
+        meanHappy.push({'y': data['mean-happiness']})
     }
 
     // set the dimensions and margins of the graph
@@ -98,14 +102,55 @@ function lineGraph(data, id) {
         .attr("id", "happyLine")
         .attr("d", lineHappy);
 
+    svg.append("path")
+        .data([meanExcite])
+        .attr("class", "line")
+        .attr("id", "exciteMean")
+        .attr("d", lineExcite);
+
+    svg.append("path")
+        .data([meanHappy])
+        .attr("class", "line")
+        .attr("id", "happyMean")
+        .attr("d", lineHappy);
+
 
 
 
     // Handmade legend
-    svg.append("circle").attr("cx",450).attr("cy",130).attr("r", 6).style("fill", "#ffab00")
-    svg.append("circle").attr("cx",450).attr("cy",160).attr("r", 6).style("fill", "steelblue")
-    svg.append("text").attr("x", 470).attr("y", 130).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    svg.append("text").attr("x", 470).attr("y", 160).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    var legendY = 150
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY).attr("r", 6).attr("id", "exciteLegend")
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 30).attr("r", 6).attr("id", "happyLegend")
+    svg.append("text").attr("x", width+50).attr("y", legendY).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", width+50).attr("y", legendY + 30).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 60).attr("r", 6).attr("id", "exciteLegendMean")
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 90).attr("r", 6).attr("id", "happyLegendMean")
+    svg.append("text").attr("x", width+50).attr("y", legendY + 60).text("Mean excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", width+50).attr("y", legendY + 90).text("Mean happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+
+    // 12. Appends a circle for each datapoint 
+    svg.selectAll(".excitedot")
+    .data(datasetExcite)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "excitedot") // Assign a class for styling
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 5)
+
+
+    svg.selectAll(".happydot")
+    .data(datasetHappy)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "happydot") // Assign a class for styling
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 5)
+    .on("mouseover", function(a, b, c) { 
+            console.log(a) 
+        this.attr('class', 'focus')
+        })
+    .on("mouseout", function() {  })
+
 
     // 12. Appends a circle for each datapoint
     // svg.selectAll(".dot")
