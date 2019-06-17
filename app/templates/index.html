@@ -70,15 +70,22 @@
       {% endif %}
     </div>
 
+
+    <div class="w3-container">
+      <!-- <h1>Top 10 Songs</h1> -->
+      <div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">
+        <h4 style="text-align: center;">Your Top 10 Songs</h4>
+      </div>
+    </div>
+
+    <script>       getTop10(); </script>
+
     <div class="mainPage" id="Radar-Graph">
-        <div class="w3-container">
-          <div class="w3-ul w3-card-4" style="width:350px; margin-left:20px;" id="top10"></div>
-        </div>
         <div class="radarChart inner-div"></div>
     </div>
 
     <script>
-        getTop10();
+
     </script>
 
     <div class="mainPage" id="Line-Graph">
@@ -93,6 +100,8 @@
 
       var userid = document.getElementById("username").textContent;
       console.log((userid));
+
+
 
       var request = new XMLHttpRequest()
 

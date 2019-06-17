@@ -16,6 +16,10 @@ li {
     list-style-type: none;
 }
 
+ul {
+  padding: 0px;
+}
+
 
 #top10 {
   /* display:inline; */
@@ -27,6 +31,7 @@ li {
 
 .radarChart {
   float: right;
+  /* display: inline; */
   width: 800px;
 }
 
