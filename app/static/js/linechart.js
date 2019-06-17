@@ -6,7 +6,7 @@ function lineGraph(data, id) {
 
    console.log(data);
 
-    var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
+    // var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
 //    console.log(dataset);
 
     var datasetExcite = []
@@ -37,8 +37,9 @@ function lineGraph(data, id) {
 
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
-        .domain([0, data.moods.length]) // input
-        .range([0, width]); // output
+        .domain([0, data.moods.length - 1]) // input
+        .range([0, width])
+
 
     // 6. Y scale will use the randomly generate number
     var yScale = d3.scaleLinear()
@@ -55,13 +56,17 @@ function lineGraph(data, id) {
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
-        .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+        // .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+        .call(d3.axisBottom(xScale).ticks(data.moods.length - 1))
 
     // 4. Call the y axis in a group tag
     svg.append("g")
         .attr("class", "y axis")
         // .attr("transform", "translate(" + width / 2 + ", 0)")
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+    // d3.select("x")
+    //     .tickFormat(d3.format("d"));
 
 //    console.log(data.songdata);
 
