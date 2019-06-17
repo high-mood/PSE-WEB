@@ -22,9 +22,9 @@ def analyse_mood(songs):
     song_titles = []
     for song in songs:
         # Store song titles to return the later.
-        song_titles.append(song['fields']['songid'])
+        song_titles.append(song['id'])
         # Make list matrix of input data for algorithm.
-        input_data.append(np.array([(100 * song['fields'][feature]) for feature in features]))
+        input_data.append(np.array([(100 * song[feature]) for feature in features]))
 
     output = []
     excitedness_predictions = e_est.predict(input_data)
