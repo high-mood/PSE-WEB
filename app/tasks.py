@@ -3,117 +3,68 @@ from app.API import spotify, influx
 import numpy as np
 from app import db
 from moodanalysis.moodAnalysis import analyse_mood
-from app.models import User, Song, Artist, Songmood
+from app.models import Song, Artist, Songmood
 from app import app
 import sys
 
 
-def add_genres(tracks, ids, access_token):
-    if not ids:
+def add_artist_genres(artist_ids, access_token):
+    if not artist_ids:
         return
-    artists_info = spotify.get_artists(access_token, ids)
+    artists_info = spotify.get_artists(access_token, list(artist_ids.keys()))
 
     for artist_info in artists_info['artists']:
-        Artist.create_if_not_exist({'artistid': artist_info['id'],
-                                    'name': artist_info['name'],
-                                    'genres': ', '.join(artist_info['genres']),
-                                    'popularity': artist_info['popularity']})
-
-        for track in tracks:
-            if track['fields']['artistsids'].split(',')[0] != artist_info['id']:
-                continue
-
-            track['fields']['genres'] = ','.join(artist_info['genres'])
-
-    for track in tracks:
-        if 'genres' not in track['fields'] or not len(track['fields']['genres']) > 0:
-            track['fields']['genres'] = "None"
+        Artist.create_if_not_exist({
+            'artistid': artist_info['id'],
+            'name': artist_info['name'],
+            'genres': ', '.join(artist_info['genres']),
+            'popularity': artist_info['popularity']
+        })
 
 
-def get_audio_features(songs_features, ids, access_token):
-    if not ids:
+def add_audio_features(tracks, access_token):
+    if not tracks:
         return
-    features = spotify.get_audio_features(access_token, ids)
+    track_ids = list(tracks.keys())
+    audio_features = spotify.get_audio_features(access_token, track_ids)
 
-    for audio_features in features['audio_features']:
-        songid = audio_features['id']
-        songs_features[songid] = {}
-        for track in tracks:
-            if track['fields']['songid'] != audio_features['id']:
-                continue
-            # We explicitly cast these to the sure there are no type conflicts in our database.
-            features['fields']['duration_ms'] = int(audio_features['duration_ms'])
-            track['fields']['key'] = int(audio_features['key'])
-            track['fields']['mode'] = int(audio_features['mode'])
-            track['fields']['time_signature'] = int(audio_features['time_signature'])
-            track['fields']['acousticness'] = float(audio_features['acousticness'])
-            track['fields']['danceability'] = float(audio_features['danceability'])
-            track['fields']['energy'] = float(audio_features['energy'])
-            track['fields']['instrumentalness'] = float(audio_features['instrumentalness'])
-            track['fields']['liveness'] = float(audio_features['liveness'])
-            track['fields']['loudness'] = float(audio_features['loudness'])
-            track['fields']['speechiness'] = float(audio_features['speechiness'])
-            track['fields']['valence'] = float(audio_features['valence'])
-            track['fields']['tempo'] = float(audio_features['tempo'])
+    spotify_features = ['duration_ms', 'key', 'mode', 'time_signature', 'acousticness',
+                        'danceability', 'energy', 'instrumentalness', 'liveness',
+                        'loudness', 'speechiness', 'valence', 'tempo', 'id']
 
+    tracks_features = []
+    for i, features in enumerate(audio_features['audio_features']):
+        track_features = {}
+        for feature in spotify_features:
+            # Some songs do not have audio_features.
+            if not audio_features:
+                track_features[feature] = None
+            else:
+                # We explicitly cast these to the sure there are no type conflicts in our database.
+                track_features[feature] = float(audio_features[feature])
+        # We only add it to the return data if the track has features.
+        if track_features['danceability']:
+            tracks_features.append(track_features)
 
-def get_latest_tracks(user_id, access_token):
-    recently_played = spotify.get_recently_played(access_token)
+        Song.create_if_not_exist({
+            'songid': track_ids[i],
+            'name': tracks[track_features['id']]['name'],
+            'duration_ms': track_features['duration_ms'],
+            'key': track_features['key'],
+            'mode': track_features['mode'],
+            'time_signature': track_features['time_signature'],
+            'acousticness': track_features['acousticness'],
+            'danceability': track_features['danceability'],
+            'energy': track_features['energy'],
+            'instrumentalness': track_features['instrumentalness'],
+            'liveness': track_features['liveness'],
+            'loudness': track_features['loudness'],
+            'speechiness': track_features['speechiness'],
+            'valence': track_features['valence'],
+            'tempo': track_features['tempo']
+        })
 
-    if not len(recently_played['items']) > 0:
-        return
-
-    tracks = []
-    trackids = {}
-    artistids = {}
-    songs_features = {}
-
-    # print(recently_played['items'][0]['track']['name'])
-    for track in recently_played['items']:
-        print(track)
-        break
-        Song.create_if_not_exist({'songid': track['track']['id'],
-                                  'name': track['track']['name']
-                                  })
-        tracks.append({'measurement': user_id,
-                       'time': track['played_at'],
-                       'fields': {'songid': track['track']['id']}
-                       })
-        # We store the artist and track ids in dics to
-        # prefent requesting them multiple time from Spotify.
-        # We only get the genre from the main artist
-        artistids[track['track']['artists'][0]['id']] = 0
-        trackids[track['track']['id']] = 0
-
-    get_audio_features(songs_features, list(trackids.keys()), access_token)
-    add_genres(tracks, list(artistids.keys()), access_token)
-
-    return tracks
-
-
-def update_user_tracks(access_token):
-    user_data = spotify.get_user_info(access_token)
-    tracks = get_latest_tracks(user_data['id'], access_token)
-
-    # If the user does not have listened to any tracks we just skip them.
-    current_time = datetime.now().strftime("%H:%M:%S")
-
-    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-    if tracks:
-        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
-        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
-
-        if analysis_tracks:
-            moods = analyse_mood(analysis_tracks)
-            for mood in moods:
-                Songmood.create_if_not_exist(mood)
-
-        client.write_points(tracks)
-        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
-    else:
-        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
-              file=sys.stderr)
+    return tracks_features
 
 
 def get_last_n_minutes(duration, userid):
@@ -159,25 +110,50 @@ def get_last_n_minutes(duration, userid):
 
     print(f'[{current_time}] updated moods for {userid}')
 
-# def get_features_and_mood(userid, songids):
-#     """get features from influxdb, -> rest API spotify
-#
-#     get moods from songmoods, -> rest analyse"""
-#     refresh_token = User.get_refresh_token('snipy12')
-#     access_token = spotify.get_access_token(refresh_token)
-#     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-#
-#     querystring = ['"songid = \'{songid}\'"' ]
-#
-#     influx_features = client.query('select "songid", "acousticness", "danceability", "duration_ms", "energy", "instrumentalness", "key", "liveness", "loudness", "mode", "speechiness", "tempo", "valence" from /.*/ where songid=\'{songids}\'')
-#     print(influx_features)
-#
-#     # features = spotify.get_audio_features(access_token, songids)
-#     #
-#     # print(features)
-#
-#     # querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
-#     # duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-#     # analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
-#
-#     pass
+
+def get_latest_tracks(user_id, access_token):
+    recently_played = spotify.get_recently_played(access_token)
+
+    if not len(recently_played['items']) > 0:
+        return
+
+    tracks = {}
+    artists = {}
+    latest_tracks = []
+    for track in recently_played['items']:
+        latest_tracks.append({'measurement': user_id,
+                              'time': track['played_at'],
+                              'fields': {'songid': track['track']['id']}})
+        # 'artistsids': ','.join([artist['id'] for artist in track['track']['artists']])}
+        artists[track['track']['artists'][0]['id']] = None
+        tracks[track['track']['id']] = {'name': track['track']['name']}
+
+    track_features = add_audio_features(tracks, access_token)
+    add_artist_genres(artists, access_token)
+
+    return latest_tracks, track_features
+
+
+def update_user_tracks(access_token):
+    user_data = spotify.get_user_info(access_token)
+    tracks, track_features = get_latest_tracks(user_data['id'], access_token)
+
+    # If the user does not have listened to any tracks we just skip them.
+    current_time = datetime.now().strftime("%H:%M:%S")
+
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+    if tracks:
+        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        analysis_tracks = [track for track in track_features if track['id'] not in duplicates]
+
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
+
+        client.write_points(tracks)
+        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
+    else:
+        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
+              file=sys.stderr)
