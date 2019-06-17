@@ -51,6 +51,8 @@
             <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
             <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
             <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
+            <!-- <a onclick="navigateTo('Heat-Graph')" id="HeatTab">Log Out</a> -->
+            <a href="/logout">Logout</a><
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
     </div>
@@ -76,10 +78,6 @@
         <div class="inner-div" id="heatmap"></div>
     </div>
 
-
-
-
-
     <script>
 
       var userid = document.getElementById("username").textContent;
@@ -97,11 +95,9 @@
           console.log(userdata.userid);
           console.log(userdata);
           createRadarChart(userdata);
-
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
                         ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
-
           lineGraph(userdata, ".lineGraph");
         }
       }
