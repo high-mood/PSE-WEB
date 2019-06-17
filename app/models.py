@@ -110,6 +110,11 @@ class Song(db.Model):
 
             db.session.add(song)
             db.session.commit()
+        
+    @staticmethod
+    def get_song_name(songid):
+        song = Song.query.filter_by(songid=songid).first()
+        return song.name
 
 
 class Artist(db.Model):

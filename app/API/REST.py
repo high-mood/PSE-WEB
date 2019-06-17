@@ -178,13 +178,14 @@ history = api.model('Song history with mood', {
     'mean_happiness': fields.Float,
     'songs': fields.Nested(api.model('song', {
             'name': fields.String,
-            'exitedness': fields.Float,
+            'time': fields.String,
+            'excitedness': fields.Float,
             'happiness': fields.Float
         }))
     })
 
 
-@metric_name_space.route('/<string:userid>/<int:songcount>')
+@history_name_space.route('/<string:userid>/<int:songcount>')
 class Metric(Resource):
     @api.marshal_with(history, envelope='resource')
     def get(self, userid, songcount):
@@ -193,13 +194,24 @@ class Metric(Resource):
         """
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {songcount}')
-
+        
         if recent_songs:
-            recent_songs = list(user_metrics.get_points(measurement=userid))
-            print(recent_songs)
-
+            recent_songs = list(recent_songs.get_points(measurement=userid))        
+            songids = [song['songid'] for song in recent_songs]
+            moods = models.Songmood.get_moods(songids)
+            e, h = list(zip(*moods))
+            excitedness, happiness = [val[0] for val in e], [val[0] for val in h]
+            mean_excitedness = np.mean(excitedness)
+            mean_happiness = np.mean(happiness)
+            for i, song in enumerate(recent_songs):
+                song['excitedness'] = excitedness[i]
+                song['happiness'] = happiness[i]
+                song['name'] = models.Song.get_song_name(song['songid'])
+                
             return {
                 'userid': userid,
+                'mean_excitedness': mean_excitedness,
+                'mean_happiness': mean_happiness,
                 'songs': recent_songs
             }
         else:
