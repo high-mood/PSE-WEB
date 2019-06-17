@@ -45,7 +45,6 @@ def get_user_info(access_token):
 def _get_basic_request(access_token, url):
     headers = {'Authorization': "Bearer {}".format(access_token)}
     response = requests.get(url, headers=headers)
-
     return response.json()
 
 

@@ -13,12 +13,28 @@ from influxdb import InfluxDBClient
 import config
 import numpy as np
 
+
+possible_metrics = ['acousticness', 'danceability', 'duration_ms', 'energy',
+                    'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
+                    'speechiness', 'tempo', 'valence']
+
+def limit_time(start, end):
+    if start == '0' or 'begin' or 'beginning of time' or 'the beginning of time':
+        start = "'1678-09-21T00:20:43.145224194Z'"
+
+    if end == 'now' or 'end':
+        end = str("'" + datetime.datetime.now().isoformat() + "Z'")
+    return start, end
+
+
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
 app.register_blueprint(blueprint)
 
 user_name_space = api.namespace('user', description='User information', path="/user")
 mood_name_space = api.namespace('mood', description='Mood over time', path="/mood")
+metric_name_space = api.namespace('metric', description='Metric over time', path="/metric")
+
 
 user_info = api.model('UserInfo', {
     'userid': fields.String,
@@ -55,7 +71,7 @@ moods = api.model('Mood over time', {
             'time': fields.String,
             'excitedness': fields.Float,
             'happiness': fields.Float,
-            'songcount' : fields.Integer
+            'songcount': fields.Integer
         }))
     })
 
@@ -66,28 +82,20 @@ class Mood(Resource):
     def get(self, userid, start="'1678-09-21T00:20:43.145224194Z'",
             end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
         """
-        Obtain moods of a user within a given timeframe. Append '/' after every parameter.
+        Obtain moods of a user within a given timeframe.
         """
-        print('===========================================')
-        print(userid, start, end)
+        start, end = limit_time(start, end)
 
-        if start == '0' or 'begin' or 'beginning of time':
-            start = "'1678-09-21T00:20:43.145224194Z'"
-
-        if end == 'now':
-            end = str("'" + datetime.datetime.now().isoformat() + "Z'")
-
-        print(start, end)
         client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
                                 password=config.influx_pswd, database='moods')
-        moods = client.query(f"select excitedness, happiness, songcount from {userid} where time > {start} and time < {end}")
-        moodlist = list(moods.get_points(measurement=userid))
-
-        v = [[mood['excitedness'], mood['happiness'], mood['songcount']] for mood in moodlist]
-        mean_happiness, mean_excitedness, _ = np.mean(v, axis=0)
-        _, _, sum_song_count = np.sum(v, axis=0)
+        moods = client.query(f'select excitedness, happiness, songcount from "{userid}" where time > {start} and time < {end}')
 
         if moods:
+            moodlist = list(moods.get_points(measurement=userid))
+
+            v = [[mood['excitedness'], mood['happiness'], mood['songcount']] for mood in moodlist]
+            mean_happiness, mean_excitedness, _ = np.mean(v, axis=0)
+            _, _, sum_song_count = np.sum(v, axis=0)
             return {
                 'userid': userid,
                 'mean_excitedness': mean_excitedness,
@@ -95,3 +103,50 @@ class Mood(Resource):
                 'sum_song_count': sum_song_count,
                 'moods': moodlist
             }
+        else:
+            print(f'No moods found in influxDB database moods for {userid}')
+
+
+metrics = api.model('Metric over time', {
+    'userid': fields.String,
+    'metric_over_time': fields.Nested(api.model('metric', {
+            'time': fields.String,
+            'value': fields.Float,
+        }))
+    })
+
+
+@metric_name_space.route('/<string:userid>/<string:metric>/<string:start>/<string:end>')
+class Metric(Resource):
+    @api.marshal_with(metrics, envelope='resource')
+    def get(self, userid, metric, start="'1678-09-21T00:20:43.145224194Z'",
+            end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
+        """
+        Obtain metric of a user within a given timeframe.
+        Possible metrics:
+        'acousticness', 'danceability', 'duration_ms', 'energy',
+        'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
+        'speechiness', 'tempo', 'valence'
+        """
+        if metric not in possible_metrics:
+            print('metric not found')
+            return None
+
+        start, end = limit_time(start, end)
+
+        client = InfluxDBClient(host='pse-ssh.diallom.com', port=8086, username=config.influx_usr,
+                                password=config.influx_pswd, database='songs')
+        metrics = client.query(f'select {metric} from "{userid}" where time > {start} and time < {end}')
+
+        if metrics:
+            metriclist = list(metrics.get_points(measurement=userid))
+            for timed_metric in metriclist:
+                timed_metric['value'] = timed_metric.pop('tempo')
+            # print(metriclist)
+            return {
+                'userid': userid,
+                'metric_over_time': metriclist
+            }
+        else:
+            print('metric not found')
+            return None

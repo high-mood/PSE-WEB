@@ -23,16 +23,17 @@ function createRadarChart(userdata) {
     color: color
   };
 
-  document.title = userdata.username + "\'s  Mood";
+  document.title = userdata.userid + "\'s  Mood";
 
   var finaldata = [];
   var song;
-  for (i = 0; i < userdata.songs; i++) {
+  for (i = 0; i < userdata.moods.length; i++) {
+    // console.log(userdata.moods[i].excitedness);
     song = {
       name : 'Song',
       axes : [
-        {axis:"High Excitedness",value:userdata.songdata[i].excitedness},
-        {axis:"High Happiness",value:userdata.songdata[i].happiness},
+        {axis:"High Excitedness",value:userdata.moods[i].excitedness},
+        {axis:"High Happiness",value:userdata.moods[i].happiness},
         {axis:"Low Excitedness",value:0.0},
         {axis:"Low Happiness",value:0.0}
       ]
@@ -41,4 +42,73 @@ function createRadarChart(userdata) {
   }
 
   let svg_radar1 = RadarChart(".radarChart", finaldata, radarChartOptions);
+}
+
+function changeActiveTab(el) {
+
+  var tabs = document.getElementsByClassName('active');
+
+  if (tabs.length > 0) {
+    tabs[0].classList.remove('active');
+  }
+
+  var newTab = document.getElementById(el);
+  newTab.classList.add('active');
+
+}
+
+function showTabs() {
+
+    var x = document.getElementById("myNavigationBar");
+
+    if (x.className === "navigation-bar") {
+        x.className += " responsive";
+    } else {
+        x.className = "navigation-bar";
+    }
+}
+
+function navigateTo(location) {
+
+  var elmnt = document.getElementById(location);
+  elmnt.scrollIntoView({behavior: 'smooth'});
+
+  changeActiveTab(location + 'Tab');
+  showTabs();
+
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  tabHighLightFromPosition()
+
+});
+
+window.addEventListener("scroll", function() {
+
+  tabHighLightFromPosition();
+
+})
+
+function tabHighLightFromPosition() {
+
+  var pageLocations = [];
+  var pages = document.getElementsByClassName('mainPage');
+
+  for (var i = 0; i < pages.length; i++) {
+    var border = pages[i].getBoundingClientRect();
+    pageLocations.push(border.top * border.top)
+  }
+
+  var min = Math.min.apply(null, pageLocations);
+  var closestTab = pageLocations.indexOf(min);
+
+  changeActiveTab(pages[closestTab].id + 'Tab');
+
+  var x = document.getElementById("myNavigationBar");
+
+  if (x.className === "navigation-bar responsive") {
+      x.className = "navigation-bar";
+  }
+
 }
