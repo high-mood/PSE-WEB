@@ -184,7 +184,7 @@ history = api.model('Song history with mood', {
     })
 
 
-@metric_name_space.route('/<string:userid>/<integer:songcount')
+@metric_name_space.route('/<string:userid>/<integer:songcount>')
 class Metric(Resource):
     @api.marshal_with(history, envelope='resource')
     def get(self, userid, songcount):
