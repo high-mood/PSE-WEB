@@ -43,6 +43,9 @@
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
     <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 </head>
   <body class='body'>
 
@@ -52,11 +55,13 @@
             <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
             <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
             <!-- <a onclick="navigateTo('Heat-Graph')" id="HeatTab">Log Out</a> -->
-            <a href="/logout">Logout</a><
+            <a href="/logout">Logout</a>
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="{{ url_for('index_js') }}"></script>
 
     <div id="Welcome-User">
       {% if text %}
@@ -65,10 +70,16 @@
       {% endif %}
     </div>
 
-
     <div class="mainPage" id="Radar-Graph">
+        <div class="w3-container">
+          <div class="w3-ul w3-card-4" style="width:350px; margin-left:20px;" id="top10"></div>
+        </div>
         <div class="radarChart inner-div"></div>
     </div>
+
+    <script>
+        getTop10();
+    </script>
 
     <div class="mainPage" id="Line-Graph">
         <div class="lineGraph inner-div"></div>
@@ -82,6 +93,7 @@
 
       var userid = document.getElementById("username").textContent;
       console.log((userid));
+
       var request = new XMLHttpRequest()
 
 
@@ -106,11 +118,10 @@
 
     </script>
 
-<!--
-    <canvas id="barchart"></canvas>
-    <canvas id="piechart"></canvas>
+
+    <!-- <canvas id="barchart"></canvas> -->
+    <!-- <canvas id="piechart"></canvas>
     <canvas id="linechart"></canvas> -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="{{ url_for('index_js') }}"></script>
+
   </body>
 </html>

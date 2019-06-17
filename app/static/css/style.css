@@ -9,8 +9,25 @@ body {
   fill: #ffffff;
   text-align: center;
   text-color: white;
-  /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
   cursor: default;
+}
+
+li {
+    list-style-type: none;
+}
+
+
+#top10 {
+  /* display:inline; */
+  /* float: left; */
+  text-align: left;
+  color: white;
+  /* width: 300px; */
+}
+
+.radarChart {
+  float: right;
+  width: 800px;
 }
 
 #userwelcome {
@@ -22,6 +39,7 @@ body {
   margin-top: 100px;
 }
 .mainPage {
+  display: block;
   padding-top: 50px;
   height: 800px;
   /* border: 1px solid white; */
@@ -38,10 +56,12 @@ body {
 
 .inner-div
 {
-     margin: auto;
+    display: block;
+    /* width: 300px; */
+     /* margin: auto;
      margin-top: 70px;
      width: 800px;
-     height: 800px;
+     height: 800px; */
 }
 
 .navigation-bar {
