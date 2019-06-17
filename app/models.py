@@ -64,21 +64,57 @@ class User(db.Model):
         query = db.session.query("userid FROM users")
         return [row[0] for row in query]
 
+    @staticmethod
+    def get_refresh_token(userid):
+        query = db.session.query(f"refresh_token FROM users where userid='{userid}'")
+        return query[0][0]
+
 
 class Song(db.Model):
     __tablename__ = "songs"
     songid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
+    duration_ms = db.Column(db.Float())
+    key = db.Column(db.Float())
+    mode = db.Column(db.Float())
+    time_signature = db.Column(db.Float())
+    acousticness = db.Column(db.Float())
+    danceability = db.Column(db.Float())
+    energy = db.Column(db.Float())
+    instrumentalness = db.Column(db.Float())
+    liveness = db.Column(db.Float())
+    loudness = db.Column(db.Float())
+    speechiness = db.Column(db.Float())
+    valence = db.Column(db.Float())
+    tempo = db.Column(db.Float())
 
     @staticmethod
     def create_if_not_exist(json_info):
         song = Song.query.filter_by(songid=json_info['songid']).first()
         if song is None:
             song = Song(songid=json_info['songid'],
-                        name=json_info['name'])
+                        name=json_info['name'],
+                        duration_ms=json_info['duration_ms'],
+                        key=json_info['key'],
+                        mode=json_info['mode'],
+                        time_signature=json_info['time_signature'],
+                        acousticness=json_info['acousticness'],
+                        danceability=json_info['danceability'],
+                        energy=json_info['energy'],
+                        instrumentalness=json_info['instrumentalness'],
+                        liveness=json_info['liveness'],
+                        loudness=json_info['loudness'],
+                        speechiness=json_info['speechiness'],
+                        valence=json_info['valence'],
+                        tempo=json_info['tempo'])
 
             db.session.add(song)
             db.session.commit()
+        
+    @staticmethod
+    def get_song_name(songid):
+        song = Song.query.filter_by(songid=songid).first()
+        return song.name
 
 
 class Artist(db.Model):
