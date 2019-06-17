@@ -54,7 +54,6 @@ def find_song_recommendations(tracks, userid, recommendation_count, **params):
 
     song_recommendation = r.json()['tracks']
     recommendations = [{'songid': song['id'], 'name': song['name'], 'song_url': song['external_urls']['spotify'], 'artists': [artist['id'] for artist in song['artists']], 'image_url': song['album']['images'][0]['url']} for song in song_recommendation]
-    print(recommendations)
     return recommendations
     
 find_song_recommendations(['7zx0r1pcEiX92UwJ3MuNbV'], 'snipy12', 5, min_key=0.0)
