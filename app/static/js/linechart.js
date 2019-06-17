@@ -56,7 +56,8 @@ function lineGraph(data, id) {
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
-        .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+        // .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+        .call(d3.axisBottom(xScale).ticks(data.moods.length - 1))
 
     // 4. Call the y axis in a group tag
     svg.append("g")
