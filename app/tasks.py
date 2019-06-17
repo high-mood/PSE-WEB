@@ -3,7 +3,7 @@ from app.API import spotify, influx
 import numpy as np
 from app import db
 from moodanalysis.moodAnalysis import analyse_mood
-from app.models import Song, Artist, Songmood
+from app.models import User, Song, Artist, Songmood
 from app import app
 import sys
 
@@ -30,17 +30,19 @@ def add_genres(tracks, ids, access_token):
             track['fields']['genres'] = "None"
 
 
-def add_audio_features(tracks, ids, access_token):
+def get_audio_features(songs_features, ids, access_token):
     if not ids:
         return
     features = spotify.get_audio_features(access_token, ids)
 
     for audio_features in features['audio_features']:
+        songid = audio_features['id']
+        songs_features[songid] = {}
         for track in tracks:
             if track['fields']['songid'] != audio_features['id']:
                 continue
             # We explicitly cast these to the sure there are no type conflicts in our database.
-            track['fields']['duration_ms'] = int(audio_features['duration_ms'])
+            features['fields']['duration_ms'] = int(audio_features['duration_ms'])
             track['fields']['key'] = int(audio_features['key'])
             track['fields']['mode'] = int(audio_features['mode'])
             track['fields']['time_signature'] = int(audio_features['time_signature'])
@@ -55,12 +57,71 @@ def add_audio_features(tracks, ids, access_token):
             track['fields']['tempo'] = float(audio_features['tempo'])
 
 
+def get_latest_tracks(user_id, access_token):
+    recently_played = spotify.get_recently_played(access_token)
+
+    if not len(recently_played['items']) > 0:
+        return
+
+    tracks = []
+    trackids = {}
+    artistids = {}
+    songs_features = {}
+
+    # print(recently_played['items'][0]['track']['name'])
+    for track in recently_played['items']:
+        print(track)
+        break
+        Song.create_if_not_exist({'songid': track['track']['id'],
+                                  'name': track['track']['name']
+                                  })
+        tracks.append({'measurement': user_id,
+                       'time': track['played_at'],
+                       'fields': {'songid': track['track']['id']}
+                       })
+        # We store the artist and track ids in dics to
+        # prefent requesting them multiple time from Spotify.
+        # We only get the genre from the main artist
+        artistids[track['track']['artists'][0]['id']] = 0
+        trackids[track['track']['id']] = 0
+
+    get_audio_features(songs_features, list(trackids.keys()), access_token)
+    add_genres(tracks, list(artistids.keys()), access_token)
+
+    return tracks
+
+
+def update_user_tracks(access_token):
+    user_data = spotify.get_user_info(access_token)
+    tracks = get_latest_tracks(user_data['id'], access_token)
+
+    # If the user does not have listened to any tracks we just skip them.
+    current_time = datetime.now().strftime("%H:%M:%S")
+
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+    if tracks:
+        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
+
+        client.write_points(tracks)
+        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
+    else:
+        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
+              file=sys.stderr)
+
+
 def get_last_n_minutes(duration, userid):
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     client.switch_database('songs')
-    
+
     song_history = client.query(f'select songid from \"{userid}\" where time > now()-{duration}').raw
-     
+
     current_time = datetime.now().strftime("%H:%M:%S")
 
     if 'series' not in song_history:
@@ -98,59 +159,25 @@ def get_last_n_minutes(duration, userid):
 
     print(f'[{current_time}] updated moods for {userid}')
 
-
-def get_latest_tracks(user_id, access_token):
-    recently_played = spotify.get_recently_played(access_token)
-
-    if not len(recently_played['items']) > 0:
-        return
-
-    tracks = []
-    trackids = {}
-    artistids = {}
-    # print(recently_played['items'][0]['track']['name'])
-    for track in recently_played['items']:
-        Song.create_if_not_exist({'songid': track['track']['id'],
-                                  'name': track['track']['name']
-                                  })
-        tracks.append({'measurement': user_id,
-                       'time': track['played_at'],
-                       'fields': {'songid': track['track']['id'],
-                                  'artistsids': ','.join([artist['id'] for artist in track['track']['artists']])
-                                  }
-                       })
-        # We store the artist and track ids in dics to
-        # prefent requesting them multiple time from Spotify.
-        # We only get the genre from the main artist
-        artistids[track['track']['artists'][0]['id']] = 0
-        trackids[track['track']['id']] = 0
-
-    add_audio_features(tracks, list(trackids.keys()), access_token)
-    add_genres(tracks, list(artistids.keys()), access_token)
-
-    return tracks
-
-
-def update_user_tracks(access_token):
-    user_data = spotify.get_user_info(access_token)
-    tracks = get_latest_tracks(user_data['id'], access_token)
-
-    # If the user does not have listened to any tracks we just skip them.
-    current_time = datetime.now().strftime("%H:%M:%S")
-
-    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-    if tracks:
-        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
-        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
-
-        if analysis_tracks:
-            moods = analyse_mood(analysis_tracks)
-            for mood in moods:
-                Songmood.create_if_not_exist(mood)
-
-        client.write_points(tracks)
-        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
-    else:
-        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
-              file=sys.stderr)
+# def get_features_and_mood(userid, songids):
+#     """get features from influxdb, -> rest API spotify
+#
+#     get moods from songmoods, -> rest analyse"""
+#     refresh_token = User.get_refresh_token('snipy12')
+#     access_token = spotify.get_access_token(refresh_token)
+#     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+#
+#     querystring = ['"songid = \'{songid}\'"' ]
+#
+#     influx_features = client.query('select "songid", "acousticness", "danceability", "duration_ms", "energy", "instrumentalness", "key", "liveness", "loudness", "mode", "speechiness", "tempo", "valence" from /.*/ where songid=\'{songids}\'')
+#     print(influx_features)
+#
+#     # features = spotify.get_audio_features(access_token, songids)
+#     #
+#     # print(features)
+#
+#     # querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+#     # duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+#     # analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+#
+#     pass

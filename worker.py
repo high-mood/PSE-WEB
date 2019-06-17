@@ -6,7 +6,7 @@ import sys
 
 if __name__ == '__main__':
     # We Limit the traceback to keep the log files clear.
-    sys.tracebacklimit = 0
+    # sys.tracebacklimit = 0
 
     # Update user tracks
     refresh_tokens = User.get_all_tokes()

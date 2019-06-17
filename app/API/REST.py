@@ -41,7 +41,7 @@ app.register_blueprint(blueprint)
 user_name_space = api.namespace('user', description='User information', path="/user")
 mood_name_space = api.namespace('mood', description='Mood over time', path="/mood")
 metric_name_space = api.namespace('metric', description='Metric over time', path="/metric")
-
+history_name_space = api.namespace('history', description='Song history', path="/history")
 
 @api.errorhandler
 def default_error_handler(error):
@@ -167,6 +167,40 @@ class Metric(Resource):
             return {
                 'userid': userid,
                 'metric_over_time': metric_list
+            }
+        else:
+            raise NoResultsFound(f"No metrics not found for '{userid}'")
+
+
+history = api.model('Song history with mood', {
+    'userid': fields.String,
+    'mean_excitedness': fields.Float,
+    'mean_happiness': fields.Float,
+    'songs': fields.Nested(api.model('song', {
+            'name': fields.String,
+            'exitedness': fields.Float,
+            'happiness': fields.Float
+        }))
+    })
+
+
+@metric_name_space.route('/<string:userid>/<integer:songcount')
+class Metric(Resource):
+    @api.marshal_with(history, envelope='resource')
+    def get(self, userid, songcount):
+        """
+        Obtain N most recently played songs along with their mood.
+        """
+        client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {songcount}')
+
+        if recent_songs:
+            recent_songs = list(user_metrics.get_points(measurement=userid))
+            print(recent_songs)
+
+            return {
+                'userid': userid,
+                'songs': recent_songs
             }
         else:
             raise NoResultsFound(f"No metrics not found for '{userid}'")
