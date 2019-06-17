@@ -30,24 +30,24 @@ def add_audio_features(tracks, access_token):
 
     spotify_features = ['duration_ms', 'key', 'mode', 'time_signature', 'acousticness',
                         'danceability', 'energy', 'instrumentalness', 'liveness',
-                        'loudness', 'speechiness', 'valence', 'tempo', 'id']
+                        'loudness', 'speechiness', 'valence', 'tempo']
 
     tracks_features = []
     for i, features in enumerate(audio_features['audio_features']):
-        track_features = {}
+        track_features = {'id': track_ids[i]}
         for feature in spotify_features:
             # Some songs do not have audio_features.
             if not audio_features:
                 track_features[feature] = None
             else:
                 # We explicitly cast these to the sure there are no type conflicts in our database.
-                track_features[feature] = float(audio_features[feature])
+                track_features[feature] = float(features[feature])
         # We only add it to the return data if the track has features.
         if track_features['danceability']:
             tracks_features.append(track_features)
 
         Song.create_if_not_exist({
-            'songid': track_ids[i],
+            'songid': track_features['id'],
             'name': tracks[track_features['id']]['name'],
             'duration_ms': track_features['duration_ms'],
             'key': track_features['key'],
@@ -115,7 +115,7 @@ def get_latest_tracks(user_id, access_token):
     recently_played = spotify.get_recently_played(access_token)
 
     if not len(recently_played['items']) > 0:
-        return
+        return None, None
 
     tracks = {}
     artists = {}
