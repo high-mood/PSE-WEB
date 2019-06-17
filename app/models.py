@@ -110,7 +110,7 @@ class Song(db.Model):
 
             db.session.add(song)
             db.session.commit()
-        
+
     @staticmethod
     def get_song_name(songid):
         song = Song.query.filter_by(songid=songid).first()
@@ -158,6 +158,7 @@ class Songmood(db.Model):
     def get_moods(songids):
         querystring = '(' + ','.join([f"'{songid}'" for songid in songids]) + ');'
         excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
+        print(excitedness)
         happiness = db.session.query('happiness FROM songmoods where songid in ' + querystring)
         return list(zip(excitedness, happiness))
 

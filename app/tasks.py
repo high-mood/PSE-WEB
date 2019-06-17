@@ -128,7 +128,9 @@ def get_latest_tracks(user_id, access_token):
         artists[track['track']['artists'][0]['id']] = None
         tracks[track['track']['id']] = {'name': track['track']['name']}
 
+    print('\ntracks', tracks)
     track_features = add_audio_features(tracks, access_token)
+    print('\nfeatures', track_features)
     add_artist_genres(artists, access_token)
 
     return latest_tracks, track_features

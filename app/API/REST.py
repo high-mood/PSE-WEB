@@ -1,12 +1,13 @@
 # TODO: restructur this code
 # TODO: unit tests
 
-from . import views
-from app import app
-from flask_restplus import Api, Resource, fields
+from app.song_recommendations import find_song_recommendations
 from .exceptions import NoResultsFound, InvalidValue
+from flask_restplus import Api, Resource, fields
 from flask import Blueprint, jsonify
 from app import models
+from app import app
+from . import views
 from . import influx
 
 import numpy as np
@@ -42,6 +43,7 @@ user_name_space = api.namespace('user', description='User information', path="/u
 mood_name_space = api.namespace('mood', description='Mood over time', path="/mood")
 metric_name_space = api.namespace('metric', description='Metric over time', path="/metric")
 history_name_space = api.namespace('history', description='Song history', path="/history")
+recommendation_name_space = api.namespace('recommendation', description='Song recommendations', path="/recommendation")
 
 @api.errorhandler
 def default_error_handler(error):
@@ -90,12 +92,12 @@ moods = api.model('Mood over time', {
     'mean_happiness': fields.Float,
     'sum_song_count': fields.Integer,
     'moods': fields.Nested(api.model('mood', {
-            'time': fields.String,
-            'excitedness': fields.Float,
-            'happiness': fields.Float,
-            'songcount': fields.Integer
-        }))
-    })
+        'time': fields.String,
+        'excitedness': fields.Float,
+        'happiness': fields.Float,
+        'songcount': fields.Integer
+    }))
+})
 
 
 @mood_name_space.route('/<string:userid>/<string:start>/<string:end>')
@@ -133,10 +135,10 @@ class Mood(Resource):
 metrics = api.model('Metric over time', {
     'userid': fields.String,
     'metric_over_time': fields.Nested(api.model('metric', {
-            'time': fields.String,
-            'value': fields.Float,
-        }))
-    })
+        'time': fields.String,
+        'value': fields.Float,
+    }))
+})
 
 
 @metric_name_space.route('/<string:userid>/<string:metric>/<string:start>/<string:end>')
@@ -177,42 +179,108 @@ history = api.model('Song history with mood', {
     'mean_excitedness': fields.Float,
     'mean_happiness': fields.Float,
     'songs': fields.Nested(api.model('song', {
-            'name': fields.String,
-            'time': fields.String,
-            'excitedness': fields.Float,
-            'happiness': fields.Float
-        }))
-    })
+        'songid': fields.String,
+        'name': fields.String,
+        'time': fields.String,
+        'excitedness': fields.Float,
+        'happiness': fields.Float
+    }))
+})
 
 
 @history_name_space.route('/<string:userid>/<int:songcount>')
-class Metric(Resource):
+class History(Resource):
     @api.marshal_with(history, envelope='resource')
     def get(self, userid, songcount):
         """
         Obtain N most recently played songs along with their mood.
         """
+        querycount = 3 * songcount
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {songcount}')
-        
+        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {querycount}')
+
         if recent_songs:
-            recent_songs = list(recent_songs.get_points(measurement=userid))        
-            songids = [song['songid'] for song in recent_songs]
+            history = []
+            recent_song_list = list(recent_songs.get_points(measurement=userid))
+            songids = list(set([song['songid'] for song in recent_song_list]))
             moods = models.Songmood.get_moods(songids)
             e, h = list(zip(*moods))
             excitedness, happiness = [val[0] for val in e], [val[0] for val in h]
             mean_excitedness = np.mean(excitedness)
             mean_happiness = np.mean(happiness)
-            for i, song in enumerate(recent_songs):
+
+            for i, songid in enumerate(songids):
+                song = {}
+                song['songid'] = songid
                 song['excitedness'] = excitedness[i]
                 song['happiness'] = happiness[i]
+                song['time'] = [song['time'] for song in recent_song_list][0]
                 song['name'] = models.Song.get_song_name(song['songid'])
-                
+                history.append(song)
+
             return {
                 'userid': userid,
                 'mean_excitedness': mean_excitedness,
                 'mean_happiness': mean_happiness,
-                'songs': recent_songs
+                'songs': history
             }
         else:
             raise NoResultsFound(f"No metrics not found for '{userid}'")
+
+
+recommendationers = api.model('Song recommendations', {
+    'userid': fields.String,
+    'recommendations': fields.Nested(api.model('recommendation', {
+        'songid': fields.String,
+        'song_url': fields.String,
+        'artists': fields.List(fields.String),
+        'name': fields.String,
+        'image_url': fields.String
+    }))
+})
+
+
+@recommendation_name_space.route('<string:userid>/<int:recommendation_count>')
+class Recommendation(Resource):
+    @api.marshal_with(recommendationers, envelope='resource')
+    def get(self, userid, recommendation_count):
+        """
+        Obtain {recommendation_count} recommendations for user {userid} along
+        with their features.
+        """
+        client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit 5')
+        if recent_songs:
+            recent_songs = list(recent_songs.get_points(measurement=userid))
+            songids = [song['songid'] for song in recent_songs]
+            recs = find_song_recommendations(songids, userid, recommendation_count)
+            print(recs)
+            if recs:
+                return {
+                    'userid': userid,
+                    'recommendations': recs
+                }
+
+
+features = api.model('Song features', {
+    'duration_ms': fields.Float,
+    'key': fields.Float,
+    'mode': fields.Float,
+    'time_signature': fields.Float,
+    'acousticness': fields.Float,
+    'danceability': fields.Float,
+    'energy': fields.Float,
+    'instrumentalness': fields.Float,
+    'liveness': fields.Float,
+    'loudness': fields.Float,
+    'speechiness': fields.Float,
+    'valence': fields.Float,
+    'tempo': fields.Float
+})
+
+artist_info = api.model('Artist info', {
+    'artistid': fields.String,
+    'name': fields.String,
+    'popularity': fields.Integer,
+    'genres': fields.List(fields.String)
+})
