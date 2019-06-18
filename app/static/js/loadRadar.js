@@ -23,7 +23,6 @@ function createRadarChart(userdata) {
     color: color
   };
 
-  document.title = userdata.username + "\'s  Mood";
 
   var finaldata = [];
   var song;
