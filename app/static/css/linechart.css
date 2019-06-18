@@ -1,7 +1,29 @@
+/* Code by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
+
+Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
+
+
 #exciteLine {
     fill: none;
     stroke: #ffab00;
     stroke-width: 3;
+}
+#exciteMean {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 4;
+    opacity: 0.5;
+}
+#exciteLegend {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+}
+#exciteLegendMean {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 4;
+    opacity: 0.5;
 }
 
 #happyLine {
@@ -9,15 +31,30 @@
     stroke: steelblue;
     stroke-width: 3;
 }
+#happyMean {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 4;
+    opacity: 0.5;
+}
+#happyLegend {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 3;
+}
+#happyLegendMean {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 4;
+    opacity: 0.5;
+}
   
 
-/* Style the dots by assigning a fill and stroke */
-.dot {
+.excitedot {
     fill: #ffab00;
     stroke: #fff;
 }
-
-.focus circle {
-    fill: none;
-    stroke: steelblue;
+.happydot {
+    fill: steelblue;
+    stroke: #fff;
 }

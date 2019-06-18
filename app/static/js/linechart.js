@@ -4,13 +4,15 @@
 
 function lineGraph(data, id) {
 
-//    console.log(data);
+   console.log(data);
 
-    var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
+    // var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
 //    console.log(dataset);
 
     var datasetExcite = []
     var datasetHappy = []
+    var meanExcite = []
+    var meanHappy = []
 
     // number of data points
     var n = data.moods.length;
@@ -22,17 +24,22 @@ function lineGraph(data, id) {
     for (var i in d3.range(n)) {
         datasetExcite.push({'y': data.moods[i].excitedness})
         datasetHappy.push({'y': data.moods[i].happiness})
+        meanExcite.push({'y': data['mean_excitedness']})
+        meanHappy.push({'y': data['mean_happiness']})
     }
 
+    console.log(meanExcite)
+
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 150, bottom: 30, left: 50};
-    var width = 630 - margin.left - margin.right;
+    var margin = {top: 20, right: 200, bottom: 30, left: 200};
+    var width = 900 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
     // 5. X scale will use the index of our data
     var xScale = d3.scaleLinear()
-        .domain([0, data.moods.length]) // input
-        .range([0, width]); // output
+        .domain([0, data.moods.length - 1]) // input
+        .range([0, width])
+
 
     // 6. Y scale will use the randomly generate number
     var yScale = d3.scaleLinear()
@@ -49,13 +56,17 @@ function lineGraph(data, id) {
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
-        .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+        // .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+        .call(d3.axisBottom(xScale).ticks(data.moods.length - 1))
 
     // 4. Call the y axis in a group tag
     svg.append("g")
         .attr("class", "y axis")
         // .attr("transform", "translate(" + width / 2 + ", 0)")
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+    // d3.select("x")
+    //     .tickFormat(d3.format("d"));
 
 //    console.log(data.songdata);
 
@@ -98,14 +109,55 @@ function lineGraph(data, id) {
         .attr("id", "happyLine")
         .attr("d", lineHappy);
 
+    svg.append("path")
+        .data([meanExcite])
+        .attr("class", "line")
+        .attr("id", "exciteMean")
+        .attr("d", lineExcite);
+
+    svg.append("path")
+        .data([meanHappy])
+        .attr("class", "line")
+        .attr("id", "happyMean")
+        .attr("d", lineHappy);
+
 
 
 
     // Handmade legend
-    svg.append("circle").attr("cx",450).attr("cy",130).attr("r", 6).style("fill", "#ffab00")
-    svg.append("circle").attr("cx",450).attr("cy",160).attr("r", 6).style("fill", "steelblue")
-    svg.append("text").attr("x", 470).attr("y", 130).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    svg.append("text").attr("x", 470).attr("y", 160).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    var legendY = 150
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY).attr("r", 6).attr("id", "exciteLegend")
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 30).attr("r", 6).attr("id", "happyLegend")
+    svg.append("text").attr("x", width+50).attr("y", legendY).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", width+50).attr("y", legendY + 30).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 60).attr("r", 6).attr("id", "exciteLegendMean")
+    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 90).attr("r", 6).attr("id", "happyLegendMean")
+    svg.append("text").attr("x", width+50).attr("y", legendY + 60).text("Mean excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", width+50).attr("y", legendY + 90).text("Mean happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+
+    // 12. Appends a circle for each datapoint 
+    svg.selectAll(".excitedot")
+    .data(datasetExcite)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "excitedot") // Assign a class for styling
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 5)
+
+
+    svg.selectAll(".happydot")
+    .data(datasetHappy)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "happydot") // Assign a class for styling
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 5)
+    .on("mouseover", function(a, b, c) { 
+            console.log(a) 
+        this.attr('class', 'focus')
+        })
+    .on("mouseout", function() {  })
+
 
     // 12. Appends a circle for each datapoint
     // svg.selectAll(".dot")
