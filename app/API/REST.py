@@ -109,7 +109,6 @@ class Mood(Resource):
         Obtain moods of a user within a given time frame.
         """
         start, end = parse_time(start, end)
-        print(start, end)
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         user_mood = client.query(f'select excitedness, happiness, songcount from "{userid}" where time > {start} and time < {end}')
@@ -202,26 +201,28 @@ class History(Resource):
         if recent_songs:
             history = []
             recent_song_list = list(recent_songs.get_points(measurement=userid))
-            songids = list(set([song['songid'] for song in recent_song_list]))
-            moods = models.Songmood.get_moods(songids)
-            e, h = list(zip(*moods))
-            excitedness, happiness = [val[0] for val in e], [val[0] for val in h]
-            mean_excitedness = np.mean(excitedness)
-            mean_happiness = np.mean(happiness)
+            songids = list(set([song['songid'] for song in recent_song_list]))[:songcount]
+            songmoods = models.Songmood.get_moods(songids)
+            excitedness = 0
+            happiness = 0
 
-            for i, songid in enumerate(songids):
+            for songmood in songmoods:
                 song = {}
-                song['songid'] = songid
-                song['excitedness'] = excitedness[i]
-                song['happiness'] = happiness[i]
+                song['songid'] = songmood.songid
+                song['excitedness'] = songmood.excitedness
+                excitedness += songmood.excitedness
+                happiness += songmood.happiness
+                song['happiness'] = songmood.happiness
                 song['time'] = [song['time'] for song in recent_song_list][0]
                 song['name'] = models.Song.get_song_name(song['songid'])
                 history.append(song)
+            excitedness /= len(songmoods)
+            happiness /= len(songmoods)
 
             return {
                 'userid': userid,
-                'mean_excitedness': mean_excitedness,
-                'mean_happiness': mean_happiness,
+                'mean_excitedness': excitedness,
+                'mean_happiness': happiness,
                 'songs': history
             }
         else:
@@ -254,12 +255,13 @@ class Recommendation(Resource):
             recent_songs = list(recent_songs.get_points(measurement=userid))
             songids = [song['songid'] for song in recent_songs]
             recs = find_song_recommendations(songids, userid, recommendation_count)
-            print(recs)
             if recs:
                 return {
                     'userid': userid,
                     'recommendations': recs
                 }
+            else:
+                raise NoResultsFound(f"No recommendations not found for '{userid}'")
 
 
 features = api.model('Song features', {
