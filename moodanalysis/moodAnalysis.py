@@ -21,6 +21,8 @@ def analyse_mood(songs):
     input_data = []
     song_titles = []
     for song in songs:
+        if not song['key']:
+            continue
         # Store song titles to return the later.
         song_titles.append(song['id'])
         # Make list matrix of input data for algorithm.
