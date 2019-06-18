@@ -10,7 +10,7 @@ This means that the beat might be faster, a higher bpm (beats per minute),\
 or the songs have a more empowering feeling to them.<br><br>\
 The feeling described when people listen to these songs are in the line of empowering, angry, upbeat, pumped.<br><br>\
 You seem like someone that loves to feel empowered by music, or perhaps a little frustrated",
-"<br><br><br><br><br><br><br><br>Low Excitedness, High Happiness (nostalgic, peaceful)<br><br>\
+"<br><br><br><br><br><br><br><br>Low Excitedness, High Happiness <br>(nostalgic, peaceful)<br><br>\
 The music you listen to is generally happy but has less energy.<br><br>\
 This means that the beat is a bit slower, lower bpm (beats per minute),<br>\
 and that the music is pretty relaxed, but has a generally happy vibe to it.<br><br>\
@@ -27,10 +27,6 @@ function giveText(data, id) {
     }
 
     document.getElementById(id).innerHTML = getText(data.mean_excitedness, data.mean_happiness,texts);
-}
-
-function resetRadarText(data) {
-    giveText(data, "radarText");
 }
 
 function hoverRadar(e) {
