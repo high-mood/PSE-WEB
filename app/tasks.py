@@ -70,21 +70,21 @@ def get_last_n_minutes(duration, userid):
         song_history = song_history['series'][0]['values']
 
     _, songids = list(zip(*song_history))
-    # moods = Songmood.get_moods(songids)
+    moods = Songmood.get_moods(songids)
 
-    # if not moods:
-    #     print(f'[{currenttime}] no moods found for {userid}')
-    #     return
+    if not moods:
+        print(f'[{currenttime}] no moods found for {userid}')
+        return
 
-    # songcount = len(moods)
+    songcount = len(moods)
 
-    # excitedness, happiness = list(zip(*moods))
-    # excitedness = np.mean(excitedness)
-    # happiness = np.mean(happiness)
+    excitedness, happiness = list(zip(*moods))
+    excitedness = np.mean(excitedness)
+    happiness = np.mean(happiness)
 
-    songcount = len(songids)
-    excitedness = np.random.uniform(-10, 10)
-    happiness = np.random.uniform(-10, 10)
+    # songcount = len(songids)
+    # excitedness = np.random.uniform(-10, 10)
+    # happiness = np.random.uniform(-10, 10)
 
     data = [{'measurement': userid,
                      'time': datetime.now().isoformat(),
@@ -141,15 +141,15 @@ def update_user_tracks(access_token):
     current_time = datetime.now().strftime("%H:%M:%S")
     
     if tracks:
-        # querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
-        # duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        # analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
+        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
+        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
+        analysis_tracks = [track for track in tracks if track['fields']['songid'] not in duplicates]
 
-        # if analysis_tracks:
-        #     moods = analyse_mood(analysis_tracks)
-        #     print(moods)
-        #     for mood in moods:
-        #         Songmood.create_if_not_exist(mood)
+        if analysis_tracks:
+            moods = analyse_mood(analysis_tracks)
+            print(moods)
+            for mood in moods:
+                Songmood.create_if_not_exist(mood)
 
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
