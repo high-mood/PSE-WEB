@@ -140,6 +140,13 @@ metrics = api.model('Metric over time', {
     }))
 })
 
+top_genres = api.model('Top x genres', {
+    'userid': fields.String,
+    'genres': fields.Nested(api.model('topgenres', {
+        'genre': fields.String,
+        'count': fields.Integer
+    }))
+})
 
 @metric_name_space.route('/<string:userid>/<string:metric>/<string:start>/<string:end>')
 class Metric(Resource):
@@ -173,6 +180,11 @@ class Metric(Resource):
         else:
             raise NoResultsFound(f"No metrics not found for '{userid}'")
 
+# @metric_name_space.route('/<string:userid>/<string:count>')
+# class TopGenres(Resource):
+#     @api.marshal_with(top_genres, envelope='resource')
+#     def get(self, userid, count):
+
 
 history = api.model('Song history with mood', {
     'userid': fields.String,
@@ -198,7 +210,7 @@ class History(Resource):
         querycount = 3 * songcount
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {querycount}')
-
+        # print(recent_songs)
         if recent_songs:
             history = []
             recent_song_list = list(recent_songs.get_points(measurement=userid))
