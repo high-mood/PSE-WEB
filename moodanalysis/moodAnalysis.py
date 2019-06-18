@@ -9,8 +9,8 @@ def analyse_mood(songs):
     :param songs: List of songs with features
     :return: List of songs with classified excitedness and happiness.
     """
-    e_est = load('moodanalysis/Trained-Excitedness.joblib')
     h_est = load('moodanalysis/Trained-Happiness.joblib')
+    e_est = load('moodanalysis/Trained-Excitedness.joblib')
     features = ["mode", "time_signature", "acousticness", "danceability",
                 "energy", "instrumentalness", "liveness", "loudness",
                 "speechiness", "valence", "tempo"]
@@ -20,19 +20,30 @@ def analyse_mood(songs):
 
     input_data = []
     song_titles = []
-    for song in songs:
+    to_be_skipped = []
+    for i, song in enumerate(songs):
         # Store song titles to return the later.
         song_titles.append(song['id'])
-        # Make list matrix of input data for algorithm.
-        input_data.append(np.array([(100 * song[feature]) for feature in features]))
+        if not song['danceability']:
+            to_be_skipped.append(i)
+        else:
+            # Make list matrix of input data for algorithm.
+            input_data.append(np.array([(100 * song[feature]) for feature in features]))
 
     output = []
-    excitedness_predictions = e_est.predict(input_data)
+    songs_skipped = 0
     happiness_predictions = h_est.predict(input_data)
-    for i in range(len(song_titles)):
-        output_data = {'songid': song_titles[i],
-                       'excitedness': float(excitedness_predictions[i]) / 100,
-                       'happiness': float(happiness_predictions[i]) / 100}
+    excitedness_predictions = e_est.predict(input_data)
+    for i in range(len(songs)):
+        if i in to_be_skipped:
+            output_data = {'songid': song_titles[i],
+                           'happiness': None,
+                           'excitedness': None}
+            songs_skipped += 1
+        else:
+            output_data = {'songid': song_titles[i],
+                           'happiness': float(happiness_predictions[i - songs_skipped]) / 100,
+                           'excitedness': float(excitedness_predictions[i - songs_skipped]) / 100}
         output.append(output_data)
 
     return output

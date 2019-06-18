@@ -139,9 +139,10 @@ class Artist(db.Model):
 
 class Songmood(db.Model):
     __tablename__ = "songmoods"
-    songid = db.Column(db.String(200), primary_key=True)
+    songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
     happiness = db.Column(db.Float())
+    responses_count = db.Column(db.Integer(), db.ColumnDefault(50))
 
     @staticmethod
     def create_if_not_exist(json_info):
@@ -156,11 +157,8 @@ class Songmood(db.Model):
 
     @staticmethod
     def get_moods(songids):
-        querystring = '(' + ','.join([f"'{songid}'" for songid in songids]) + ');'
-        excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
-        print(excitedness)
-        happiness = db.session.query('happiness FROM songmoods where songid in ' + querystring)
-        return list(zip(excitedness, happiness))
+        songs = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
+        return songs
 
 
 class SongArtist(db.Model):

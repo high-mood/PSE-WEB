@@ -4,6 +4,7 @@ from app import app
 from app import spotifysso
 from app.API import spotify, influx
 from app.tasks import update_user_tracks
+from app.models import User
 
 
 @app.route("/index", methods=['GET', 'POST'])
@@ -58,7 +59,7 @@ def authorized():
     scopes = resp['scope'].split(" ")
 
     json_user_info = spotify.get_user_info(access_token)
-    models.User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
+    User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
     session['json_info'] = json_user_info  # TODO change this laziness
     session['json_info']['refresh_token'] = refresh_token
 

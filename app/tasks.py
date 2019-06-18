@@ -3,7 +3,7 @@ from app.API import spotify, influx
 import numpy as np
 from app import db
 from moodanalysis.moodAnalysis import analyse_mood
-from app.models import Song, Artist, Songmood
+from app.models import User, Song, Artist, Songmood
 from app import app
 import sys
 
@@ -145,17 +145,94 @@ def update_user_tracks(access_token):
 
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     if tracks:
-        querystring = '(' + ','.join([f"'{track['fields']['songid']}'" for track in tracks]) + ');'
-        duplicates = [x[0] for x in db.session.query('songid FROM songmoods where songid in ' + querystring)]
-        analysis_tracks = [track for track in track_features if track['id'] not in duplicates]
-
-        if analysis_tracks:
-            moods = analyse_mood(analysis_tracks)
-            for mood in moods:
-                Songmood.create_if_not_exist(mood)
-
+        update_songmoods(track_features)
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
         print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
               file=sys.stderr)
+
+
+def update_songmoods(tracks_features):
+    songids = [track['songid'] for track in tracks_features]
+    songmoods = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
+    found_ids = [songmood.songid for songmood in songmoods]
+    analysis_tracks = [track for track in tracks_features if track['songid'] not in found_ids]
+
+    if analysis_tracks:
+        moods = analyse_mood(analysis_tracks)
+        for mood in moods:
+            Songmood.create_if_not_exist(mood)
+
+
+def get_features_moods(tracks):
+    """
+    Gather all audio features and moods for given tracks.
+    :param tracks - dict of tracks format: {'songid': {
+                                                'name': 'actual song name'
+                                                }
+                                           }
+    :return list of dictionaries containing features and mood per song.
+    """
+    update_song_features(tracks)
+    songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
+    tracks_features = []
+    for song in songs:
+        tracks_features.append(
+            {
+                'songid': song.songid,
+                'name': song.name,
+                'duration_ms': song.duration_ms,
+                'key': song.key,
+                'mode': song.mode,
+                'time_signature': song.time_signature,
+                'acousticness': song.acousticness,
+                'danceability': song.danceability,
+                'energy': song.energy,
+                'instrumentalness': song.instrumentalness,
+                'liveness': song.liveness,
+                'loudness': song.loudness,
+                'speechiness': song.speechiness,
+                'valence': song.valence,
+                'tempo': song.tempo
+            })
+    update_songmoods(tracks_features)
+
+    result = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid)
+    moods_features = []
+    for mood, feature in result:
+        moods_features = {
+            'songid': mood.songid,
+            'excitedness': mood.excitedness,
+            'happiness': mood.happiness,
+            'name': song.name,
+            'duration_ms': song.duration_ms,
+            'key': song.key,
+            'mode': song.mode,
+            'time_signature': song.time_signature,
+            'acousticness': song.acousticness,
+            'danceability': song.danceability,
+            'energy': song.energy,
+            'instrumentalness': song.instrumentalness,
+            'liveness': song.liveness,
+            'loudness': song.loudness,
+            'speechiness': song.speechiness,
+            'valence': song.valence,
+            'tempo': song.tempo
+        }
+    return moods_features
+
+
+def update_song_features(tracks):
+    songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
+    found_ids = [song.songid for song in songs]
+    not_found_ids = [id for id in tracks.keys() if id not in found_ids]
+    new_tracks = {}
+
+    for songid in not_found_ids:
+        new_tracks[songid] = tracks[songid]
+
+    # TODO
+    refresh_token = User.get_refresh_token('snipy12')
+    access_token = spotify.get_access_token(refresh_token)
+    add_audio_features(new_tracks, access_token)
