@@ -22,7 +22,7 @@ def test_debug_mode(client):
 
 def test_main_page(client):
     rv = client.get('/')
-    assert b"LOGGED OUT" in rv.data
+    assert b"Welcome to Highmood" in rv.data
 
 
 def test_user_page(client):
