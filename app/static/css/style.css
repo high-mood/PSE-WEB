@@ -128,8 +128,8 @@ ul {
 }
 
 .axis {
-  opacity: 0.85;
   stroke: #ffffff;
+  opacity: 0.85;
 }
 
 .tick {

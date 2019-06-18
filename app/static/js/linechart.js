@@ -53,7 +53,7 @@ function lineGraph(data, id) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // 3. Call the x axis in a group tag
-    svg.append("g")
+    xAxis = svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
         // .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
@@ -157,6 +157,14 @@ function lineGraph(data, id) {
         this.attr('class', 'focus')
         })
     .on("mouseout", function() {  })
+
+
+    xAxis.selectAll(".tick")
+    .each(function (d) {
+        if ( d === 0 ) {
+            this.remove();
+        }
+    });
 
 
     // 12. Appends a circle for each datapoint
