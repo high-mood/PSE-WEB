@@ -10,7 +10,7 @@ class ConfigException(Exception):
 @pytest.fixture
 def client():
     client = app.test_client()
-    app.config['TESTING'] = True
+    app.config['testing'] = True
 
     yield client
 

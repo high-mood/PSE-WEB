@@ -60,7 +60,10 @@ def _get_basic_request(access_token, url):
     response = requests.get(url, headers=headers)
 
     if response.status_code != 200:
-        raise StatusCodeError(response)
+        if response.status_code == 429:
+            __import__('time').sleep(int(response.headers['Retry-After']))
+        else:
+            raise StatusCodeError(response)
 
     return response.json()
 
