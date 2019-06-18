@@ -1,3 +1,5 @@
+var mean_excitedness, mean_happiness;
+
 const radarTexts = ["<br><br><br><br><br><br><br><br>\
 High Excitedness, High Happiness <br> (happy, upbeat, energetic)<br><br>\
 The music you listen to is generally very happy and has high energy. <br><br>\
@@ -26,7 +28,14 @@ function giveText(data, id) {
         texts = radarTexts;
     }
 
-    document.getElementById(id).innerHTML = getText(data.mean_excitedness, data.mean_happiness,texts);
+    mean_excitedness = data.mean_excitedness;
+    mean_happiness = data.mean_happiness;
+
+    document.getElementById(id).innerHTML = getText(mean_excitedness, mean_happiness, texts);
+}
+
+function resetRadarText() {
+    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, radarTexts);    
 }
 
 function hoverRadar(e) {
@@ -39,34 +48,34 @@ function hoverRadar(e) {
     document.getElementById('radarText').innerHTML = getText(y, x, radarTexts);
 }
 
-function getXYpos(elm) {
-    x = elm.offsetLeft;        // set x to elm’s offsetLeft
-    y = elm.offsetTop;         // set y to elm’s offsetTop
+function getXYpos(elem) {
+    x = elem.offsetLeft;        // set x to elem’s offsetLeft
+    y = elem.offsetTop;         // set y to elem’s offsetTop
   
-    elm = elm.offsetParent;    // set elm to its offsetParent
+    elem = elem.offsetParent;    // set elem to its offsetParent
   
-    //use while loop to check if elm is null
-    // if not then add current elm’s offsetLeft to x
-    //offsetTop to y and set elm to its offsetParent
-    while(elm != null) {
-      x = parseInt(x) + parseInt(elm.offsetLeft);
-      y = parseInt(y) + parseInt(elm.offsetTop);
-      elm = elm.offsetParent;
+    //use while loop to check if elem is null
+    // if not then add current elem’s offsetLeft to x
+    //offsetTop to y and set elem to its offsetParent
+    while(elem != null) {
+      x = parseInt(x) + parseInt(elem.offsetLeft);
+      y = parseInt(y) + parseInt(elem.offsetTop);
+      elem = elem.offsetParent;
     }
   
     // returns an object with "xp" (Left), "=yp" (Top) position
     return {'xp':x, 'yp':y};
   }
 
-function getText(mean_excitedness, mean_happiness, texts) {
-    if (mean_excitedness >= 0) {
-        if (mean_happiness >= 0) {
+function getText(m_excitedness, m_happiness, texts) {
+    if (m_excitedness >= 0) {
+        if (m_happiness >= 0) {
             return texts[0];
         } else {
             return texts[1];
         }
     } else {
-        if (mean_happiness >= 0) {
+        if (m_happiness >= 0) {
             return texts[2];
         } else {
             return texts[3];
