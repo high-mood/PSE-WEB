@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcom To Highmood</title>
+    <title>Welcome To Highmood</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
@@ -114,6 +114,7 @@
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
 
+
         if (request.status >= 200 && request.status < 400) {
           console.log(userdata.userid);
           console.log(userdata);
@@ -124,6 +125,9 @@
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
                         ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
           lineGraph(userdata, ".lineGraph");
+        }
+        else {
+          document.getElementById("userwelcome").innerHTML = "Error retrieving data!"
         }
       }
       request.send()
