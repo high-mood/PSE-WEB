@@ -26,11 +26,11 @@ def parse_time(start, end):
 
     start_date = dateparser.parse(start)
     if not start_date:
-        raise InvalidValue(f"could not parse '{start}' as start date")
+        raise InvalidValue({'msg': f"could not parse '{start}' as start date", 'code': 400})
 
     end_date = dateparser.parse(end)
     if not end_date:
-        raise InvalidValue(f"could not parse '{end}' as end date")
+        raise InvalidValue({'msg': f"could not parse '{end}' as end date", 'code': 400})
 
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
@@ -45,6 +45,7 @@ metric_name_space = api.namespace('metric', description='Metric over time', path
 history_name_space = api.namespace('history', description='Song history', path="/history")
 recommendation_name_space = api.namespace('recommendation', description='Song recommendations', path="/recommendation")
 
+
 @api.errorhandler
 def default_error_handler(error):
     """ Default error handler. """
@@ -55,7 +56,7 @@ def default_error_handler(error):
 @api.errorhandler(InvalidValue)
 @api.errorhandler(NoResultsFound)
 def error_handler(error):
-    return {'message': str(error)}, 404
+    return {'message': str(error['msg'])}, error['code']
 
 
 user_info = api.model('UserInfo', {
@@ -81,7 +82,7 @@ class User(Resource):
 
         user = models.User.query.filter_by(userid=userid).first()
         if not user:
-            raise NoResultsFound("userid not found")
+            raise NoResultsFound({'msg': "userid not found", 'code': 404})
 
         return user
 
@@ -128,7 +129,7 @@ class Mood(Resource):
                 'moods': mood_list
             }
         else:
-            raise NoResultsFound(f"No moods found for '{userid}'")
+            raise NoResultsFound({'msg': f"No moods found for '{userid}'", 'code': 404})
 
 
 metrics = api.model('Metric over time', {
@@ -153,7 +154,7 @@ class Metric(Resource):
         'speechiness', 'tempo', 'valence'
         """
         if metric not in possible_metrics:
-            raise InvalidValue("invalid metric")
+            raise InvalidValue({'msg': "invalid metric", 'code': 400})
 
         start, end = parse_time(start, end)
 
@@ -170,7 +171,7 @@ class Metric(Resource):
                 'metric_over_time': metric_list
             }
         else:
-            raise NoResultsFound(f"No metrics not found for '{userid}'")
+            raise NoResultsFound({'msg': f"No metrics not found for '{userid}'", 'code': 404})
 
 
 history = api.model('Song history with mood', {
@@ -226,7 +227,7 @@ class History(Resource):
                 'songs': history
             }
         else:
-            raise NoResultsFound(f"No metrics not found for '{userid}'")
+            raise NoResultsFound({'msg': f"No metrics not found for '{userid}'", 'code': 404})
 
 
 recommendationers = api.model('Song recommendations', {

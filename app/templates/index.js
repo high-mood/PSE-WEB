@@ -20,6 +20,50 @@ for (var i in genres) {
   genres_colors.push(randomColor())
 }
 
+
+function getTop10() {
+    // Establish the array which acts as a data source for the list
+    var listData = [
+        'Blue',
+        'Red',
+        'White',
+        'Green',
+        'Black',
+        'Orange'
+    ];
+
+    // Make a container element for the list
+    // var listContainer = document.createElement('div');
+    var listContainer = document.getElementById('top10');
+
+    // Add it to the page
+    document.getElementsByTagName('body')[0].appendChild(listContainer);
+
+    // Make the list
+    var listElement = document.createElement('ul');
+
+    // listElement.classList.add('w3-ul w3-card-4')
+
+    // Add it to the page
+    listContainer.appendChild(listElement);
+
+    // Set up a loop that goes through the items in listItems one at a time
+    var numberOfListItems = songs.length;
+
+    for (var i = 0; i < numberOfListItems; ++i) {
+        // create an item for each one
+        var listItem = document.createElement('li');
+
+        // Add the item text
+        listItem.innerHTML = songs[i];
+
+        // Add listItem to the listElement
+        listElement.appendChild(listItem);
+    }
+}
+
+
+
 new Chart(document.getElementById("barchart"), {
   type: 'bar',
   data: {
@@ -63,7 +107,7 @@ new Chart(document.getElementById("linechart"), {
   type: 'line',
   data: {
     labels: timestamps,
-    datasets: [{ 
+    datasets: [{
         data: duration,
         borderColor: "#0643a5",
         label: "listen time (min)",
