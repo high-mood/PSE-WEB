@@ -157,7 +157,6 @@ class Songmood(db.Model):
 
     @staticmethod
     def get_moods(songids):
-        querystring = '(' + ','.join([f"'{songid}'" for songid in songids]) + ');'
         songs = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
         return songs
 
