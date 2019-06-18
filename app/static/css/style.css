@@ -121,3 +121,23 @@ ul {
 .navItems {
   float: right;
 }
+
+.domain {
+  stroke: #ffffff;
+  opacity: 0.85;
+}
+
+.axis {
+  opacity: 0.85;
+  stroke: #ffffff;
+}
+
+.tick {
+  stroke: #ffffff;
+  opacity: 0.85;
+}
+
+line {
+  stroke: #ffffff;
+  opacity: 0.85;
+}

@@ -73,11 +73,13 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
   var xScale = d3.scaleLinear()
     .domain([xMin,xMax])
     .range([0,16 * width / 20]);
+    // .style('stroke', '#ffffff');
   var xAxis = d3.axisBottom()
     .scale(xScale)
-    .ticks(d3.min([xSamples,20]));
-  svg.append("g").call(xAxis)
-    .attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")");
+    .ticks(d3.min([xSamples,20]))
+    svg.append("g").call(xAxis)
+    .attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")")
+    .style('stroke', '#ffffff');
 
   var yScale = d3.scaleLinear()
     .domain([yMin,yMax])
