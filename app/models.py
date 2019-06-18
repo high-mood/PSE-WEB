@@ -139,9 +139,10 @@ class Artist(db.Model):
 
 class Songmood(db.Model):
     __tablename__ = "songmoods"
-    songid = db.Column(db.String(200), primary_key=True)
+    songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
     happiness = db.Column(db.Float())
+    responses_count = db.Column(db.Integer(), db.ColumnDefault(50))
 
     @staticmethod
     def create_if_not_exist(json_info):
