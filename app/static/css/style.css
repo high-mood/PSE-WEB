@@ -49,11 +49,19 @@ ul {
 #Welcome-User {
   margin-top: 100px;
 }
+
 .mainPage {
-  display: block;
-  padding-top: 50px;
-  height: 800px;
-  /* border: 1px solid white; */
+  width: 100%;
+  height: 60vh;
+}
+
+.mainPageSmall {
+  width: 100%;
+}
+
+.divider {
+  width: 100%;
+  height: 10vh;
 }
 
 .legend {
@@ -65,14 +73,33 @@ ul {
   fill: #ffffff;
 }
 
-.inner-div
+.innerTextDiv
 {
-    display: block;
-    /* width: 300px; */
-     /* margin: auto;
-     margin-top: 70px;
-     width: 800px;
-     height: 800px; */
+     margin: 0 5%;
+     width: 46%;
+     height: 100%;
+     float: left;
+}
+
+.innerChartDiv
+{
+     margin: 0 2%;
+     width: 40%;
+     height: 100%;
+     float: left;
+}
+
+.innerTextDivSmall
+{
+     margin: 0;
+     width: 100%;
+     height: 100px;
+}
+
+.innerChartDivSmall
+{
+     margin: 0;
+     width: 100%;
 }
 
 .navigation-bar {
@@ -102,10 +129,6 @@ ul {
 
 .navigation-bar a.icon {
   display: none;
-}
-
-.lineGraph {
-  margin-top: 200px;
 }
 
 .active {
