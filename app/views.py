@@ -82,3 +82,8 @@ def authorized():
     update_user_tracks(access_token)
 
     return redirect(url_for('index'))
+
+@app.route('/logout')
+def sign_out():
+    session.pop("json_info")
+    return redirect(url_for('index'))
