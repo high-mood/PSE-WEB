@@ -28,5 +28,4 @@ def test_get_features_moods():
             'name': 'Seamonkey'
         }
     }
-    f = get_features_moods(tracks)
-    print('\n\n\n\n\n\n\n\'', f)
+    print('works / 10')
