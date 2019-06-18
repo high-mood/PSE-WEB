@@ -33,8 +33,8 @@ def analyse_mood(songs):
     happiness_predictions = h_est.predict(input_data)
     for i in range(len(song_titles)):
         output_data = {'songid': song_titles[i],
-                       'excitedness': float(excitedness_predictions[i]) / 100,
-                       'happiness': float(happiness_predictions[i]) / 100}
+                       'excitedness': float(excitedness_predictions[i]),
+                       'happiness': float(happiness_predictions[i])}
         output.append(output_data)
 
     return output
