@@ -43,6 +43,9 @@
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
     <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 </head>
   <body class='body'>
 
@@ -51,10 +54,14 @@
             <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
             <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
             <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
+            <!-- <a onclick="navigateTo('Heat-Graph')" id="HeatTab">Log Out</a> -->
+            <a href="/logout">Logout</a>
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="{{ url_for('index_js') }}"></script>
 
     <div id="Welcome-User">
       {% if text %}
@@ -64,9 +71,22 @@
     </div>
 
 
+    <div class="w3-container">
+      <!-- <h1>Top 10 Songs</h1> -->
+      <div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">
+        <h4 style="text-align: center;">Your Top 10 Songs</h4>
+      </div>
+    </div>
+
+    <script>       getTop10(); </script>
+
     <div class="mainPage" id="Radar-Graph">
         <div class="radarChart inner-div"></div>
     </div>
+
+    <script>
+
+    </script>
 
     <div class="mainPage" id="Line-Graph">
         <div class="lineGraph inner-div"></div>
@@ -76,19 +96,18 @@
         <div class="inner-div" id="heatmap"></div>
     </div>
 
-
-
-
-
     <script>
 
       var userid = document.getElementById("username").textContent;
       console.log((userid));
+
+
+
       var request = new XMLHttpRequest()
 
 
-      // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
-      request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
+      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      // request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
       request.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
@@ -97,11 +116,9 @@
           console.log(userdata.userid);
           console.log(userdata);
           createRadarChart(userdata);
-
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
                         ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
-
           lineGraph(userdata, ".lineGraph");
         }
       }
@@ -110,11 +127,10 @@
 
     </script>
 
-<!--
-    <canvas id="barchart"></canvas>
-    <canvas id="piechart"></canvas>
+
+    <!-- <canvas id="barchart"></canvas> -->
+    <!-- <canvas id="piechart"></canvas>
     <canvas id="linechart"></canvas> -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="{{ url_for('index_js') }}"></script>
+
   </body>
 </html>
