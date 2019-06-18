@@ -19,7 +19,7 @@
     <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
 
     <!-- Placeholder Javascript #2-->
-    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <script src="{{ url_for('static',filename='js/chartText.js') }}"></script>
     <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
 
     <!-- Placeholder Javascript #3-->
@@ -81,6 +81,7 @@
     <script>       getTop10(); </script>
 
     <div class="mainPage" id="Radar-Graph">
+        <div class="radarText" id="radarText"></div>
         <div class="radarChart inner-div"></div>
     </div>
 
@@ -116,6 +117,7 @@
           console.log(userdata.userid);
           console.log(userdata);
           createRadarChart(userdata);
+          giveText(userdata, "radarText");
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
                         ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
