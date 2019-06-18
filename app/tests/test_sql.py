@@ -1,7 +1,6 @@
 import pytest
 
 from app import app
-from app.tasks import get_features_moods
 
 
 class ConfigException(Exception):

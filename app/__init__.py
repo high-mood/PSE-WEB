@@ -29,12 +29,10 @@ spotifysso = oauth.remote_app('spotify',
                                                               # TODO: https://github.com/spotify/web-api/issues/1262
                                                               'user-read-currently-playing'
                                                               )
-
                                                     },
                               request_token_url=None
                               )
 oauth.init_app(app)
 
 from app import views
-from app.API import REST
-
+from app import API

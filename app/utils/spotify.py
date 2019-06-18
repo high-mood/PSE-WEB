@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from config import SPOTIFY_CLIENT, SPOTIFY_SECRET
-from .exceptions import StatusCodeError
+from app.utils.exceptions import StatusCodeError
 
 
 def get_artists(access_token, artistids):
@@ -50,6 +50,21 @@ def get_user_info(access_token):
     :return: Response body contains a user object in JSON format.
     """
     url = "https://api.spotify.com/v1/me"
+
+    return _get_basic_request(access_token, url)
+
+
+def get_recommendations(access_token, recommendation_count, track_string, param_string):
+    """
+    Gets song recommendations based on the given parameters.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    :param recommendation_count: The target size of the list of recommended tracks.
+    :param track_string: A comma separated list of Spotify IDs for a seed track.
+    :param param_string: For each tunable track attribute, a range on the
+                         selected track attribute’s value can be provided.
+    :return: A response body contains a recommendations response object in JSON format.
+    """
+    url = f"https://api.spotify.com/v1/recommendations?limit={recommendation_count}&seed_tracks={track_string}{param_string}"
 
     return _get_basic_request(access_token, url)
 

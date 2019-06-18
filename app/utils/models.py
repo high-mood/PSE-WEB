@@ -1,5 +1,3 @@
-# Imports here
-
 from app import db
 import datetime
 """smaple response:

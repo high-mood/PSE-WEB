@@ -1,10 +1,11 @@
-from app.tasks import get_last_n_minutes
-from app.models import User
+from app.utils.tasks import get_last_n_minutes
+from app.utils.models import User
 import sys
 
 
 def main():
     duration = sys.argv[1]
+    # We Limit the traceback to keep the log files clear.
     sys.tracebacklimit = 0
     userids = User.get_all_users()
 
@@ -13,7 +14,6 @@ def main():
 
 
 if __name__ == '__main__':
-    # We Limit the traceback to keep the log files clear.
     if len(sys.argv) == 2:
         main()
     else:

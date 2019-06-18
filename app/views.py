@@ -2,9 +2,9 @@ from flask import render_template, redirect, request, session, url_for, flash
 from app import app
 # Refactor later
 from app import spotifysso
-from app.API import spotify, influx
-from app.tasks import update_user_tracks
-from app.models import User
+from app.utils import influx, spotify
+from app.utils.tasks import update_user_tracks
+from app.utils.models import User
 
 
 @app.route("/index", methods=['GET', 'POST'])

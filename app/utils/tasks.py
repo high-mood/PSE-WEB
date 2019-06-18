@@ -1,14 +1,19 @@
 from datetime import datetime
-from app.API import spotify, influx
+from app.utils import influx, spotify
 import numpy as np
 from app import db
 from moodanalysis.moodAnalysis import analyse_mood
-from app.models import User, Song, Artist, Songmood
+from app.utils.models import User, Song, Artist, Songmood
 from app import app
 import sys
 
 
 def add_artist_genres(artist_ids, access_token):
+    """
+    Adds the artist with there genres to the SQL database.
+    :param artist_ids: List of artist ids.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    """
     if not artist_ids:
         return
     artists_info = spotify.get_artists(access_token, list(artist_ids.keys()))
@@ -23,6 +28,12 @@ def add_artist_genres(artist_ids, access_token):
 
 
 def add_audio_features(tracks, access_token):
+    """
+    Adds the tracks with there audio features to the SQL database.
+    :param tracks: List of track ids.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    :return: A list of audio features per song to be able to do mood analysis later.
+    """
     if not tracks:
         return
     track_ids = list(tracks.keys())
@@ -68,6 +79,11 @@ def add_audio_features(tracks, access_token):
 
 
 def get_last_n_minutes(duration, userid):
+    """
+    Updates the mean excitedness and happiness for the user with there songs in the last `duration`.
+    :param duration: Duration to generate mean mood for (i.e. 1h, 1d, 1w etc).
+    :param userid: Spotify user id of the user.
+    """
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     client.switch_database('songs')
 
@@ -93,10 +109,6 @@ def get_last_n_minutes(duration, userid):
     excitedness_mean = np.mean(excitedness)
     happiness_mean = np.mean(happiness)
 
-    # songcount = len(songids)
-    # excitedness = np.random.uniform(-10, 10)
-    # happiness = np.random.uniform(-10, 10)
-
     data = [{'measurement': userid,
              'time': datetime.now().isoformat(),
              'fields': {
@@ -112,6 +124,12 @@ def get_last_n_minutes(duration, userid):
 
 
 def get_latest_tracks(user_id, access_token):
+    """
+    Gets the 50 most recent tracks from that the user listened to and stores multiple aspects of them.
+    :param user_id: Spotify user id of the user.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    :return: The 50 most recent tracks for the timescale database and there audio features for mood analysis.
+    """
     recently_played = spotify.get_recently_played(access_token)
 
     if not len(recently_played['items']) > 0:
@@ -137,6 +155,10 @@ def get_latest_tracks(user_id, access_token):
 
 
 def update_user_tracks(access_token):
+    """
+    Gets the latest tracks the user listened to and updates the databases accordingly.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    """
     user_data = spotify.get_user_info(access_token)
     tracks, track_features = get_latest_tracks(user_data['id'], access_token)
 
@@ -168,11 +190,8 @@ def update_songmoods(tracks_features):
 def get_features_moods(tracks):
     """
     Gather all audio features and moods for given tracks.
-    :param tracks - dict of tracks format: {'songid': {
-                                                'name': 'actual song name'
-                                                }
-                                           }
-    :return list of dictionaries containing features and mood per song.
+    :param tracks: dict of tracks formatted as: {'songid': {'name': 'actual song name'}}
+    :return: list of dictionaries containing features and mood per song.
     """
     update_song_features(tracks)
     songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
@@ -205,6 +224,7 @@ def get_features_moods(tracks):
             'songid': mood.songid,
             'excitedness': mood.excitedness,
             'happiness': mood.happiness,
+            # TODO this doesnt seem right
             'name': song.name,
             'duration_ms': song.duration_ms,
             'key': song.key,
@@ -224,6 +244,10 @@ def get_features_moods(tracks):
 
 
 def update_song_features(tracks):
+    """
+    Update the song features for the given tracks.
+    :param tracks: dict of tracks formatted as: {'songid': {'name': 'actual song name'}}
+    """
     songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
     found_ids = [song.songid for song in songs]
     not_found_ids = [id for id in tracks.keys() if id not in found_ids]
@@ -232,7 +256,55 @@ def update_song_features(tracks):
     for songid in not_found_ids:
         new_tracks[songid] = tracks[songid]
 
-    # TODO
+    # TODO don't hardcode 'snipy12'
     refresh_token = User.get_refresh_token('snipy12')
     access_token = spotify.get_access_token(refresh_token)
     add_audio_features(new_tracks, access_token)
+
+
+def _get_parameter_string(min_key=-1, min_mode=0,
+                          min_acousticness=0.0, min_danceablility=0.0,
+                          min_energy=0.0, min_instrumentalness=0.0,
+                          min_liveness=0.0, min_loudness=-60,
+                          min_speechiness=0.0, min_valence=0.0, min_tempo=0,
+                          max_key=11, max_mode=1,
+                          max_acousticness=1.0, max_danceablility=1.0,
+                          max_energy=1.0, max_instrumentalness=1.0,
+                          max_liveness=1.0, max_loudness=0,
+                          max_speechiness=1.0, max_valence=1.0, max_tempo=99999):
+    """ Fills in emtpy parameters with there default value. """
+    return (f"&min_key={min_key}&max_key={max_key}" +
+            f"&min_mode={min_mode}&max_mode={max_mode}" +
+            f"&min_acousticness={min_acousticness}&max_acousticness={max_acousticness}" +
+            f"&min_danceablility={min_danceablility}&max_danceablility={max_danceablility}" +
+            f"&min_energy={min_energy}&max_energy={max_energy}" +
+            f"&min_instrumentalness={min_instrumentalness}&max_instrumentalness={max_instrumentalness}" +
+            f"&min_liveness={min_liveness}&max_liveness={max_liveness}" +
+            f"&min_loudness={min_loudness}&max_loudness={max_loudness}" +
+            f"&min_speechiness={min_speechiness}&max_speechiness={max_speechiness}" +
+            f"&min_valence={min_valence}&max_valence={max_valence}" +
+            f"&min_tempo={min_tempo}&max_tempo={max_tempo}")
+
+
+def find_song_recommendations(tracks, userid, recommendation_count, **params):
+    """
+    Find recommendations given max 5 song ID's.
+    The recommendations are based on the given songs and can be based on additional parameters for the given mood.
+    :param tracks: list of given songs.
+    :param userid: Spotify user id of the user.
+    :param recommendation_count:
+    :param params: Audio feature parameters.
+    :return: List of 5 tuple recommendations consisting of song id, song name, main artist and playable link.
+    """
+    tracks = tracks[:5]
+    track_string = '%2C'.join(tracks)
+    access_token = spotify.get_access_token(User.get_refresh_token(userid))
+    param_string = _get_parameter_string(**params)
+    response = spotify.get_recommendations(access_token, recommendation_count, track_string, param_string)
+
+    song_recommendation = response['tracks']
+    recommendations = [{'songid': song['id'], 'name': song['name'], 'song_url': song['external_urls']['spotify'],
+                        'artists': [artist['id'] for artist in song['artists']],
+                        'image_url': song['album']['images'][0]['url']} for song in song_recommendation]
+
+    return recommendations
