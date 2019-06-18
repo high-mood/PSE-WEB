@@ -36,7 +36,7 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
   var maxSize = d3.max(dataSet.map(function(data) { return data.size; }));
   var colorScale = d3.scaleLinear()
                            .domain([0, maxSize])
-                           .range(['rgba(21,21,243,0.2)','rgba(243,21,21,0.8)']);
+                           .range(['steelblue','#ffab00']);
 
 
   // Add in squares for all dataPoints in dataSet.

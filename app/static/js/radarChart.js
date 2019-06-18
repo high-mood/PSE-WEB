@@ -204,7 +204,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.append("path")
 		.attr("class", "radarArea")
 		.attr("d", d => radarLine(d.axes))
-		.style("fill", (d,i) => cfg.color(i))
+		.style("fill", '#ffab00')
 		.style("fill-opacity", cfg.opacityArea)
 		.on('mouseover', function(d, i) {
 			//Dim all blobs
@@ -228,7 +228,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.attr("class", "radarStroke")
 		.attr("d", function(d,i) { return radarLine(d.axes); })
 		.style("stroke-width", cfg.strokeWidth + "px")
-		.style("stroke", (d,i) => cfg.color(i))
+		.style("stroke", '#ffab00')
 		.style("fill", "none")
 		.style("filter" , "url(#glow)");
 
@@ -241,7 +241,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.attr("r", cfg.dotRadius)
 		.attr("cx", (d,i) => rScale(d.value) * cos(angleSlice * i - HALF_PI))
 		.attr("cy", (d,i) => rScale(d.value) * sin(angleSlice * i - HALF_PI))
-		.style("fill", (d) => cfg.color(d.id))
+		.style("fill", '#ffab00')
 		.style("fill-opacity", 0.8);
 
 	/////////////////////////////////////////////////////////
