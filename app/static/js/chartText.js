@@ -21,26 +21,26 @@ This means that the beat is pretty slow, low bpm (beats per minute), and that th
 You seem sad or a bit down on your luck."];
 
 function giveText(data, id) {
-    var text;
+    var texts;
     if (id == "radarText") {
-        text = radarText(data);
+        texts = radarTexts;
     }
 
-    document.getElementById(id).innerHTML = text;
+    document.getElementById(id).innerHTML = getText(data, texts);
 }
 
-function radarText(data) {
+function getText(data, texts) {
     if (data.mean_excitedness > 0) {
         if (data.mean_happiness > 0) {
-            return radarTexts[0];
+            return texts[0];
         } else {
-            return radarTexts[1];
+            return texts[1];
         }
     } else {
         if (data.mean_happiness > 0) {
-            return radarTexts[2];
+            return texts[2];
         } else {
-            return radarTexts[3];
+            return texts[3];
         }
     }
 }
