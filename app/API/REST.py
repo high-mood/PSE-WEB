@@ -180,10 +180,20 @@ class Metric(Resource):
         else:
             raise NoResultsFound({'msg': f"No metrics not found for '{userid}'", 'code': 404})
 
+
 # @metric_name_space.route('/<string:userid>/<string:count>')
 # class TopGenres(Resource):
 #     @api.marshal_with(top_genres, envelope='resource')
 #     def get(self, userid, count):
+#         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+#         recent_songs = client.query(f'select songid from "{userid}" order by time desc')
+#         if not recent_songs:
+#             print('no history found')
+#             return
+#         recent_song_list = list(recent_songs.get_points(measurement=userid))
+#         songids = list(set([song['songid'] for song in recent_song_list]))
+#         Artist.query(genres).filter()
+
 
 
 history = api.model('Song history with mood', {
@@ -214,23 +224,27 @@ class History(Resource):
         if recent_songs:
             history = []
             recent_song_list = list(recent_songs.get_points(measurement=userid))
-            songids = list(set([song['songid'] for song in recent_song_list]))[:songcount]
+            songids = list(set([song['songid'] for song in recent_song_list]))
+            songids = songids[:songcount] if songcount > 0 else songids
             songmoods = models.Songmood.get_moods(songids)
             excitedness = 0
             happiness = 0
+            mean_count = 1
 
             for songmood in songmoods:
+                if songmood.excitedness and songmood.happiness:
+                    excitedness += songmood.excitedness
+                    happiness += songmood.happiness
+                    mean_count += 1 if mean_count != 1 else 0
                 song = {}
                 song['songid'] = songmood.songid
                 song['excitedness'] = songmood.excitedness
-                excitedness += songmood.excitedness
-                happiness += songmood.happiness
                 song['happiness'] = songmood.happiness
                 song['time'] = [song['time'] for song in recent_song_list][0]
                 song['name'] = models.Song.get_song_name(song['songid'])
                 history.append(song)
-            excitedness /= len(songmoods)
-            happiness /= len(songmoods)
+            excitedness /= mean_count
+            happiness /= mean_count
 
             return {
                 'userid': userid,
