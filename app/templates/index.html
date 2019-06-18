@@ -58,7 +58,7 @@
             <a href="/logout">Logout</a>
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
-    </div>
+    </div>id
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="{{ url_for('index_js') }}"></script>
@@ -82,7 +82,7 @@
 
     <div class="mainPage" id="Radar-Graph">
         <div class="radarText" id="radarText"></div>
-        <div class="radarChart inner-div"></div>
+        <div class="radarChart inner-div" id="radarChart"></div>
     </div>
 
     <script>
@@ -102,6 +102,7 @@
       var userid = document.getElementById("username").textContent;
       console.log((userid));
 
+      document.getElementById("radarChart").onmousemove = hoverRadar;
 
 
       var request = new XMLHttpRequest()
@@ -119,6 +120,7 @@
           console.log(userdata);
           createRadarChart(userdata);
           giveText(userdata, "radarText");
+
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
                         ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
