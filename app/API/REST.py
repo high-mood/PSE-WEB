@@ -26,11 +26,11 @@ def parse_time(start, end):
 
     start_date = dateparser.parse(start)
     if not start_date:
-        raise InvalidValue(f"could not parse '{start}' as start date")
+        raise InvalidValue({'msg': f"could not parse '{start}' as start date", 'code': 400})
 
     end_date = dateparser.parse(end)
     if not end_date:
-        raise InvalidValue(f"could not parse '{end}' as end date")
+        raise InvalidValue({'msg': f"could not parse '{end}' as end date", 'code': 400})
 
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
@@ -45,6 +45,7 @@ metric_name_space = api.namespace('metric', description='Metric over time', path
 history_name_space = api.namespace('history', description='Song history', path="/history")
 recommendation_name_space = api.namespace('recommendation', description='Song recommendations', path="/recommendation")
 
+
 @api.errorhandler
 def default_error_handler(error):
     """ Default error handler. """
@@ -55,7 +56,7 @@ def default_error_handler(error):
 @api.errorhandler(InvalidValue)
 @api.errorhandler(NoResultsFound)
 def error_handler(error):
-    return {'message': str(error)}, 404
+    return {'message': str(error['msg'])}, error['code']
 
 
 user_info = api.model('UserInfo', {
@@ -81,7 +82,7 @@ class User(Resource):
 
         user = models.User.query.filter_by(userid=userid).first()
         if not user:
-            raise NoResultsFound("userid not found")
+            raise NoResultsFound({'msg': "userid not found", 'code': 404})
 
         return user
 
@@ -109,7 +110,6 @@ class Mood(Resource):
         Obtain moods of a user within a given time frame.
         """
         start, end = parse_time(start, end)
-        print(start, end)
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         user_mood = client.query(f'select excitedness, happiness, songcount from "{userid}" where time > {start} and time < {end}')
@@ -129,7 +129,7 @@ class Mood(Resource):
                 'moods': mood_list
             }
         else:
-            raise NoResultsFound(f"No moods found for '{userid}'")
+            raise NoResultsFound({'msg': f"No moods found for '{userid}'", 'code': 404})
 
 
 metrics = api.model('Metric over time', {
@@ -154,7 +154,7 @@ class Metric(Resource):
         'speechiness', 'tempo', 'valence'
         """
         if metric not in possible_metrics:
-            raise InvalidValue("invalid metric")
+            raise InvalidValue({'msg': "invalid metric", 'code': 400})
 
         start, end = parse_time(start, end)
 
@@ -171,7 +171,7 @@ class Metric(Resource):
                 'metric_over_time': metric_list
             }
         else:
-            raise NoResultsFound(f"No metrics not found for '{userid}'")
+            raise NoResultsFound({'msg': f"No metrics not found for '{userid}'", 'code': 404})
 
 
 history = api.model('Song history with mood', {
@@ -202,30 +202,32 @@ class History(Resource):
         if recent_songs:
             history = []
             recent_song_list = list(recent_songs.get_points(measurement=userid))
-            songids = list(set([song['songid'] for song in recent_song_list]))
-            moods = models.Songmood.get_moods(songids)
-            e, h = list(zip(*moods))
-            excitedness, happiness = [val[0] for val in e], [val[0] for val in h]
-            mean_excitedness = np.mean(excitedness)
-            mean_happiness = np.mean(happiness)
+            songids = list(set([song['songid'] for song in recent_song_list]))[:songcount]
+            songmoods = models.Songmood.get_moods(songids)
+            excitedness = 0
+            happiness = 0
 
-            for i, songid in enumerate(songids):
+            for songmood in songmoods:
                 song = {}
-                song['songid'] = songid
-                song['excitedness'] = excitedness[i]
-                song['happiness'] = happiness[i]
+                song['songid'] = songmood.songid
+                song['excitedness'] = songmood.excitedness
+                excitedness += songmood.excitedness
+                happiness += songmood.happiness
+                song['happiness'] = songmood.happiness
                 song['time'] = [song['time'] for song in recent_song_list][0]
                 song['name'] = models.Song.get_song_name(song['songid'])
                 history.append(song)
+            excitedness /= len(songmoods)
+            happiness /= len(songmoods)
 
             return {
                 'userid': userid,
-                'mean_excitedness': mean_excitedness,
-                'mean_happiness': mean_happiness,
+                'mean_excitedness': excitedness,
+                'mean_happiness': happiness,
                 'songs': history
             }
         else:
-            raise NoResultsFound(f"No metrics not found for '{userid}'")
+            raise NoResultsFound({'msg': f"No metrics not found for '{userid}'", 'code': 404})
 
 
 recommendationers = api.model('Song recommendations', {
@@ -254,12 +256,13 @@ class Recommendation(Resource):
             recent_songs = list(recent_songs.get_points(measurement=userid))
             songids = [song['songid'] for song in recent_songs]
             recs = find_song_recommendations(songids, userid, recommendation_count)
-            print(recs)
             if recs:
                 return {
                     'userid': userid,
                     'recommendations': recs
                 }
+            else:
+                raise NoResultsFound(f"No recommendations not found for '{userid}'")
 
 
 features = api.model('Song features', {

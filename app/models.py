@@ -157,10 +157,8 @@ class Songmood(db.Model):
     @staticmethod
     def get_moods(songids):
         querystring = '(' + ','.join([f"'{songid}'" for songid in songids]) + ');'
-        excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
-        print(excitedness)
-        happiness = db.session.query('happiness FROM songmoods where songid in ' + querystring)
-        return list(zip(excitedness, happiness))
+        songs = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
+        return songs
 
 
 class SongArtist(db.Model):
