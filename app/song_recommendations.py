@@ -46,8 +46,8 @@ def find_song_recommendations(tracks, userid, recommendation_count, **params):
     endpoint="https://api.spotify.com/v1/recommendations"
     track_string = '%2C'.join(tracks)
     token = get_access_token(User.get_refresh_token(userid))
-    param_string = get_parameter_string()
-    r = requests.get(f'{endpoint}?limit={recommendation_count}&seed_tracks={track_string}', headers={"Authorization": "Bearer "+ token})
+    param_string = get_parameter_string(params)
+    r = requests.get(f'{endpoint}?limit={recommendation_count}&seed_tracks={track_string}{param_string}', headers={"Authorization": "Bearer "+ token})
     if r.status_code != 200:
         print(r.status_code)
         print(r.text)
