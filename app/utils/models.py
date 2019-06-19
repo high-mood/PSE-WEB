@@ -1,4 +1,4 @@
-from app import db
+from app import db, app
 import datetime
 
 
@@ -33,18 +33,15 @@ class User(db.Model):
 
     @staticmethod
     def get_all_tokes():
-        query = db.session.query("refresh_token FROM users")
-        return [row[0] for row in query]
+        return [r.refresh_token for r in db.session.query(User.refresh_token)]
 
     @staticmethod
     def get_all_users():
-        query = db.session.query("userid FROM users")
-        return [row[0] for row in query]
+        return [r.userid for r in db.session.query(User.userid)]
 
     @staticmethod
     def get_refresh_token(userid):
-        query = db.session.query(f"refresh_token FROM users where userid='{userid}'")
-        return query[0][0]
+        return User.query.filter_by(userid=userid).first().refresh_token
 
 
 class Song(db.Model):
@@ -146,6 +143,7 @@ class SongArtist(db.Model):
 
     __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
 
+    #TODO fix below
     @staticmethod
     def create_if_not_exist(json_info):
         songartist = SongArtist.query(f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
