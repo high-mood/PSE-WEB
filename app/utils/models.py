@@ -1,9 +1,7 @@
 from app import db
-import datetimeg
+import datetime
 
 
-# TODO: Should user data be deleted after access revokeD?
-# if not, boolean is active
 class User(db.Model):
     __tablename__ = "users"
     userid = db.Column(db.String(200), primary_key=True)
