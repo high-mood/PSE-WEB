@@ -219,12 +219,12 @@ def get_features_moods(tracks):
 
     result = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(Song.songid.in_((tracks.keys()))).all()
     moods_features = []
-    for mood, feature in result:
+    for mood, song in result:
+        print(mood, song)
         moods_features.append({
             'songid': mood.songid,
             'excitedness': mood.excitedness,
             'happiness': mood.happiness,
-            # TODO this doesnt seem right
             'name': song.name,
             'duration_ms': song.duration_ms,
             'key': song.key,
