@@ -1,7 +1,7 @@
 import pytest
 
 from app import app
-from app.API import spotify as api
+from app.utils import spotify as api
 
 
 @pytest.fixture
