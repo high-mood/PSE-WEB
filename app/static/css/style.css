@@ -29,6 +29,25 @@ ul {
   /* width: 300px; */
 }
 
+#Song-Recommendation{
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid black;
+}
+
+.songdiv {
+  border: 2px solid black;
+  height: 80px;
+}
+
+.SongRecButton{
+  height: 80px;
+  float: left;
+  background-color: black;
+  color: white;
+}
+
 .radarChart {
   float: right;
   /* display: inline; */

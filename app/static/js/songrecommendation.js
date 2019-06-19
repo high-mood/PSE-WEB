@@ -25,16 +25,6 @@ function createSongRecommendationWidget(userid) {
         songdiv.classList.add('songdiv');
         songdiv.id = userdata.songs[i].songid;
 
-        // songdiv.onclick = function() { alert('hallo'); };
-        // songdiv.onclick = showSong(userdata.songs[i].songid);
-        //
-        // var radioHtml = '<input type="radio" name="' + userdata.songs[i].name + '" value="' + userdata.songs[i].songid+ '"';
-        // radioHtml += '/>';
-        //
-        // var radiobutton = document.createElement("INPUT");
-        // radiobutton.setAttribute("type", "radio");
-        // radiobutton.setAttribute("value", userdata.songs[i].songid)
-
         var songid = userdata.songs[i].songid;
 
         var btn = document.createElement("BUTTON");
