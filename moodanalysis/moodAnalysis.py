@@ -23,7 +23,7 @@ def analyse_mood(songs):
     to_be_skipped = []
     for i, song in enumerate(songs):
         # Store song titles to return the later.
-        song_titles.append(song['id'])
+        song_titles.append(song['songid'])
         if not song['danceability']:
             to_be_skipped.append(i)
         else:

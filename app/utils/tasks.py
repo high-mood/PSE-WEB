@@ -45,7 +45,7 @@ def add_audio_features(tracks, access_token):
 
     tracks_features = []
     for i, features in enumerate(audio_features['audio_features']):
-        track_features = {'id': track_ids[i]}
+        track_features = {'songid': track_ids[i]}
         for feature in spotify_features:
             # Some songs do not have audio_features.
             if not audio_features:
@@ -58,8 +58,8 @@ def add_audio_features(tracks, access_token):
             tracks_features.append(track_features)
 
         Song.create_if_not_exist({
-            'songid': track_features['id'],
-            'name': tracks[track_features['id']]['name'],
+            'songid': track_features['songid'],
+            'name': tracks[track_features['songid']]['name'],
             'duration_ms': track_features['duration_ms'],
             'key': track_features['key'],
             'mode': track_features['mode'],
@@ -142,16 +142,16 @@ def get_latest_tracks(user_id, access_token):
         latest_tracks.append({'measurement': user_id,
                               'time': track['played_at'],
                               'fields': {'songid': track['track']['id']}})
-        # 'artistsids': ','.join([artist['id'] for artist in track['track']['artists']])}
+        # 'artistsids': ','.join([artist['songid'] for artist in track['track']['artists']])}
         artists[track['track']['artists'][0]['id']] = None
         tracks[track['track']['id']] = {'name': track['track']['name']}
 
     print('\ntracks', tracks)
-    track_features = add_audio_features(tracks, access_token)
-    print('\nfeatures', track_features)
+    tracks_features = add_audio_features(tracks, access_token)
+    print('\nfeatures', tracks_features)
     add_artist_genres(artists, access_token)
 
-    return latest_tracks, track_features
+    return latest_tracks, tracks_features
 
 
 def update_user_tracks(access_token):
@@ -160,14 +160,14 @@ def update_user_tracks(access_token):
     :param access_token: A valid access token from the Spotify Accounts service.
     """
     user_data = spotify.get_user_info(access_token)
-    tracks, track_features = get_latest_tracks(user_data['id'], access_token)
+    tracks, tracks_features = get_latest_tracks(user_data['id'], access_token)
 
     # If the user does not have listened to any tracks we just skip them.
     current_time = datetime.now().strftime("%H:%M:%S")
 
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     if tracks:
-        update_songmoods(track_features)
+        update_songmoods(tracks_features)
         client.write_points(tracks)
         print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
     else:
@@ -313,8 +313,8 @@ def find_song_recommendations(tracks, userid, recommendation_count, **params):
     response = spotify.get_recommendations(access_token, recommendation_count, track_string, param_string)
 
     song_recommendation = response['tracks']
-    recommendations = [{'songid': song['id'], 'name': song['name'], 'song_url': song['external_urls']['spotify'],
-                        'artists': [artist['id'] for artist in song['artists']],
+    recommendations = [{'songid': song['songid'], 'name': song['name'], 'song_url': song['external_urls']['spotify'],
+                        'artists': [artist['songid'] for artist in song['artists']],
                         'image_url': song['album']['images'][0]['url']} for song in song_recommendation]
 
     return recommendations
