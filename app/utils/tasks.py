@@ -110,7 +110,7 @@ def get_last_n_minutes(duration, userid):
     happiness_mean = np.mean(happiness)
 
     data = [{'measurement': userid,
-             'time': datetime.now().isoformat(),
+             'time': f"'{datetime.now().isoformat()}Z'",
              'fields': {
                  'excitedness': excitedness_mean,
                  'happiness': happiness_mean,
