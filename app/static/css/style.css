@@ -117,7 +117,7 @@ ul {
 {
   margin-left: 5%;
   width: 25%;
-  height: auto;
+  height: 100%;
   float: left;
   border-radius: 10%;
   background-color: rgba(0,0,0,0.2);
@@ -127,7 +127,7 @@ ul {
 {
      margin-right: 5%;
      width: 25%;
-     height: auto;
+     height: 100%;
      float: left;
 }
 
@@ -135,7 +135,7 @@ ul {
 {
      margin: 0 0%;
      width: 40%;
-     height: auto;
+     height: 100%;
      float: left;
 }
 
