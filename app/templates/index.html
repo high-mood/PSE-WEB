@@ -13,7 +13,7 @@
     <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
     <script src="{{ url_for('static',filename='js/loadRadar.js') }}"></script>
 
-    <!-- js for text todo move to specific charts js file-->
+    <!-- js for text todo move to the specific charts js file-->
     <script src="{{ url_for('static',filename='js/chartText.js') }}"></script>
 
     <!-- js for making the layout-->
@@ -59,7 +59,7 @@
 
     <!--Todo: is this still needed? if not please remove, otherwise move all includes to head-->
     <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>-->
-    <!--<script src="{{ url_for('index_js') }}"></script>-->
+    <script src="{{ url_for('index_js') }}"></script>
 
     <!--Welcome for the page-->
     <div id="Welcome-User">
@@ -69,18 +69,13 @@
       {% endif %}
     </div>
 
-
-    <!--todo move into own position-->
-    <!--element with your top songs
-    <div class="w3-container">
-      <div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">
-        <h4 style="text-align: center;">Your Top 10 Songs</h4>
-      </div>
-    </div>
-
-    <script>
-      getTop10();
-    </script> -->
+    <!--todo remove old top songs-->
+    <!--element with your top songs-->
+    <!--<div class="w3-container">-->
+      <!--<div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">-->
+        <!--<h4 style="text-align: center;">Your Top 10 Songs</h4>-->
+      <!--</div>-->
+    <!--</div>-->
 
     <div class="divider"> <!------------------------------------------------------------------------------------------->
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
@@ -88,11 +83,15 @@
       </svg>
     </div>
 
-    <!--Radar graph-->
+    <!--Top songs and Radar graph-->
     <div class="mainPage" id="Radar-Graph"></div>
 
     <script>
-      createMainPageChart("Radar-Graph","radarChart","radarChart","radarText","radarText",false,bigScreen);
+      createMainPageTopChart("Radar-Graph","top-Songs","topSongsContainer","radarChart","radarChart","radarText","radarText",bigScreen);
+    </script>
+
+    <script>
+      getTop10("top-Songs");
     </script>
 
     <div class="divider"> <!------------------------------------------------------------------------------------------->
@@ -105,7 +104,7 @@
     <div class="mainPage" id="Line-Graph"></div>
 
     <script>
-      createMainPageChart("Line-Graph","lineGraph","","lineGraphText","",true,bigScreen);
+      createMainPageChart("Line-Graph","lineGraph","","lineGraphText","",false,bigScreen);
     </script>
 
     <div class="divider"> <!------------------------------------------------------------------------------------------->
@@ -118,7 +117,7 @@
     <div class="mainPage" id="Heat-Graph"></div>
 
     <script>
-      createMainPageChart("Heat-Graph","heatmap","","heatmapText","",false,bigScreen);
+      createMainPageChart("Heat-Graph","heatmap","","heatmapText","",true,bigScreen);
     </script>
 
     <div class="divider"> <!------------------------------------------------------------------------------------------->
