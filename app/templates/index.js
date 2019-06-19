@@ -21,7 +21,7 @@ for (var i in genres) {
 }
 
 
-function getTop10() {
+function getTop10(divId) {
     // Establish the array which acts as a data source for the list
     var listData = [
         'Blue',
@@ -34,10 +34,13 @@ function getTop10() {
 
     // Make a container element for the list
     // var listContainer = document.createElement('div');
-    var listContainer = document.getElementById('top10');
+    var listContainer = document.getElementById(divId);
 
-    // Add it to the page
-    document.getElementsByTagName('body')[0].appendChild(listContainer);
+    // make the title/header
+    var header = document.createElement('h4');
+    header.innerHTML = "Your Top 10 Songs"
+    header.setAttribute("style","text-align: center;");
+    listContainer.appendChild(header);
 
     // Make the list
     var listElement = document.createElement('ul');
@@ -64,59 +67,59 @@ function getTop10() {
 
 
 
-new Chart(document.getElementById("barchart"), {
-  type: 'bar',
-  data: {
-    labels: songs,
-    datasets: [
-      {
-        label: "Count",
-        backgroundColor: songs_colors,
-        data: song_count
-      }
-    ]
-  },
-  options: {
-    legend: { display: false },
-    title: {
-      display: true,
-      text: 'Top 10 most listened to songs'
-    }
-  }
-});
+//new Chart(document.getElementById("barchart"), {
+//  type: 'bar',
+//  data: {
+//    labels: songs,
+//    datasets: [
+//      {
+//        label: "Count",
+//        backgroundColor: songs_colors,
+//        data: song_count
+//      }
+//    ]
+//  },
+//  options: {
+//    legend: { display: false },
+//    title: {
+//      display: true,
+//      text: 'Top 10 most listened to songs'
+//    }
+//  }
+//});
 
-new Chart(document.getElementById("piechart"), {
-  type: 'pie',
-  data: {
-    labels: genres,
-    datasets: [{
-      label: "count",
-      backgroundColor: genres_colors,
-      data: genre_count
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: 'Your top 10 genres'
-    }
-  }
-});
+//new Chart(document.getElementById("piechart"), {
+//  type: 'pie',
+//  data: {
+//    labels: genres,
+//    datasets: [{
+//      label: "count",
+//      backgroundColor: genres_colors,
+//      data: genre_count
+//    }]
+//  },
+//  options: {
+//    title: {
+//      display: true,
+//      text: 'Your top 10 genres'
+//    }
+//  }
+//});
 
-new Chart(document.getElementById("linechart"), {
-  type: 'line',
-  data: {
-    labels: timestamps,
-    datasets: [{
-        data: duration,
-        borderColor: "#0643a5",
-        label: "listen time (min)",
-        }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: 'Total listening time over time'
-    }
-  }
-});
+//new Chart(document.getElementById("linechart"), {
+//  type: 'line',
+//  data: {
+//    labels: timestamps,
+//    datasets: [{
+//        data: duration,
+//        borderColor: "#0643a5",
+//        label: "listen time (min)",
+//        }]
+//  },
+//  options: {
+//    title: {
+//      display: true,
+//      text: 'Total listening time over time'
+//    }
+//  }
+//});

@@ -1,30 +1,7 @@
-# Imports here
-
-from app import db
+from app import db, app
 import datetime
-"""smaple response:
-
-{
-  "display_name":"JMWizzler",
-  "email":"email@example.com",
-  "external_urls":{
-  "spotify":"https://open.spotify.com/user/wizzler"
-  },
-  "href":"https://api.spotify.com/v1/users/wizzler",
-  "id":"wizzler",
-  "images":[{
-  "height":null,
-  "url":"https://fbcdn...2330_n.jpg",
-  "width":null
-  }],
-  "product":"premium",
-  "type":"user",
-  "uri":"spotify:user:wizzler"
-}"""
 
 
-# TODO: Should user data be deleted after access revokeD?
-# if not, boolean is active
 class User(db.Model):
     __tablename__ = "users"
     userid = db.Column(db.String(200), primary_key=True)
@@ -56,30 +33,62 @@ class User(db.Model):
 
     @staticmethod
     def get_all_tokes():
-        query = db.session.query("refresh_token FROM users")
-        return [row[0] for row in query]
-
+        return [r.refresh_token for r in db.session.query(User.refresh_token)]
 
     @staticmethod
     def get_all_users():
-        query = db.session.query("userid FROM users")
-        return [row[0] for row in query]
+        return [r.userid for r in db.session.query(User.userid)]
+
+    @staticmethod
+    def get_refresh_token(userid):
+        return User.query.filter_by(userid=userid).first().refresh_token
 
 
 class Song(db.Model):
     __tablename__ = "songs"
     songid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
+    duration_ms = db.Column(db.Float())
+    key = db.Column(db.Float())
+    mode = db.Column(db.Float())
+    time_signature = db.Column(db.Float())
+    acousticness = db.Column(db.Float())
+    danceability = db.Column(db.Float())
+    energy = db.Column(db.Float())
+    instrumentalness = db.Column(db.Float())
+    liveness = db.Column(db.Float())
+    loudness = db.Column(db.Float())
+    speechiness = db.Column(db.Float())
+    valence = db.Column(db.Float())
+    tempo = db.Column(db.Float())
 
     @staticmethod
     def create_if_not_exist(json_info):
         song = Song.query.filter_by(songid=json_info['songid']).first()
         if song is None:
             song = Song(songid=json_info['songid'],
-                        name=json_info['name'])
+                        name=json_info['name'],
+                        duration_ms=json_info['duration_ms'],
+                        key=json_info['key'],
+                        mode=json_info['mode'],
+                        time_signature=json_info['time_signature'],
+                        acousticness=json_info['acousticness'],
+                        danceability=json_info['danceability'],
+                        energy=json_info['energy'],
+                        instrumentalness=json_info['instrumentalness'],
+                        liveness=json_info['liveness'],
+                        loudness=json_info['loudness'],
+                        speechiness=json_info['speechiness'],
+                        valence=json_info['valence'],
+                        tempo=json_info['tempo'])
 
             db.session.add(song)
             db.session.commit()
+
+    @staticmethod
+    def get_song_name(songid):
+        song = Song.query.filter_by(songid=songid).first()
+        return song.name
 
 
 class Artist(db.Model):
@@ -104,9 +113,10 @@ class Artist(db.Model):
 
 class Songmood(db.Model):
     __tablename__ = "songmoods"
-    songid = db.Column(db.String(200), primary_key=True)
+    songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
     happiness = db.Column(db.Float())
+    responses_count = db.Column(db.Integer(), db.ColumnDefault(50))
 
     @staticmethod
     def create_if_not_exist(json_info):
@@ -119,11 +129,10 @@ class Songmood(db.Model):
             db.session.add(songmood)
             db.session.commit()
 
+    @staticmethod
     def get_moods(songids):
-        querystring = '(' + ','.join([f"'{id}'" for id in songids]) + ');'
-        excitedness = db.session.query('excitedness FROM songmoods where songid in ' + querystring)
-        happiness = db.session.query('happiness FROM songmoods where songid in ' + querystring)
-        return list(zip(excitedness, happiness))
+        songmoods = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
+        return songmoods
 
 
 class SongArtist(db.Model):
@@ -134,12 +143,13 @@ class SongArtist(db.Model):
 
     __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
 
+    #TODO fix below
     @staticmethod
     def create_if_not_exist(json_info):
         songartist = SongArtist.query(f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
         if songartist is None:
             songartist = SongArtist(songid=json_info['songid'],
-                                  artistid=json_info['artistid'])
+                                    artistid=json_info['artistid'])
 
             db.session.add(songartist)
 

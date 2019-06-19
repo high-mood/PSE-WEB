@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     {% if id %}
         <title>{{ id }}'s mood</title>
@@ -14,59 +14,63 @@
 
 
     <!-- Radar Chart -->
-    <!-- <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script> -->
     <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
     <script src="{{ url_for('static',filename='js/loadRadar.js') }}"></script>
 
-    <!-- Placeholder Javascript #1-->
-    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
-    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
-
-    <!-- Placeholder Javascript #2-->
+    <!-- js for text todo move to the specific charts js file-->
     <script src="{{ url_for('static',filename='js/chartText.js') }}"></script>
-    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
 
-    <!-- Placeholder Javascript #3-->
-    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
-    <!-- <script src="{{ url_for('static',filename='js/<filename>.js') }}"></script> -->
+    <!-- js for making the layout-->
+    <script src="{{ url_for('static',filename='js/mainPage.js') }}"></script>
+
+    <!-- lineChart-->
+    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
+
+
+    <!-- Song Recommendation-->
+    <script src="{{ url_for('static',filename='js/songrecommendation.js') }}"></script>
 
     <!-- Heatmap-->
     <script src="{{ url_for('static',filename='js/heatmap2.js') }}"></script>
     <script src="{{ url_for('static',filename='js/heatmapData.js') }}"></script>
-
-    <!-- lineChart-->
-    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
 
     <!-- Google fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
     <!-- D3.js -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
-    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-    <script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--todo rework external stylesheet? at least place it above with the other stylesheets if needed-->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
 
-</head>
-  <body class='body'>
+  <body class='body' id='body'>
 
+    <!--todo device/screen determination-->
+    <script>
+      var bigScreen = true;
+    </script>
+
+    <!--nav bar-->
     <div class="navigation-bar" id='myNavigationBar'>
         <div class="navItems">
             <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
             <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
             <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
-            <!-- <a onclick="navigateTo('Heat-Graph')" id="HeatTab">Log Out</a> -->
+            <a onclick="navigateTo('Song-Recommendation')" id="Song-Recommendation-Tab">Song-Recommendation</a>
+            <a onclick="navigateTo('Song-Recommandation')" id="SongRecTab">Event-Recommendation</a>
             <a href="/logout">Logout</a>
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
-    </div>id
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <!--Todo: is this still needed? if not please remove, otherwise move all includes to head-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>-->
     <script src="{{ url_for('index_js') }}"></script>
 
+    <!--Welcome for the page-->
     <div id="Welcome-User">
       {% if text %}
         <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
@@ -74,43 +78,129 @@
       {% endif %}
     </div>
 
+    <!--todo remove old top songs-->
+    <!--element with your top songs-->
+    <!--<div class="w3-container">-->
+      <!--<div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">-->
+        <!--<h4 style="text-align: center;">Your Top 10 Songs</h4>-->
+      <!--</div>-->
+    <!--</div>-->
 
-    <div class="w3-container">
-      <!-- <h1>Top 10 Songs</h1> -->
-      <div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">
-        <h4 style="text-align: center;">Your Top 10 Songs</h4>
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <!--Top songs and Radar graph-->
+    <div class="mainPage" id="Radar-Graph"></div>
+
+    <script>
+      createMainPageTopChart("Radar-Graph","top-Songs","topSongsContainer","radarChart","radarChart","radarText","radarText",bigScreen);
+    </script>
+
+    <script>
+      getTop10("top-Songs");
+    </script>
+
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <!--Line graph-->
+    <div class="mainPage" id="Line-Graph"></div>
+
+    <script>
+      createMainPageChart("Line-Graph","lineGraph","","lineGraphText","",false,bigScreen);
+    </script>
+
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <!--heatmap-->
+    <div class="mainPage" id="Heat-Graph"></div>
+
+    <script>
+      createMainPageChart("Heat-Graph","heatmap","","heatmapText","",true,bigScreen);
+    </script>
+
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <div class="mainPage">
+      <div id="Song-Recommendation">
+        <h4>Song Recommendation Tool</h4>
       </div>
     </div>
 
-    <script>       getTop10(); </script>
-
-    <div class="mainPage" id="Radar-Graph">
-        <div class="radarText" id="radarText"></div>
-        <div class="radarChart inner-div" id="radarChart"></div>
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
     </div>
 
+    <!--Song Recomandations-->
+    <div class="mainPage" id="Song-Recommandation">
+
+      <!-- Event bar -->
+      <div style="width: 26%; height: 96%; float: left; padding:2% 2%">
+        <div style="width: 100%; height: 10%; text-align: center; font-size: 190%; font-weight: 550"; text>select event</div>
+        <div style="width:100%; height: 15%">Genre1</div>
+        <div style="width:100%; height: 15%">Genre2</div>
+        <div style="width:100%; height: 15%">Genre3</div>
+        <div style="width:100%; height: 15%">Genre4</div>
+        <div style="width:100%; height: 15%">Genre5</div>
+        <div style="width:100%; height: 15%">Genre6</div>
+      </div>
+
+      <!-- Recomandations -->
+      <div style="width: 70%; height: 96%; float: left; padding:2% 0%">
+        <div style="width: 100%; height: 10%; float: right">
+          <div style="width: 50%; height: 100%; float: left; text-align: center; font-size: 190%; font-weight: 550">recommendation</div>
+          <div style="width: 25%; height: 100%; float: left; text-align: center; font-size: 190%; font-weight: 550">excitement</div>
+          <div style="width: 25%; height: 100%; float: left; text-align: center; font-size: 190%; font-weight: 550">happiness</div>
+        </div>
+        <div style="width: 100%; height: 18%">
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+        </div>
+        <div style="width: 100%; height: 18%">
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+        </div>
+        <div style="width: 100%; height: 18%">
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+        </div>
+        <div style="width: 100%; height: 18%">
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+        </div>
+        <div style="width: 100%; height: 18%">
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+          <div style="width: 25%; height: 100%; float: left"></div>
+        </div>
+      </div>
+    </div>
+
+    <!--loading user data-->
     <script>
-
-    </script>
-
-    <div class="mainPage" id="Line-Graph">
-        <div class="lineGraph inner-div"></div>
-    </div>
-
-    <div class="mainPage" id="Heat-Graph">
-        <div class="inner-div" id="heatmap"></div>
-    </div>
-
-    <script>
-
       var userid = document.getElementById("username").textContent;
-      console.log((userid));
-
-      document.getElementById("radarChart").onmousemove = hoverRadar;
-
 
       var request = new XMLHttpRequest()
-
 
       request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
       // request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
@@ -120,15 +210,22 @@
 
 
         if (request.status >= 200 && request.status < 400) {
-          console.log(userdata.userid);
-          console.log(userdata);
+          // RadarChart
           createRadarChart(userdata);
           giveText(userdata, "radarText");
 
+          document.getElementsByClassName("radar")[0].onmousemove = hoverRadar;
+          document.getElementsByClassName("radar")[0].onmouseout = resetRadarText;
+
+          // lineGraph
+          // createLineGraph(userdata,"lineGraph");
+          // giveText(userdata,"lineGraphText");
+
+          // Heatmap
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
                         ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
-          lineGraph(userdata, ".lineGraph");
+          giveText(userdata, "heatmapText");
         }
         else {
           document.getElementById("userwelcome").innerHTML = "Error retrieving data!"
@@ -137,12 +234,32 @@
       request.send()
 
 
+      var linechartRequest= new XMLHttpRequest()
+
+      linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
+      // request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
+      linechartRequest.onload = function() {
+        var alldata = JSON.parse(this.response)
+        var userdata = alldata.resource
+
+
+        if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
+
+
+          // lineGraph
+          createLineGraph(userdata,"lineGraph");
+          giveText(userdata,"lineGraphText");
+
+        }
+        else {
+          document.getElementById("userwelcome").innerHTML = "Error retrieving data!"
+        }
+      }
+      linechartRequest.send()
+      
+      
+      createSongRecommendationWidget('bap');
     </script>
-
-
-    <!-- <canvas id="barchart"></canvas> -->
-    <!-- <canvas id="piechart"></canvas>
-    <canvas id="linechart"></canvas> -->
 
   </body>
 </html>

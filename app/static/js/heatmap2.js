@@ -10,8 +10,10 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
 
   // make svg in <div id=divID>
   var svg = d3.select("#" + divID).append("svg")
-              .attr('width', width)
-              .attr('height', height);
+              .attr('width', "100%")
+              .attr('height', "100%")
+              .attr("viewBox","0 0 500 500")
+              .attr("preserveAspectRatio","xMidYMid meet");
 
   // Convert data to a usable dataSet with the format [{x:?,y:?,size(),names:[?,...]},...].
   var dataSet = [];
