@@ -1,25 +1,39 @@
 from flask_restplus import Namespace, Resource, fields
-from app.utils import influx
+from app.utils import influx, models
 from app import app
 
 import numpy as np
 import dateparser
 import datetime
 
-api = Namespace('mood', description='Mood over time', path="/mood")
+api = Namespace('user', description='User information', path="/user")
 
-moods = api.model('Mood over time', {
+user_info = api.model('UserInfo', {
     'userid': fields.String,
-    'mean_excitedness': fields.Float,
-    'mean_happiness': fields.Float,
-    'sum_song_count': fields.Integer,
-    'moods': fields.Nested(api.model('mood', {
-        'time': fields.String,
-        'excitedness': fields.Float,
-        'happiness': fields.Float,
-        'songcount': fields.Integer
-    }))
+    'email': fields.String,
+    'display_name': fields.String,
+    'image_url': fields.String,
+    'birthdate': fields.DateTime,
+    'country': fields.String,
+    'is_premium': fields.Boolean,
+    'refresh_tokens': fields.String,
+    'user_is_active': fields.Boolean
 })
+
+
+@api.route("/<string:userid>")
+@api.response(404, 'Userid not found')
+class User(Resource):
+    @api.marshal_with(user_info, envelope='resource')
+    def get(self, userid):
+        """
+        Obtain all of a user's account information.
+        """
+        user = models.User.query.filter_by(userid=userid).first()
+        if not user:
+            api.abort(404, msg="userid not found")
+
+        return user
 
 
 def parse_time(start, end):
@@ -35,6 +49,20 @@ def parse_time(start, end):
         api.abort(400, msg=f"could not parse '{end}' as end date")
 
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
+
+
+moods = api.model('Mood over time', {
+    'userid': fields.String,
+    'mean_excitedness': fields.Float,
+    'mean_happiness': fields.Float,
+    'sum_song_count': fields.Integer,
+    'moods': fields.Nested(api.model('mood', {
+        'time': fields.String,
+        'excitedness': fields.Float,
+        'happiness': fields.Float,
+        'songcount': fields.Integer
+    }))
+})
 
 
 @api.route('/<string:userid>/<string:start>/<string:end>')
