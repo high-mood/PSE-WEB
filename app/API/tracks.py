@@ -1,7 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
+from app.utils.tasks import find_song_recommendations
 from app.utils import influx, models
 from app import app
-from app.utils.tasks import find_song_recommendations
 
 import dateparser
 import datetime
@@ -67,7 +67,7 @@ class History(Resource):
                 'songs': history
             }
         else:
-            api.abort(404, msg=f"No history not found for '{userid}'")
+            api.abort(404, message=f"No history not found for '{userid}'")
 
 
 metrics = api.model('Metric over time', {
@@ -89,11 +89,11 @@ def parse_time(start, end):
 
     start_date = dateparser.parse(start)
     if not start_date:
-        api.abort(400, msg=f"could not parse '{start}' as start date")
+        api.abort(400, message=f"could not parse '{start}' as start date")
 
     end_date = dateparser.parse(end)
     if not end_date:
-        api.abort(400, msg=f"could not parse '{end}' as end date")
+        api.abort(400, message=f"could not parse '{end}' as end date")
 
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
@@ -113,7 +113,7 @@ class Metric(Resource):
         'speechiness', 'tempo', 'valence'
         """
         if metric not in possible_metrics:
-            api.abort(400, msg=f"invalid metric")
+            api.abort(400, message=f"invalid metric")
 
         start, end = parse_time(start, end)
 
@@ -130,7 +130,7 @@ class Metric(Resource):
                 'metric_over_time': metric_list
             }
         else:
-            api.abort(404, msg=f"No metrics found for '{userid}'")
+            api.abort(404, message=f"No metrics found for '{userid}'")
 
 
 top_genres = api.model('Top x genres', {
@@ -188,4 +188,4 @@ class Recommendation(Resource):
                     'recommendations': recs
                 }
             else:
-                api.abort(404, msg=f"No recommendations not found for '{userid}'")
+                api.abort(404, message=f"No recommendations not found for '{userid}'")

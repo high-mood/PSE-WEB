@@ -1,28 +1,7 @@
-from app import db
+from app import db, app
 import datetime
-"""smaple response:
-
-{
-  "display_name":"JMWizzler",
-  "email":"email@example.com",
-  "external_urls":{
-  "spotify":"https://open.spotify.com/user/wizzler"
-  },
-  "href":"https://api.spotify.com/v1/users/wizzler",
-  "id":"wizzler",
-  "images":[{
-  "height":null,
-  "url":"https://fbcdn...2330_n.jpg",
-  "width":null
-  }],
-  "product":"premium",
-  "type":"user",
-  "uri":"spotify:user:wizzler"
-}"""
 
 
-# TODO: Should user data be deleted after access revokeD?
-# if not, boolean is active
 class User(db.Model):
     __tablename__ = "users"
     userid = db.Column(db.String(200), primary_key=True)
@@ -54,18 +33,15 @@ class User(db.Model):
 
     @staticmethod
     def get_all_tokes():
-        query = db.session.query("refresh_token FROM users")
-        return [row[0] for row in query]
+        return [r.refresh_token for r in db.session.query(User.refresh_token)]
 
     @staticmethod
     def get_all_users():
-        query = db.session.query("userid FROM users")
-        return [row[0] for row in query]
+        return [r.userid for r in db.session.query(User.userid)]
 
     @staticmethod
     def get_refresh_token(userid):
-        query = db.session.query(f"refresh_token FROM users where userid='{userid}'")
-        return query[0][0]
+        return User.query.filter_by(userid=userid).first().refresh_token
 
 
 class Song(db.Model):
@@ -167,6 +143,7 @@ class SongArtist(db.Model):
 
     __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
 
+    #TODO fix below
     @staticmethod
     def create_if_not_exist(json_info):
         songartist = SongArtist.query(f"select id from songs_artists where songid={songid} and artistid={artistid}").first()

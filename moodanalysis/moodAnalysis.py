@@ -28,7 +28,7 @@ def analyse_mood(songs):
             to_be_skipped.append(i)
         else:
             # Make list matrix of input data for algorithm.
-            input_data.append(np.array([(100 * song[feature]) for feature in features]))
+            input_data.append(np.array([song[feature] for feature in features]))
 
     output = []
     songs_skipped = 0
@@ -42,8 +42,8 @@ def analyse_mood(songs):
             songs_skipped += 1
         else:
             output_data = {'songid': song_titles[i],
-                           'happiness': float(happiness_predictions[i - songs_skipped]) / 100,
-                           'excitedness': float(excitedness_predictions[i - songs_skipped]) / 100}
+                           'happiness': float(happiness_predictions[i - songs_skipped]),
+                           'excitedness': float(excitedness_predictions[i - songs_skipped])}
         output.append(output_data)
 
     return output
