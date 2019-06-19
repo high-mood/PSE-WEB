@@ -1,24 +1,5 @@
 from app import db
-import datetime
-"""smaple response:
-
-{
-  "display_name":"JMWizzler",
-  "email":"email@example.com",
-  "external_urls":{
-  "spotify":"https://open.spotify.com/user/wizzler"
-  },
-  "href":"https://api.spotify.com/v1/users/wizzler",
-  "id":"wizzler",
-  "images":[{
-  "height":null,
-  "url":"https://fbcdn...2330_n.jpg",
-  "width":null
-  }],
-  "product":"premium",
-  "type":"user",
-  "uri":"spotify:user:wizzler"
-}"""
+import datetimeg
 
 
 # TODO: Should user data be deleted after access revokeD?
