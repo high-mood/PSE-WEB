@@ -1,6 +1,6 @@
 var mean_excitedness, mean_happiness;
 
-const radarTexts = ["\
+const graphTexts = ["\
 High Excitedness, High Happiness <br> (happy, upbeat, energetic)<br><br>\
 The music you listen to is generally very happy and has high energy. <br><br>\
 This means that the beat is faster, a higher bpm (beats per minute), <br> \
@@ -26,9 +26,11 @@ This means that the beat is pretty slow, low bpm (beats per minute), and that th
 You seem sad or a bit down on your luck."];
 
 function giveText(data, id) {
-    var texts;
+    // var texts;
 //    if (id == "radarText") {
-        texts = radarTexts;
+    var texts = graphTexts;
+//    } else if (id == "lineGraphText") {
+//         texts = graphTexts;
 //    }
 
     mean_excitedness = data.mean_excitedness;
@@ -38,7 +40,7 @@ function giveText(data, id) {
 }
 
 function resetRadarText() {
-    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, radarTexts);    
+    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, graphTexts);    
 }
 
 function hoverRadar(e) {
@@ -46,16 +48,29 @@ function hoverRadar(e) {
     x = e.pageX;
     y = e.pageY;
 
-    x = x - xy_pos['xp'] - this.offsetWidth/2;
-    y = this.offsetHeight/2 - (y - xy_pos['yp']);
-    document.getElementById('radarText').innerHTML = getText(y, x, radarTexts);
+    if (this.tagName === "svg") {
+        x = x - xy_pos['xp'] - this.width.baseVal.value/2;
+        y = this.height.baseVal.value/2 - (y - xy_pos['yp']);
+    } else {
+        x = x - xy_pos['xp'] - this.offsetWidth/2;
+        y = this.offsetHeight/2 - (y - xy_pos['yp']);
+    }
+
+    document.getElementById('radarText').innerHTML = getText(y, x, graphTexts);
 }
 
 function getXYpos(elem) {
-    x = elem.offsetLeft;        // set x to elem’s offsetLeft
-    y = elem.offsetTop;         // set y to elem’s offsetTop
-  
-    elem = elem.offsetParent;    // set elem to its offsetParent
+    var x = 0;
+    var y = 0;
+
+    if (elem.tagName === "svg") {
+        elem = elem.parentElement;    // set elem to its offsetParent
+    } else {
+        x = elem.offsetLeft;
+        y = elem.offsetTop;
+
+        elem = elem.offsetParent;    // set elem to its offsetParent
+    }
   
     //use while loop to check if elem is null
     // if not then add current elem’s offsetLeft to x
