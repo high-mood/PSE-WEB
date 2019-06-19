@@ -134,8 +134,8 @@ class Songmood(db.Model):
 
     @staticmethod
     def get_moods(songids):
-        songs = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
-        return songs
+        songmoods = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
+        return songmoods
 
 
 class SongArtist(db.Model):

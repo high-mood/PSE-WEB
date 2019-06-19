@@ -222,6 +222,7 @@ def get_features_moods(tracks):
 
 
 def link_features_mood(tracks=None):
+    """Link features and moods for tracks or all tracks in db if tracks=none."""
     if tracks:
         results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(Song.songid.in_((tracks.keys()))).all()
     else:

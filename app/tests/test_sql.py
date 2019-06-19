@@ -1,6 +1,7 @@
 import pytest
 
 from app import app
+from app.utils.tasks import get_features_moods
 
 
 class ConfigException(Exception):
@@ -27,4 +28,5 @@ def test_get_features_moods():
             'name': 'Seamonkey'
         }
     }
-    print('works / 10')
+    f = get_features_moods(tracks)
+    print(f)

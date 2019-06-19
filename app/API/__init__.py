@@ -3,21 +3,15 @@ from flask_restplus import Api
 from flask import Blueprint
 from app import app
 
-from .user_name import api as user_name_space
-from .mood_name import api as mood_name_space
-from .metric_name import api as metric_name_space
-from .history_name import api as history_name_space
-from .recommendation import api as recommendation_name_space
+from .users import api as user_name_space
+from .tracks import api as track_name_space
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
 app.register_blueprint(blueprint)
 
 api.add_namespace(user_name_space)
-api.add_namespace(mood_name_space)
-api.add_namespace(metric_name_space)
-api.add_namespace(history_name_space)
-api.add_namespace(recommendation_name_space)
+api.add_namespace(track_name_space)
 
 
 @api.errorhandler
