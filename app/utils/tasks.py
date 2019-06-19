@@ -105,15 +105,17 @@ def get_last_n_minutes(duration, userid):
         return
 
     song_count = len(moods)
-    excitedness, happiness = list(zip(*moods))
-    excitedness_mean = np.mean(excitedness)
-    happiness_mean = np.mean(happiness)
+    mean_excitedness = 0
+    mean_happiness = 0
+    for mood in moods:
+        mean_excitedness += mood.excitedness
+        mean_happiness += mood.happiness
 
     data = [{'measurement': userid,
              'time': f"'{datetime.now().isoformat()}Z'",
              'fields': {
-                 'excitedness': excitedness_mean,
-                 'happiness': happiness_mean,
+                 'excitedness': mean_excitedness / song_count,
+                 'happiness': mean_happiness / song_count,
                  'songcount': song_count
              }}]
 
