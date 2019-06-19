@@ -23,12 +23,12 @@ function createRadarChart(userdata) {
     color: color
   };
 
-  document.title = userdata.username + "\'s  Mood";
+  document.title = userdata.userid + "\'s  Mood";
 
   var finaldata = [];
   var song;
   for (i = 0; i < userdata.moods.length; i++) {
-//    console.log(userdata.moods[i].excitedness);
+
     song = {
       name : 'Song',
       axes : [
