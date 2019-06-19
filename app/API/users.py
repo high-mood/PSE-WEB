@@ -31,7 +31,7 @@ class User(Resource):
         """
         user = models.User.query.filter_by(userid=userid).first()
         if not user:
-            api.abort(404, msg="userid not found")
+            api.abort(404, message="userid not found")
 
         return user
 
@@ -42,11 +42,11 @@ def parse_time(start, end):
 
     start_date = dateparser.parse(start)
     if not start_date:
-        api.abort(400, msg=f"could not parse '{start}' as start date")
+        api.abort(400, message=f"could not parse '{start}' as start date")
 
     end_date = dateparser.parse(end)
     if not end_date:
-        api.abort(400, msg=f"could not parse '{end}' as end date")
+        api.abort(400, message=f"could not parse '{end}' as end date")
 
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
@@ -95,4 +95,4 @@ class Mood(Resource):
                 'moods': mood_list
             }
         else:
-            api.abort(404, msg=f"No moods found for '{userid}'")
+            api.abort(404, message=f"No moods found for '{userid}'")

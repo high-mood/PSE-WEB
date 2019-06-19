@@ -42,11 +42,11 @@ def index_js():
 def login():
     return spotifysso.authorize(callback=f"http://{app.config['HOST']}:5000/callback")
 
+
 @app.route('/callback')
 def authorized():
     resp = spotifysso.authorized_response()
 
-    # TODO: Exception handling (if exception or if None#)
     if resp is None:
         flash(f"Access denied: {request.args['error']}", 'error')
         return redirect(url_for('index'))
@@ -56,6 +56,7 @@ def authorized():
 
     access_token = resp['access_token']
     refresh_token = resp['refresh_token']
+    # TODO dynamic scopes
     scopes = resp['scope'].split(" ")
 
     json_user_info = spotify.get_user_info(access_token)
@@ -66,6 +67,7 @@ def authorized():
     update_user_tracks(access_token)
 
     return redirect(url_for('index'))
+
 
 @app.route('/logout')
 def sign_out():

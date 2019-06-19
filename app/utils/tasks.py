@@ -259,11 +259,11 @@ def update_song_features(tracks):
     """
     songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
     found_ids = [song.songid for song in songs]
-    not_found_ids = [id for id in tracks.keys() if id not in found_ids]
+    not_found_ids = [song_id for song_id in tracks.keys() if song_id not in found_ids]
     new_tracks = {}
 
-    for songid in not_found_ids:
-        new_tracks[songid] = tracks[songid]
+    for song_id in not_found_ids:
+        new_tracks[song_id] = tracks[song_id]
 
     # TODO don't hardcode 'snipy12'
     refresh_token = User.get_refresh_token('snipy12')
@@ -282,6 +282,7 @@ def _get_parameter_string(min_key=-1, min_mode=0,
                           max_liveness=1.0, max_loudness=0,
                           max_speechiness=1.0, max_valence=1.0, max_tempo=99999):
     """ Fills in emtpy parameters with there default value. """
+
     return (f"&min_key={min_key}&max_key={max_key}" +
             f"&min_mode={min_mode}&max_mode={max_mode}" +
             f"&min_acousticness={min_acousticness}&max_acousticness={max_acousticness}" +
