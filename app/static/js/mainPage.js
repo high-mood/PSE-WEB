@@ -51,6 +51,7 @@ function createMainPageTopChart(mainPageDiv,topSongsId,topSongsClass,chartId,cha
     topSongsDiv.setAttribute("class","topSongsDivSmall " + topSongsClass);
     chartDiv.setAttribute("class","innerChartTopDivSmall " + chartClass);
     textDiv.setAttribute("class","innerTextTopDivSmall " + textClass);
+    mainDiv.appendChild(topSongsDiv);
     mainDiv.appendChild(chartDiv);
     mainDiv.appendChild(textDiv);
   }

@@ -113,7 +113,8 @@ ul {
      width: auto;
 }
 
-.topSongsDiv {
+.topSongsDiv
+{
   margin-left: 5%;
   width: 25%;
   height: auto;
@@ -126,7 +127,7 @@ ul {
 {
      margin-right: 5%;
      width: 25%;
-     height: 100%;
+     height: auto;
      float: left;
 }
 
@@ -134,25 +135,32 @@ ul {
 {
      margin: 0 0%;
      width: 40%;
-     height: 100%;
+     height: auto;
      float: left;
 }
 
-.topSongsDivSmall {
-
+.topSongsDivSmall
+{
+  width: 100%;
+  height: auto;
+  float: left;
+  border-radius: 10%;
+  background-color: rgba(0,0,0,0.2);
 }
 
 .innerTextTopDivSmall
 {
-     margin: 0;
-     width: 100%;
-     height: auto;
+  width: 100%;
+  height: 100%;
+  float: left;
 }
 
 .innerChartTopDivSmall
 {
-     margin: 0;
-     width: auto;
+  margin: 0 0%;
+  width: 100%;
+  height: 100%;
+  float: left;
 }
 
 .navigation-bar {
