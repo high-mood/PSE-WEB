@@ -51,6 +51,7 @@
             <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
             <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
             <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
+            <a onclick="navigateTo('Song-Recommandation')" id="SongRecTab">Reccomandations</a>
             <a href="/logout">Logout</a>
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
@@ -119,6 +120,35 @@
     <script>
       createMainPageChart("Heat-Graph","heatmap","","heatmapText","",false,bigScreen);
     </script>
+
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <!--Song Recomandations-->
+    <div class="mainPage" id="Song-Recommandation">
+
+      <!-- Event bar -->
+      <div style="width: 26%; height: 96%; float: left; padding:2% 2%">
+        <div style="width: 100%; height: 10%; text-align: center; font-size: 190%; font-weight: 550"; text>select event</div>
+        <iframe style="width:100%; height: 90%" src="dummysource"></iframe>
+      </div>
+
+      <!-- Recomandations -->
+      <div style="width: 70%; height: 96%; float: left; padding:2% 0%">
+        <div style="width: 50%; height: 10%; float: right">
+          <div style="width: 50%; height: 100%; float: right; text-align: center; font-size: 190%; font-weight: 550">excitement</div>
+          <div style="width: 50%; height: 100%; float: right; text-align: center; font-size: 190%; font-weight: 550">happiness</div>
+        </div>
+        <div style="width: 100%; height: 90%">
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 50%; height: 100%; float: left"></div>
+          <div style="width: 50%; height: 100%; float: left"></div>
+        </div>
+      </div>
+    </div>
 
     <!--loading user data-->
     <script>
