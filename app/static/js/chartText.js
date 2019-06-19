@@ -63,8 +63,6 @@ function getXYpos(elem) {
     var x = 0;
     var y = 0;
 
-    debugger;
-
     if (elem.tagName === "svg") {
         elem = elem.parentElement;    // set elem to its offsetParent
     } else {
