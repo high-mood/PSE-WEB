@@ -49,11 +49,20 @@ ul {
 #Welcome-User {
   margin-top: 100px;
 }
+
 .mainPage {
-  display: block;
-  padding-top: 50px;
-  height: 800px;
-  /* border: 1px solid white; */
+  width: 100%;
+  height: 60vh;
+}
+
+.mainPageSmall {
+  width: 100%;
+  height: auto;
+}
+
+.divider {
+  width: 100%;
+  height: 10vh;
 }
 
 .legend {
@@ -65,14 +74,33 @@ ul {
   fill: #ffffff;
 }
 
-.inner-div
+.innerTextDiv
 {
-    display: block;
-    /* width: 300px; */
-     /* margin: auto;
-     margin-top: 70px;
-     width: 800px;
-     height: 800px; */
+     margin: 0 5%;
+     width: 46%;
+     height: 100%;
+     float: left;
+}
+
+.innerChartDiv
+{
+     margin: 0 2%;
+     width: 40%;
+     height: 100%;
+     float: left;
+}
+
+.innerTextDivSmall
+{
+     margin: 0;
+     width: 100%;
+     height: auto;
+}
+
+.innerChartDivSmall
+{
+     margin: 0;
+     width: auto;
 }
 
 .navigation-bar {
@@ -104,13 +132,15 @@ ul {
   display: none;
 }
 
-.lineGraph {
-  margin-top: 200px;
-}
-
 .active {
   border: none;
   border-bottom: 2px solid #4CAF50;
+}
+
+.navigation-bar a{
+  border-bottom: 2px solid #485563;  /* fallback for old browsers */
+  border-bottom: 2px solid -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+  border-bottom: 2px solid linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .navigation-bar a:hover:not(.active) {

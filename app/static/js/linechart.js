@@ -2,12 +2,9 @@
 
 // Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html
 
-function lineGraph(data, id) {
-
-   console.log(data);
+function createLineGraph(data, id) {
 
     // var dataset = d3.range(data.moods.length).map(function(d) { return {"y": d3.randomUniform(1)() } });
-//    console.log(dataset);
 
     var datasetExcite = []
     var datasetHappy = []
@@ -28,8 +25,6 @@ function lineGraph(data, id) {
         meanHappy.push({'y': data['mean_happiness']})
     }
 
-    console.log(meanExcite)
-
     // set the dimensions and margins of the graph
     var margin = {top: 20, right: 200, bottom: 30, left: 200};
     var width = 900 - margin.left - margin.right;
@@ -46,11 +41,12 @@ function lineGraph(data, id) {
         .domain([-10, 10]) // input
         .range([height, 0]); // output
 
-    var svg = d3.select(id).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // create svg
+    var svg = d3.select("#" + id).append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", "-30 -20 720 300")
+            .attr("preserveAspectRatio","xMidYMid meet");
 
     // 3. Call the x axis in a group tag
     xAxis = svg.append("g")
@@ -59,16 +55,18 @@ function lineGraph(data, id) {
         // .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
         .call(d3.axisBottom(xScale).ticks(data.moods.length - 1))
 
+    xAxis.selectAll(".tick") // remove tick 0 from x axis because it is on the y axis
+        .each(function (d) {
+            if ( d === 0 ) {
+                this.remove();
+            }
+        });
+
     // 4. Call the y axis in a group tag
     svg.append("g")
         .attr("class", "y axis")
         // .attr("transform", "translate(" + width / 2 + ", 0)")
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
-
-    // d3.select("x")
-    //     .tickFormat(d3.format("d"));
-
-//    console.log(data.songdata);
 
     // var dayArray = [];
     // var excitedArray = [];
@@ -79,9 +77,6 @@ function lineGraph(data, id) {
     //     excitedArray.push(userdata.songdata[i].excitedness);
     //     counter += 1;
     // }
-
-    // console.log(dayArray);
-    // console.log(excitedArray);
 
     // var line = d3.line()
     // .x(function(data) {return xScale(dayArray)})
@@ -122,8 +117,6 @@ function lineGraph(data, id) {
         .attr("d", lineHappy);
 
 
-
-
     // Handmade legend
     var legendY = 150
     svg.append("circle").attr("cx",width+30).attr("cy",legendY).attr("r", 6).attr("id", "exciteLegend")
@@ -144,7 +137,6 @@ function lineGraph(data, id) {
     .attr("cy", function(d) { return yScale(d.y) })
     .attr("r", 5)
 
-
     svg.selectAll(".happydot")
     .data(datasetHappy)
     .enter().append("circle") // Uses the enter().append() method
@@ -157,36 +149,4 @@ function lineGraph(data, id) {
         this.attr('class', 'focus')
         })
     .on("mouseout", function() {  })
-
-
-    xAxis.selectAll(".tick")
-    .each(function (d) {
-        if ( d === 0 ) {
-            this.remove();
-        }
-    });
-
-
-    // 12. Appends a circle for each datapoint
-    // svg.selectAll(".dot")
-    // .data(datasetExcite)
-    // .enter().append("circle") // Uses the enter().append() method
-    // .attr("class", "dot") // Assign a class for styling
-    // .attr("cx", function(d, i) { return xScale(i) })
-    // .attr("cy", function(d) { return yScale(d.y) })
-    // .attr("r", 5)
-
-
-    // svg.selectAll(".dot")
-    // .data(datasetHappy)
-    // .enter().append("circle") // Uses the enter().append() method
-    // .attr("class", "dot") // Assign a class for styling
-    // .attr("cx", function(d, i) { return xScale(i) })
-    // .attr("cy", function(d) { return yScale(d.y) })
-    // .attr("r", 5)
-    // .on("mouseover", function(a, b, c) {
-    //         console.log(a)
-    //     this.attr('class', 'focus')
-    //     })
-    // .on("mouseout", function() {  })
 }
