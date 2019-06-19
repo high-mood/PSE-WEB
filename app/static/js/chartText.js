@@ -1,6 +1,6 @@
 var mean_excitedness, mean_happiness;
 
-const radarTexts = ["\
+const graphTexts = ["\
 High Excitedness, High Happiness <br> (happy, upbeat, energetic)<br><br>\
 The music you listen to is generally very happy and has high energy. <br><br>\
 This means that the beat is faster, a higher bpm (beats per minute), <br> \
@@ -26,10 +26,12 @@ This means that the beat is pretty slow, low bpm (beats per minute), and that th
 You seem sad or a bit down on your luck."];
 
 function giveText(data, id) {
-    var texts;
-   if (id == "radarText") {
-        texts = radarTexts;
-   }
+    // var texts;
+//    if (id == "radarText") {
+    var texts = graphTexts;
+//    } else if (id == "lineGraphText") {
+//         texts = graphTexts;
+//    }
 
     mean_excitedness = data.mean_excitedness;
     mean_happiness = data.mean_happiness;
@@ -38,7 +40,7 @@ function giveText(data, id) {
 }
 
 function resetRadarText() {
-    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, radarTexts);    
+    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, graphTexts);    
 }
 
 function hoverRadar(e) {
@@ -54,12 +56,14 @@ function hoverRadar(e) {
         y = this.offsetHeight/2 - (y - xy_pos['yp']);
     }
 
-    document.getElementById('radarText').innerHTML = getText(y, x, radarTexts);
+    document.getElementById('radarText').innerHTML = getText(y, x, graphTexts);
 }
 
 function getXYpos(elem) {
     var x = 0;
     var y = 0;
+
+    debugger;
 
     if (elem.tagName === "svg") {
         elem = elem.parentElement;    // set elem to its offsetParent
