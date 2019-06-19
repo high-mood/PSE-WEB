@@ -216,12 +216,20 @@ def get_features_moods(tracks):
                 'tempo': song.tempo
             })
     update_songmoods(tracks_features)
+    features_moods = link_features_mood(tracks)
 
-    result = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(Song.songid.in_((tracks.keys()))).all()
-    moods_features = []
-    for mood, song in result:
+    return features_moods
+
+
+def link_features_mood(tracks=None):
+    if tracks:
+        results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(Song.songid.in_((tracks.keys()))).all()
+    else:
+        results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid)
+    features_moods = []
+    for mood, song in results:
         print(mood, song)
-        moods_features.append({
+        features_moods.append({
             'songid': mood.songid,
             'excitedness': mood.excitedness,
             'happiness': mood.happiness,
@@ -240,7 +248,7 @@ def get_features_moods(tracks):
             'valence': song.valence,
             'tempo': song.tempo
         })
-    return moods_features
+    return features_moods
 
 
 def update_song_features(tracks):
