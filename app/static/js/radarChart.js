@@ -131,7 +131,6 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.append("circle")
 		.attr("class", "gridCircle")
 		.attr("r", d => radius / cfg.levels * d)
-		.attr("id", d => "gridCircle" + d)
 		.style("fill", "#CDCDCD")
 		.style("stroke", "#CDCDCD")
 		.style("fill-opacity", cfg.opacityCircles)

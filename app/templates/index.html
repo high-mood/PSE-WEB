@@ -118,8 +118,8 @@
           createRadarChart(userdata);
           giveText(userdata, "radarText");
 
-          document.getElementById("gridCircle5").onmousemove = hoverRadar;
-          document.getElementById("gridCircle5").onmouseout = resetRadarText;
+          document.getElementsByClassName("radar")[0].onmousemove = hoverRadar;
+          document.getElementsByClassName("radar")[0].onmouseout = resetRadarText;
 
 
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
