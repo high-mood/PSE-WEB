@@ -8,8 +8,31 @@ body {
   font-weight: 300;
   fill: #ffffff;
   text-align: center;
-  /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
+  text-color: white;
   cursor: default;
+}
+
+li {
+    list-style-type: none;
+}
+
+ul {
+  padding: 0px;
+}
+
+
+#top10 {
+  /* display:inline; */
+  /* float: left; */
+  text-align: left;
+  color: white;
+  /* width: 300px; */
+}
+
+.radarChart {
+  float: right;
+  /* display: inline; */
+  width: 800px;
 }
 
 #userwelcome {
@@ -21,6 +44,7 @@ body {
   margin-top: 100px;
 }
 .mainPage {
+  display: block;
   padding-top: 50px;
   height: 800px;
   /* border: 1px solid white; */
@@ -37,10 +61,12 @@ body {
 
 .inner-div
 {
-     margin: auto;
+    display: block;
+    /* width: 300px; */
+     /* margin: auto;
      margin-top: 70px;
      width: 800px;
-     height: 800px;
+     height: 800px; */
 }
 
 .navigation-bar {
@@ -49,15 +75,18 @@ body {
   right: 0;
   top: 0;
   width: 100%;
-  background-color: white;
   overflow: hidden;
+  background: #485563;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .navigation-bar a {
   display: inline-block;
   font-size: 20px;
   padding: 12px 24px 12px 24px;
-  color: rgba(0,0,0,0.6);
+  /* color: rgba(0,0,0,0.6); */
+  color: white;
 
   text-decoration: none;
   text-align: center;

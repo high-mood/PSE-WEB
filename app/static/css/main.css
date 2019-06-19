@@ -84,15 +84,19 @@
 
 	body {
 		height: 100%;
-		background-color: #ffffff;
-		background-image: url("images/overlay.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("../../images/bg.jpg");
+		/* background-color: #ffffff; */
+		background: #485563;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #29323c, #485563);
+		background: linear-gradient(to right, #29323c, #485563);
+		/* oude layout */
+		/* background-image: url("images/overlay.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("../../images/bg.jpg");
 		background-image: url("images/overlay.png"), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("../../images/bg.jpg");
 		background-image: url("images/overlay.png"), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("../../images/bg.jpg");
-		background-image: url("images/overlay.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("../../images/bg.jpg");
-		background-repeat: repeat,			no-repeat,			no-repeat;
-		background-size: 100px 100px, cover,				cover;
+		background-image: url("images/overlay.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("../../images/bg.jpg"); */
+		/* background-repeat: repeat,			no-repeat,			no-repeat; */
+		/* background-size: 100px 100px, cover,				cover;
 		background-position: top left,		center center,		bottom center;
-		background-attachment: fixed,			fixed,				fixed;
+		background-attachment: fixed,			fixed,				fixed; */
 	}
 
 		body:after {
@@ -105,13 +109,19 @@
 			height: inherit;
 			opacity: 0;
 			z-index: 1;
-			background-color: #ffffff;
-			background-image: url("images/overlay.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
+
+			background: #485563;  /* fallback for old browsers */
+			background: -webkit-linear-gradient(to right, #485563, #29323c);
+			background: linear-gradient(to right, #485563, #29323c);
+
+
+			/* background-color: #ffffff; */
+			/* background-image: url("images/overlay.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
 			background-image: url("images/overlay.png"), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
 			background-image: url("images/overlay.png"), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
 			background-image: url("images/overlay.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
 			background-repeat: repeat,			no-repeat;
-			background-size: 100px 100px, cover;
+			background-size: 100px 100px, cover; */
 			background-position: top left,		center center;
 			-moz-transition: opacity 1.75s ease-out;
 			-webkit-transition: opacity 1.75s ease-out;
@@ -152,6 +162,8 @@
 
 		}
 
+
+
 	a {
 		-moz-transition: color 0.2s ease, border-color 0.2s ease;
 		-webkit-transition: color 0.2s ease, border-color 0.2s ease;
@@ -159,6 +171,14 @@
 		transition: color 0.2s ease, border-color 0.2s ease;
 		color: inherit;
 		text-decoration: none;
+	}
+
+	#loginbutton {
+		border-radius: 25px;
+		color: white;
+		padding: 15px;
+		background-color: #1db954;
+
 	}
 
 		a:before {
@@ -705,7 +725,8 @@
 		max-width: 100%;
 		min-width: 27em;
 		padding: 4.5em 3em 3em 3em ;
-		background: #ffffff;
+		background: #191414;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		border-radius: 4px;
 		cursor: default;
 		opacity: 0.95;
@@ -860,4 +881,3 @@
         li {
         text-align: left;
         }
-
