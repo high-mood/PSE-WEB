@@ -98,8 +98,10 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 
 	//Initiate the radar chart SVG
 	let svg = parent.append("svg")
-			.attr("width",  cfg.w + cfg.margin.left + cfg.margin.right)
-			.attr("height", cfg.h + cfg.margin.top + cfg.margin.bottom)
+			.attr("width",  "100%")
+			.attr("height", "100%")
+			.attr("viewBox","0 0 " + (cfg.w + cfg.margin.left + cfg.margin.right) + " " + (cfg.h + cfg.margin.top + cfg.margin.bottom))
+      .attr("preserveAspectRatio","xMidYMid meet")
 			.attr("class", "radar");
 
 	//Append a g element
