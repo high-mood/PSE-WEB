@@ -4,7 +4,6 @@ from flask_restplus import Namespace, Resource, fields
 from app.utils import influx, models
 from app import app
 
-import numpy as np
 import dateparser
 import datetime
 
@@ -18,7 +17,7 @@ user_info = api.model('UserInfo', {
     'birthdate': fields.DateTime,
     'country': fields.String,
     'is_premium': fields.Boolean,
-    'refresh_tokens': fields.String,
+    'refresh_token': fields.String,
     'user_is_active': fields.Boolean
 })
 
@@ -73,8 +72,8 @@ moods = api.model('Mood over time', {
 class Mood(Resource):
 
     @api.marshal_with(moods, envelope='resource')
-
-    def get(self, userid, start=0, end=24):
+    def get(self=None, userid="snipy12", start=3,  # ALL ZERO PADDED TODO DOCUMENT
+            end=24, endoftime=False):
         """
         Obtain moods of a user within a given time frame in hours of a day.
         """
@@ -88,7 +87,7 @@ class Mood(Resource):
         if end > 24 or end < 1:
             api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
 
-
+            
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         client.switch_database('moods')
         user_mood = client.query(

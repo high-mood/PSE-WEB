@@ -20,7 +20,18 @@ ul {
   padding: 0px;
 }
 
-
+#history {
+    /* align-items: left; */
+    text-align: left;
+    padding-left: 40px;
+    margin: 40px;
+    width: auto;
+    float: none;
+    height: 800px;
+    overflow-y: auto;
+    border-radius: 5%;
+    background-color: #485563;
+}
 
 #top10 {
   /* display:inline; */
