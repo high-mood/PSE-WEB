@@ -90,6 +90,10 @@ def get_songs(client, userid, token):
     :return: All songs listened to by the user.
     """
     result = client.query('select songid from "' + userid + '"').raw
+
+    if 'series' not in result:
+        return 0, []
+
     timestamps, songs = [list(x) for x in list(zip(*result['series'][0]['values']))]
     ids = ','.join(songs[:10])
     endpoint = "https://api.spotify.com/v1/tracks?ids="
