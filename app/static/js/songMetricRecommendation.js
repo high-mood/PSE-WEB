@@ -59,7 +59,7 @@ function createSongRecommendationsPlayer(mainDivId,songs) {
     // show metrics
     excitementDiv = document.createElement('div');
     excitementDiv.setAttribute("style","width: 25%; height: 100%; float: left;")
-    excitementDiv.appendChild(document.createTextNode(songs[i].exitedness));
+    excitementDiv.appendChild(document.createTextNode(songs[i].excitedness));
     songPlayerBar.appendChild(excitementDiv);
 
     happinessDiv = document.createElement('div');
@@ -126,7 +126,7 @@ function createSongRecommendationElement(mainDivId) {
 
   // todo make placeholder for when no 
 
-  var songs = [{songId:"29bFmmZdmYstqJeEOweJoI",exitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",exitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",exitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",exitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",exitedness:100,happiness:100}]
+  var songs = [{songId:"29bFmmZdmYstqJeEOweJoI",excitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",excitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",excitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",excitedness:100,happiness:100},{songId:"29bFmmZdmYstqJeEOweJoI",excitedness:100,happiness:100}]
 
   createSongRecommendationsPlayer("songMetricRecPlayer",songs);
 }

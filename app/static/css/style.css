@@ -35,12 +35,25 @@ ul {
     background-color: #485563;
 }
 
-#top10 {
+#top-Songs {
   /* display:inline; */
   /* float: left; */
   text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
   color: white;
   /* width: 300px; */
+}
+
+#top-Songs li {
+  border-bottom: 1px rgba(255, 255, 255, 0.767);
+}
+
+#top10animeendings {
+  border-bottom: 5px solid transparent;
+  border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
+  border-image-slice: 1;
+  margin: 20px auto;
 }
 
 #Song-Recommendation{
