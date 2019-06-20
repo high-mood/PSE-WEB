@@ -1,11 +1,12 @@
 function createHeatmapData(userData) {
 //  console.log(userData)
-  var songs = userData.moods;
+  var songs = userData.songs;
+  console.log(songs)
   // console.log(songs)
 
   dataSet = []
 
-  for (var i in d3.range(userData.moods.length)) {
+  for (var i in d3.range(userData.songs.length)) {
     var song = songs[i];
     dataSet.push({name:"naam",data0:song.excitedness,data1:song.happiness});
   }
