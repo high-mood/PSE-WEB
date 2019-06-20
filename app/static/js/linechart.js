@@ -5,7 +5,7 @@ var xScale, yScale;
 
 function createLineGraph(data, id) {
 
-   console.log(data);
+//    console.log(data);
 
 
 
@@ -46,7 +46,7 @@ function createLineGraph(data, id) {
         }
     }
 
-    console.log(dataset)
+    // console.log(dataset)
 
     // Object.keys(dataset).forEach(function(key) {
     //     console.log(key);
@@ -55,8 +55,8 @@ function createLineGraph(data, id) {
     // console.log(meanExcite)
 
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 200, bottom: 30, left: 200};
-    var width = 900 - margin.left - margin.right;
+    var margin = {top: 20, right: 30, bottom: 30, left: 30};
+    var width = 600 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
     // 5. X scale will use the index of our data
@@ -73,8 +73,9 @@ function createLineGraph(data, id) {
 
     var svgId = "lineSvg"
     var svg = d3.select("#" + id).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", "-20 -20 600 400")
         .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("id", svgId);
@@ -134,15 +135,15 @@ function createLineGraph(data, id) {
     
     
     // Handmade legend
-    var legendY = 150
-    svg.append("circle").attr("cx",width+30).attr("cy",legendY).attr("r", 6).attr("id", "exciteLegend")
-    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 30).attr("r", 6).attr("id", "happyLegend")
-    svg.append("text").attr("x", width+50).attr("y", legendY).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    svg.append("text").attr("x", width+50).attr("y", legendY + 30).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
-    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 60).attr("r", 6).attr("id", "exciteLegendMean")
-    svg.append("circle").attr("cx",width+30).attr("cy",legendY + 90).attr("r", 6).attr("id", "happyLegendMean")
-    svg.append("text").attr("x", width+50).attr("y", legendY + 60).text("Mean excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    svg.append("text").attr("x", width+50).attr("y", legendY + 90).text("Mean happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    // var legendY = 150
+    // svg.append("circle").attr("cx",width+30).attr("cy",legendY).attr("r", 6).attr("id", "exciteLegend")
+    // svg.append("circle").attr("cx",width+30).attr("cy",legendY + 30).attr("r", 6).attr("id", "happyLegend")
+    // svg.append("text").attr("x", width+50).attr("y", legendY).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    // svg.append("text").attr("x", width+50).attr("y", legendY + 30).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
+    // svg.append("circle").attr("cx",width+30).attr("cy",legendY + 60).attr("r", 6).attr("id", "exciteLegendMean")
+    // svg.append("circle").attr("cx",width+30).attr("cy",legendY + 90).attr("r", 6).attr("id", "happyLegendMean")
+    // svg.append("text").attr("x", width+50).attr("y", legendY + 60).text("Mean excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
+    // svg.append("text").attr("x", width+50).attr("y", legendY + 90).text("Mean happiness").style("font-size", "15px").attr("alignment-baseline","middle")
     
     
     
@@ -248,7 +249,7 @@ function createLineGraph(data, id) {
 
 function drawLine(svgId, dataset, name) {
 
-    console.log("Test")
+    // console.log("Test")
 
     var line = d3.line()
         .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
@@ -260,8 +261,8 @@ function drawLine(svgId, dataset, name) {
 
     var color = d3.select("#" + name).style("background-color")
 
-    console.log("color: ")
-    console.log(color)
+    // console.log("color: ")
+    // console.log(color)
 
     svg.append("path")
         .data([dataset])
