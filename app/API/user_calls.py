@@ -104,4 +104,3 @@ class Mood(Resource):
             }
         else:
             api.abort(404, msg=f"No moods found for '{userid}'")
-

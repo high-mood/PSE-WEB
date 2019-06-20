@@ -141,7 +141,7 @@ class Metric(Resource):
         'speechiness', 'tempo', 'valence'
         """
         metrics = metrics.split(',')
-        _, _, songids = get_history(userid, 0)
+        _, _, songids = get_history(userid, 0, True)
 
         if songids:
             songs = db.session.query(models.Song).filter(models.Song.songid.in_((songids)))
