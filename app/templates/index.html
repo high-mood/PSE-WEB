@@ -127,17 +127,12 @@
         <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
       </svg>
     </div>
-
+<!-- 
     <div class="mainPage">
       <div id="Song-Recommendation">
         <h4>Song Recommendation Tool</h4>
-        <!-- <form action="">
-          <input type="radio" name="gender" value="male"><iframe src="https://open.spotify.com/embed/track/3Lsxzkhu8U9hTApMjTrCzm" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><br>
-          <input type="radio" name="gender" value="male"><iframe src="https://open.spotify.com/embed/track/1THV5YxgNvJvlVwc9yJmAv" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><br>
-          <input type="radio" name="gender" value="male"><iframe src="https://open.spotify.com/embed/track/4wnLWNl08ugaU7PbenbQ4f" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><br>
-        </form> -->
       </div>
-    </div>
+    </div> -->
 
     <script>
       createMainPageChart("Heat-Graph","heatmap","","heatmapText","",true,bigScreen);
@@ -268,7 +263,8 @@
       linechartRequest.send()
 
 
-    createSongRecommendationWidget(userid);
+      createSongRecommendationWidget(userid);
+    </script>
 
     <div id="linechartButtons"></div>
     <script>generateButtons("linechartButtons");</script>
