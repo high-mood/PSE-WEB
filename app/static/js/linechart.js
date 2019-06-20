@@ -274,34 +274,35 @@ function drawLine(svgId, dataset, name) {
 
 
     // 12. Appends a circle for each datapoint 
-    // svg.selectAll("." + name + "dot")
-    // .data(dataset)
-    // .enter().append("circle")
-    // .attr("class", name + "dot")
-    // .attr("cx", function(d, i) { return xScale(i) })
-    // .attr("cy", function(d) { return yScale(d.y) })
-    // .attr("r", 5)
-    // .on("mouseover", function(y, x) { 
-    //     // debugger;
-    //     var excitedness = Math.round(dataset[x]['y'] * 100) / 100;
-    //     // console.log(happiness);
-    //     d3.select("#tooltip")
-    //         .transition()
-    //             .duration(200)
-    //             .style("opacity", 1)
-    //             .style("top", (event.clientY - 30) + "px")
-    //             .style("left", event.clientX + "px")
-    //             .style("background-color", "#ffab00")
+    svg.selectAll("." + name + "dot")
+    .data(dataset)
+    .enter().append("circle")
+    .attr("class", name + "dot")
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("r", 3)
+    .style("fill", color)
+    .on("mouseover", function(y, x) { 
+        // debugger;
+        var value = Math.round(dataset[x]['y'] * 100) / 100;
+        // console.log(happiness);
+        d3.select("#tooltip")
+            .transition()
+                .duration(200)
+                .style("opacity", 1)
+                .style("top", (event.clientY - 30) + "px")
+                .style("left", event.clientX + "px")
+                .style("background-color", color)
 
-    //     d3.select("#tooltiptext")
-    //         .html("  excitedness: " + excitedness + "  ")
-    //     })
-    // .on("mouseout", function() {
-    //     d3.select("#tooltip")
-    //         .transition()
-    //             .duration(200)
-    //             .style("opacity", 0)
-    //     })
+        d3.select("#tooltiptext")
+            .html(name + ": " + value)
+        })
+    .on("mouseout", function() {
+        d3.select("#tooltip")
+            .transition()
+                .duration(200)
+                .style("opacity", 0)
+        })
 }
 
 
