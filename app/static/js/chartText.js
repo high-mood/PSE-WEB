@@ -25,9 +25,10 @@ The music you listen to is generally slow and has less energy.<br><br>\
 This means that the beat is pretty slow, low bpm (beats per minute), and that the music is perceived as sad.<br><br>\
 You seem sad or a bit down on your luck."];
 
-const heatMapText = "In this heatmap the number of songs in each square <br>\
-determine the color.<br><br>\
-The color changes from light blue (no songs) to green (average) to yellow (highest count)";
+const heatMapText = "In this heatmap the happines and excitement values<br>\
+are displayed on the x and y axis.<br>\
+The number of songs in each square determines the color. <br><br>\
+The color changes from light blue (no songs) to green (average) to yellow (highest count).";
 
 function giveText(data, id) {
 //     var texts;
@@ -41,7 +42,7 @@ function giveText(data, id) {
     mean_happiness = data.mean_happiness;
 
    if (id == "heatmapText") {
-        document.getElementById(id).innerHTML = (getText(mean_excitedness, mean_happiness, texts) + "<br><br>" + heatMapText);
+        document.getElementById(id).innerHTML = (heatMapText + "<br><br><br>" + getText(mean_excitedness, mean_happiness, texts));
    } else {
         document.getElementById(id).innerHTML = getText(mean_excitedness, mean_happiness, texts);
    }
