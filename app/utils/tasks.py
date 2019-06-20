@@ -326,7 +326,7 @@ def calculate_target_mood(target, current):
 
 def recommend_input(tracks, userid, target=(0.0, 0.0), n=5):
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
-    find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
+    return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
 
 
 def recommend_metric(userid, metric, excitedness, happiness, n=5):
