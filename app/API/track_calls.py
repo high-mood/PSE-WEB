@@ -1,5 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-from app.utils.tasks import find_song_recommendations
+from app.utils.tasks import recommend_input, recommend_metric
 from app.utils import influx, models
 from app import app, db
 
@@ -235,7 +235,7 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        recs = find_song_recommendations([songid], userid, 5, target=(float(excitedness), float(happiness)))
+        recs = recommend_input([songid], userid, 5, target=(float(excitedness), float(happiness)))
 
         if recs:
             return {
