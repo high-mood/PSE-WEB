@@ -37,7 +37,6 @@ function spawnButton(metric, id) {
     buttonDiv.setAttribute("id", metric);
     buttonDiv.setAttribute("class", "linechartMetricButton");
     buttonDiv.setAttribute("style", "float: left; margin: 3px;");
-    buttonDiv.style.opacity = 0.5;
     buttonDiv.setAttribute("onclick", "press(this.id)");
     buttonDiv.innerHTML = metric;
     buttonsDiv.appendChild(buttonDiv);
