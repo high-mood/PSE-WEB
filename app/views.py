@@ -60,6 +60,9 @@ def login():
 
 @app.route('/callback')
 def authorized():
+    if "json_info" in session:
+        return redirect(url_for("index"))
+
     resp = spotifysso.authorized_response()
 
     if resp is None:
