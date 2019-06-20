@@ -39,7 +39,8 @@ function getTop10(divId) {
     // make the title/header
     var header = document.createElement('h4');
     header.innerHTML = "Your Top 10 Songs"
-    header.setAttribute("style","text-align: center;");
+    header.setAttribute("style","text-align: center; font-size:40px; border-bottom: 2px solid pink;");
+    header.id = "top10animeendings"
     listContainer.appendChild(header);
 
     // Make the list

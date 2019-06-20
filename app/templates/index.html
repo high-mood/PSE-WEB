@@ -150,7 +150,7 @@
       </svg>
     </div>
 
-    <div id="history">
+    <!-- <div id="history">
         <h2> Song history </h2>
         <div class="scrollable">
             <ul>
@@ -159,13 +159,13 @@
                 {% endfor %}
             </ul>
         </div>
-    </div>
+    </div> -->
 
-    <div class="divider"> <!------------------------------------------------------------------------------------------->
+    <!-- <div class="divider">
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
         <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
       </svg>
-    </div>
+    </div> -->
 
     <div class="mainPage">
       <div id="Song-Recommendation">
@@ -198,9 +198,9 @@
           document.getElementsByClassName("radar")[0].onmouseout = resetRadarText;
 
           // Heatmap
-          createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
-                        ,-10,10,5,"exitedness",-10,10,5,"happiness"
-                        ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
+          createHeatmap("heatmap","A heatmap of the excitedness and happiness of your songs."
+                        ,-10,10,5,"excitedness",-10,10,5,"happiness"
+                        ,createHeatmapData(userdata, "name", "excitedness", "happiness"));
           giveText(userdata, "heatmapText");
         }
         else {
