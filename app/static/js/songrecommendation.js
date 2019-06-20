@@ -8,11 +8,9 @@ function createSongRecommendationWidget(userid) {
   request.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
-    console.log(userdata)
 
 
     if (request.status >= 200 && request.status < 400) {
-      // console.log(userdata);
 
       var songWidgetContainer = document.getElementById('Song-Recommendation');
 
@@ -20,10 +18,14 @@ function createSongRecommendationWidget(userid) {
 
       songWidgetContainer.appendChild(form);
 
-      console.log("user songs");
-      console.log(userdata.songs);
 
-      for (var i = 0; i < userdata.songs.length; i++) {
+      var length = userdata.songs.length;
+
+      if (length >= 5) {
+        length = 5;
+      }
+
+      for (var i = 0; i < length; i++) {
         var songdiv = document.createElement('div')
         songdiv.classList.add('songdiv');
         songdiv.id = userdata.songs[i].songid;
@@ -59,22 +61,15 @@ function createSongRecommendationWidget(userid) {
 
 function showSong(clickevent) {
   var songid = [clickevent.path[0].parentElement.id];
-  console.log(songid);
 
 
   var songdivs = document.getElementsByClassName("songdiv");
 
   for (var i = 0; i < songdivs.length; i++) {
-    console.log("hey");
-
-    console.log(songdivs[i].childNodes);
-    console.log(songdivs[i].childNodes.length);
 
     if (songdivs[i].childNodes.length > 2) {
-      console.log("too much");
 
       for (var j = 2; j < songdivs[i].childNodes.length; j++) {
-        console.log(i);
         songdivs[i].removeChild(songdivs[i].childNodes[j]);
       }
     }
@@ -90,26 +85,17 @@ function showSong(clickevent) {
     var userdata = alldata.resource
 
     if (request.status >= 200 && request.status < 400) {
-      console.log(userdata.recommendations);
 
       songdivs = document.getElementsByClassName("songdiv");
-      console.log(songdivs.length);
 
       for (var i = 0; i < songdivs.length; i++) {
 
-        console.log(userdata.recommendations[i].songid);
-
-        console.log(songdivs[i].childNodes);
 
         var ifrm = document.createElement("iframe");
         ifrm.setAttribute("src", "https://open.spotify.com/embed/track/" + userdata.recommendations[i].songid);
         ifrm.setAttribute("align","left");
         ifrm.style.width = "300px";
         ifrm.style.height = "80px";
-
-        var mood = document.createElement("div");
-        mood.classList.add('mood');
-        mood.innerHTML = "hallo";
 
         songdivs[i].appendChild(ifrm)
       }
