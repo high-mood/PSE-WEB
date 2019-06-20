@@ -25,6 +25,12 @@ The music you listen to is generally slow and has less energy.<br><br>\
 This means that the beat is pretty slow, low bpm (beats per minute), and that the music is perceived as sad.<br><br>\
 You seem sad or a bit down on your luck."];
 
+const heatMapText = ["In this heatmap the number of songs in each square <br>\
+determine the color.<br><br>\
+The color changes from light blue (no songs) to green (average) to yellow (highest count)"
+
+]
+
 function giveText(data, id) {
     // var texts;
 //    if (id == "radarText") {
