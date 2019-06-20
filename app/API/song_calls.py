@@ -23,7 +23,6 @@ class Song(Resource):
     @api.expect(user_data)
     def post(self):
         """SOmething something add"""
-        print(api.payload)
         songid = api.payload['songid']
         excitedness = api.payload['excitedness']
         happy = api.payload['happiness']
