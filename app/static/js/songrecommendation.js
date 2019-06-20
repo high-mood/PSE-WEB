@@ -1,3 +1,5 @@
+/* global $, document*/
+
 function createSongRecommendationWidget(userid) {
 
   var request = new XMLHttpRequest()
@@ -14,7 +16,27 @@ function createSongRecommendationWidget(userid) {
 
       var songWidgetContainer = document.getElementById('Song-Recommendation');
 
-      var form = document.createElement('form')
+      var form = document.createElement('form');
+      form.setAttribute("class", "form-signin");
+      form.setAttribute("action", "/signUp");
+      form.setAttribute("method", "post");
+      form.setAttribute("role", "form");
+
+      var input = document.createElement('input');
+      input.setAttribute("type", "email");
+      input.setAttribute("name", "username");
+      input.setAttribute("class", "form-control");
+
+      var button = document.createElement('button');
+      button.setAttribute("type", "button");
+      // button.innerHTML = "Hallo";
+
+
+
+
+
+      form.appendChild(input);
+      form.appendChild(button);
 
       songWidgetContainer.appendChild(form);
 
@@ -29,14 +51,15 @@ function createSongRecommendationWidget(userid) {
 
         var btn = document.createElement("BUTTON");
         btn.innerHTML = "Select";
-        // btn.onclick = showSong("hallo");
         btn.setAttribute("type","button");
-        // btn.setAttribute("onclick","showSong(" + userdata.songs[i].songid + ")");
         btn.onclick = function(songid) { showSong(songid); };
-        // btn.addEventListener("click", showSong("hallo"));
         btn.classList.add('SongRecButton');
         songdiv.appendChild(btn);
 
+        // <form class="form-signin" action="/signUp" method="post" role="form">
+        //     <input type="email" name="username" class="form-control">
+        //     <button type="button">Register </button>
+        // </form>
 
 
         var ifrm = document.createElement("iframe");
@@ -45,17 +68,10 @@ function createSongRecommendationWidget(userid) {
         ifrm.style.width = "300px";
         ifrm.style.height = "80px";
 
-
-
-        // form.appendChild(radiobutton);
         songdiv.appendChild(ifrm);
 
-
-        // songdiv.innerHTML = radioHtml;
         form.appendChild(songdiv)
-        // form.appendChild('<br>')
-        // form.innerHTML = radioHtml;
-        // form.appendChild(radioHtml);
+
       }
 
 
@@ -71,3 +87,19 @@ function showSong(clickevent) {
 
   // alert(songid);
 }
+
+$(function() {
+    $('button').click(function() {
+        $.ajax({
+            url: '/sendSong',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});

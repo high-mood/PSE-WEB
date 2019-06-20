@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, session, url_for, flash
+from flask import Flask, send_from_directory, jsonify, json, render_template, redirect, request, session, flash, url_for
 from app import app
 # Refactor later
 from app import spotifysso
@@ -13,6 +13,8 @@ def index():
     if "json_info" not in session:
         return render_template("login.html", **locals())
     else:
+
+        # client = query.create_client('pse-ssh.diallom.com', 8086)
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
@@ -20,6 +22,13 @@ def index():
         return render_template("index.html", **locals(), text=session['json_info']['display_name'],
                                id=session['json_info']['id'])
 
+
+@app.route('/sendSong', methods=['POST'])
+def signUpUser():
+    print("called me")
+    user =  request.form['username'];
+    print(user)
+    return json.dumps({'status':'OK','user':user});
 
 @app.route("/index_js")
 def index_js():

@@ -210,7 +210,15 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
+<<<<<<< HEAD
         recs = find_song_recommendations([songid], userid, 10, target=(float(excitedness), float(happiness)))
+=======
+<<<<<<< HEAD
+        recs = find_song_recommendations([songid], userid, 10, target=(excitedness, happiness))
+=======
+        recs = find_song_recommendations([songid], userid, 10, target=(float(excitedness), float(happiness)))
+>>>>>>> backend/api
+>>>>>>> Frontend
         if recs:
             return {
                 'userid': userid,
