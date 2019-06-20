@@ -116,7 +116,9 @@ class Songmood(db.Model):
     songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
     happiness = db.Column(db.Float())
-    responses_count = db.Column(db.Integer(), db.ColumnDefault(50))
+    response_excitedness = db.Column(db.Float())
+    response_happiness = db.Column(db.Float())
+    response_count = db.Column(db.Integer(), db.ColumnDefault(0))
 
     @staticmethod
     def create_if_not_exist(json_info):
@@ -133,6 +135,19 @@ class Songmood(db.Model):
     def get_moods(songids):
         songmoods = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
         return songmoods
+
+    # TODO check if this works properly
+    @staticmethod
+    def update_response_mood(songid, user_excitedness, user_happiness):
+        songmood = Songmood.query.filter_by(songid=songid).first()
+        if songmood:
+            response_excitedness = songmood.response_excitedness
+            response_happiness = songmood.response_happiness
+            response_count = songmood.response_count
+            songmood.response_happiness = (response_happiness * response_count + user_excitedness) / response_count
+            songmood.response_excitedness = (response_excitedness * response_count + user_excitedness) / response_count
+            songmood.response_count = response_count + 1
+            db.session.commit()
 
 
 class SongArtist(db.Model):

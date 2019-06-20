@@ -13,6 +13,7 @@
 		background-position: bottom center;
 		background-attachment: fixed;
 	}
+	
 
 		body:after {
 			display: none;

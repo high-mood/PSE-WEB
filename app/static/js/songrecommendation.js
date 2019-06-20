@@ -83,23 +83,25 @@ function createSongRecommendationWidget(userid) {
 
 function showSong(clickevent) {
   var songid = [clickevent.path[0].parentElement.id];
-//  console.log(songid);
+  console.log(songid);
 
   // alert(songid);
 }
 
-//$(function() {
-//    $('button').click(function() {
-//        $.ajax({
-//            url: '/sendSong',
-//            data: $('form').serialize(),
-//            type: 'POST',
-//            success: function(response) {
-//                console.log(response);
-//            },
-//            error: function(error) {
-//                console.log(error);
-//            }
-//        });
-//    });
-//});
+
+$(function() {
+    $('button').click(function() {
+        $.ajax({
+            url: '/sendSong',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+

@@ -3,8 +3,8 @@ from flask_restplus import Api
 from flask import Blueprint
 from app import app
 
-from .users import api as user_name_space
-from .tracks import api as track_name_space
+from .user_calls import api as user_name_space
+from .track_calls import api as track_name_space
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
