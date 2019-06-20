@@ -118,7 +118,7 @@ class Songmood(db.Model):
     happiness = db.Column(db.Float())
     response_excitedness = db.Column(db.Float())
     response_happiness = db.Column(db.Float())
-    response_count = db.Column(db.Integer(), db.ColumnDefault(50))
+    response_count = db.Column(db.Integer(), db.ColumnDefault(0))
 
     @staticmethod
     def create_if_not_exist(json_info):

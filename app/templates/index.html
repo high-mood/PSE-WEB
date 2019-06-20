@@ -8,6 +8,8 @@
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
     <link rel='icon' href="{{ url_for('static',filename='img/favicon.ico') }}" type='image/x-icon'/ >
 
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <!-- Radar Chart -->
     <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
@@ -36,6 +38,8 @@
 
     <!-- D3.js -->
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--todo rework external stylesheet? at least place it above with the other stylesheets if needed-->
@@ -192,6 +196,12 @@
       </div>
     </div>
 
+
+    <!-- <form class="form-signin" action="/signUp" method="post" role="form">
+        <input type="email" name="username" class="form-control">
+        <button type="button">Register </button>
+    </form> -->
+
     <!--loading user data-->
     <script>
       var userid = document.getElementById("username").textContent;
@@ -232,12 +242,14 @@
 
       var linechartRequest= new XMLHttpRequest()
 
-      linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-      // request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
+      var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
+      song_count = 50;
+      // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
+      lineChartRequest.open('GET', 'http://localhost:5000/api/tracks/' + userid + '/' + metrics + '/' + song_count, true)
       linechartRequest.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
-
+        console.log(userdata)
 
         if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
 
