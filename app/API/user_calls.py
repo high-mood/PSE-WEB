@@ -15,7 +15,7 @@ user_info = api.model('UserInfo', {
     'birthdate': fields.DateTime,
     'country': fields.String,
     'is_premium': fields.Boolean,
-    'refresh_tokens': fields.String,
+    'refresh_token': fields.String,
     'user_is_active': fields.Boolean
 })
 
@@ -68,7 +68,6 @@ moods = api.model('Mood over time', {
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class Mood(Resource):
-
     @api.marshal_with(moods, envelope='resource')
     def get(self=None, userid="snipy12", start=3,  # ALL ZERO PADDED TODO DOCUMENT
             end=24, endoftime=False):

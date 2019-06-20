@@ -111,7 +111,6 @@ def parse_time(start, end):
 metrics = api.model('Metric over time', {
     'userid': fields.String,
     'metric_over_time': fields.Nested(api.model('metric', {
-        'time': fields.String,
         'songid': fields.String,
         'acousticness': fields.Float,
         'danceability': fields.Float,
@@ -129,12 +128,12 @@ metrics = api.model('Metric over time', {
 })
 
 
-@api.route('/metrics/<string:userid>/<string:metrics>/<string:song_count>')
+@api.route('/metrics/<string:userid>/<int:song_count>')
 @api.response(400, 'Invalid metric')
 @api.response(404, 'No metrics found')
 class Metric(Resource):
     @api.marshal_with(metrics, envelope='resource')
-    def get(self, userid, metrics, song_count=50, start="'1678-09-21T00:20:43.145224194Z'",
+    def get(self, userid, song_count=0, start="'1678-09-21T00:20:43.145224194Z'",
             end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
         """
         Obtain metrics of a user within a given timeframe.
@@ -150,9 +149,10 @@ class Metric(Resource):
             songs = db.session.query(models.Song).filter(models.Song.songid.in_((songids)))
             songs_features = []
             for song in songs:
-                song.__dict__['time'] = song.__dict__['time_signature']
                 features = song.__dict__
                 songs_features.append(features)
+            if song_count != 0:
+                songs_features = songs_features[:song_count]
             return {
                 'userid': userid,
                 'metric_over_time': songs_features
