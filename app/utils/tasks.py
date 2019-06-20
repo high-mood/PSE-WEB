@@ -367,11 +367,11 @@ def recommend_metric(userid, metric, excitedness, happiness, n=5):
 
     if metric in moods:
         target = calculate_target_mood(moods[metric], (excitedness, happiness))
-        find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
+        return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
 
     if metric in events:
         print(events[metric])
-        find_song_recommendations(access_token, tracks, (excitedness, happiness), n, events[metric])
+        return find_song_recommendations(access_token, tracks, (excitedness, happiness), n, events[metric])
 
 
 def find_song_recommendations(access_token, tracks, target, n, params):
