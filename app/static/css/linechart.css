@@ -61,7 +61,8 @@ Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
 
 
 .linechartMetricButton {
-    width: 33%;
+    width: 11.1%;
     border-radius: 4px;
     color: black;
+    float: left;
 }
