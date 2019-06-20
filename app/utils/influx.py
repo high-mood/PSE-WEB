@@ -98,7 +98,7 @@ def get_songs(client, userid, token):
     ids = ','.join(songs)
     endpoint = "https://api.spotify.com/v1/tracks?ids="
     r = requests.get(endpoint + ids, headers={"Authorization": f"Bearer {token}"}).json()
-    if 'tracks' not in tracks:
+    if 'tracks' not in r:
         return 0, []
     songs = [track['name'] for track in r['tracks'] if track]
 
