@@ -14,7 +14,8 @@ def index():
         return render_template("login.html", **locals())
     else:
 
-        client = query.create_client('pse-ssh.diallom.com', 8086)
+        # client = query.create_client('pse-ssh.diallom.com', 8086)
+        client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
