@@ -171,7 +171,7 @@ class TopSongs(Resource):
         songids = [song['songid'] for song in recent_song_list]
         songdata = db.session.query(models.Song).filter(models.Song.songid.in_((songids))).all()
         songs = {song.songid: song.name for song in songdata}
-        counted_songs = sorted([(songs[id], id, songids.count(id)) for id in songids], key=lambda val: val[2], reverse=True)
+        counted_songs = sorted([(songs[id], id, songids.count(id)) for id in list(set(songids))], key=lambda val: val[2], reverse=True)
         top_x = counted_songs[:int(count)]
         return_data = [{'songid': data[1],'name': data[0],'count':data[2]} for data in top_x]
         return {
