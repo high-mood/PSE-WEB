@@ -116,9 +116,9 @@ class Songmood(db.Model):
     songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
     happiness = db.Column(db.Float())
-    response_excitedness = db.Column(db.Float())
-    response_happiness = db.Column(db.Float())
-    response_count = db.Column(db.Integer(), db.ColumnDefault(50))
+    response_excitedness = db.Column(db.Float(), default=0)
+    response_happiness = db.Column(db.Float(), default=0)
+    response_count = db.Column(db.Integer(), db.ColumnDefault(50), default=0)
 
     @staticmethod
     def create_if_not_exist(json_info):
@@ -158,10 +158,11 @@ class SongArtist(db.Model):
 
     __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
 
-    #TODO fix below
+    # TODO fix below
     @staticmethod
     def create_if_not_exist(json_info):
-        songartist = SongArtist.query(f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
+        songartist = SongArtist.query(
+            f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
         if songartist is None:
             songartist = SongArtist(songid=json_info['songid'],
                                     artistid=json_info['artistid'])
