@@ -1,5 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-from app.utils.tasks import find_song_recommendations
+from app.utils.tasks import recommend_input, recommend_metric
 from app.utils import influx, models
 from app import app, db
 
@@ -7,6 +7,48 @@ import dateparser
 import datetime
 
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
+
+
+def get_history(userid, song_count, all_history=True):
+    """Get the latest song_count tracks for userid."""
+    querycount = 3 * song_count
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+
+    if song_count == 0:
+        recent_songs = client.query(f'select songid from "{userid}" order by time')
+    else:
+        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {querycount}')
+
+    if recent_songs:
+        history = []
+        recent_song_list = list(recent_songs.get_points(measurement=userid))
+        songids = list(set([song['songid'] for song in recent_song_list]))
+        songids = songids[:song_count] if song_count > 0 else songids
+        songmoods = models.Songmood.get_moods(songids)
+        excitedness = 0
+        happiness = 0
+        mean_count = 1
+
+        for songmood in songmoods:
+            if songmood.excitedness and songmood.happiness:
+                excitedness += songmood.excitedness
+                happiness += songmood.happiness
+                mean_count += 1 if mean_count != 1 else 0
+            if all_history:
+                song = {}
+                song['songid'] = songmood.songid
+                song['excitedness'] = songmood.excitedness
+                song['happiness'] = songmood.happiness
+                song['time'] = [song['time'] for song in recent_song_list][0]
+                song['name'] = models.Song.get_song_name(song['songid'])
+                history.append(song)
+        excitedness /= mean_count
+        happiness /= mean_count
+        if all_history:
+            return excitedness, happiness, history
+        return excitedness, happiness, songids[:6]
+    return None, None, None
+
 
 history = api.model('Song history with mood', {
     'userid': fields.String,
@@ -30,35 +72,8 @@ class History(Resource):
         """
         Obtain N most recently played songs along with their mood.
         """
-        querycount = 3 * song_count
-        client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {querycount}')
-        if recent_songs:
-            history = []
-            recent_song_list = list(recent_songs.get_points(measurement=userid))
-            songids = list(set([song['songid'] for song in recent_song_list]))
-            # print(userid, songids)
-            songids = songids[:song_count] if song_count > 0 else songids
-            songmoods = models.Songmood.get_moods(songids)
-            excitedness = 0
-            happiness = 0
-            mean_count = 1
-
-            for songmood in songmoods:
-                if songmood.excitedness and songmood.happiness:
-                    excitedness += songmood.excitedness
-                    happiness += songmood.happiness
-                    mean_count += 1 if mean_count != 1 else 0
-                song = {}
-                song['songid'] = songmood.songid
-                song['excitedness'] = songmood.excitedness
-                song['happiness'] = songmood.happiness
-                song['time'] = [song['time'] for song in recent_song_list][0]
-                song['name'] = models.Song.get_song_name(song['songid'])
-                history.append(song)
-            excitedness /= mean_count
-            happiness /= mean_count
-            print(userid, history, "WE ZIJN HIERRRRRRRRRRRRRR")
+        excitedness, happiness, history = get_history(userid, song_count)
+        if history:
             return {
                 'userid': userid,
                 'mean_excitedness': excitedness,
@@ -181,8 +196,6 @@ class TopSongs(Resource):
         }
 
 
-
-
 recommendations = api.model('Song recommendations', {
     'userid': fields.String,
     'recommendations': fields.Nested(api.model('recommendation', {
@@ -224,7 +237,27 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        recs = find_song_recommendations([songid], userid, 5, target=(float(excitedness), float(happiness)))
+        recs = recommend_input([songid], userid, target=(float(excitedness), float(happiness)))
+
+        if recs:
+            return {
+                'userid': userid,
+                'recommendations': recs
+            }
+        else:
+            api.abort(404, message=f"No recommendations not found for '{userid}'")
+
+
+@api.route('/recommendation/<string:userid>/<string:metric>')
+@api.response(404, 'No recommendations found')
+class Recommendation_metric(Resource):
+    @api.marshal_with(recommendations, envelope='resource')
+    def get(self, userid, metric):
+        """
+        Obtain recommendations based on an metric selected by user.
+        """
+        excitedness, happiness, history = get_history(userid, 0, False)
+        recs = recommend_metric(history, userid, metric, excitedness, happiness)
 
         if recs:
             return {
