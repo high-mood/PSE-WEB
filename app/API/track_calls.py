@@ -165,8 +165,8 @@ recommendations = api.model('Song recommendations', {
     'userid': fields.String,
     'recommendations': fields.Nested(api.model('recommendation', {
         'songid': fields.String,
-        'excitedness': fields.String,
-        'happiness': fields.List(fields.String)
+        'excitedness': fields.Float,
+        'happiness': fields.Float
     }))
 })
 
@@ -202,7 +202,7 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        recs = find_song_recommendations([songid], userid, 10)
+        recs = find_song_recommendations([songid], userid, 10, target=(excitedness, happiness))
         if recs:
             return {
                 'userid': userid,
