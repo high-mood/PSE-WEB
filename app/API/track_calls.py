@@ -92,7 +92,18 @@ metrics = api.model('Metric over time', {
     'userid': fields.String,
     'metric_over_time': fields.Nested(api.model('metric', {
         'time': fields.String,
-        'value': fields.Float,
+        'acousticness': fields.Float,
+        'danceability': fields.Float,
+        'duration_ms': fields.Float,
+        'energy': fields.Float,
+        'instrumentalness': fields.Float,
+        'key': fields.Float,
+        'liveness': fields.Float,
+        'loudness': fields.Float,
+        'mode': fields.Float,
+        'speechiness': fields.Float,
+        'tempo': fields.Float,
+        'valence': fields.Float
     }))
 })
 
@@ -111,22 +122,17 @@ class Metric(Resource):
         'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
         'speechiness', 'tempo', 'valence'
         """
-        for metric in metrics.split(','):
+        metrics = metrics.split(',')
+        for metric in metrics:
             if metric.strip() not in possible_metrics:
                 api.abort(400, message=f"invalid metric")
 
-        print('\n\n\n\n\n')
-        metrics = ','.join(['\"' + metric.strip() + '\"' for metric in metrics.split(',')])
-
+        metrics_querystring = ','.join(['\"' + metric.strip() + '\"' for metric in metrics])
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        user_metrics = client.query(f'select {metrics} from "{userid}" limit {song_count}')
+        user_metrics = client.query(f'select {metrics_querystring} from "{userid}" order by time desc limit {song_count}')
+
         if user_metrics:
             metric_list = list(user_metrics.get_points(measurement=userid))
-            print(metric_list)
-            print('-----------------------------------------')
-
-            for timed_metric in metric_list:
-                timed_metric['value'] = timed_metric.pop('tempo')
 
             return {
                 'userid': userid,
