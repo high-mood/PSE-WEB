@@ -107,6 +107,7 @@ class Mood(Resource):
                 api.abort(404, msg=f"No moods found for '{userid}'")
 
             return {
+                'userid': userid,
                 'mean_excitedness': excitedness / total_songs,
                 'mean_happiness': happiness / total_songs,
                 'sum_song_count': total_songs,

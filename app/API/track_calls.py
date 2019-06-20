@@ -9,7 +9,7 @@ import datetime
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
 
-def get_history(userid, song_count, songids=True, calc_mood=True):
+def get_history(userid, song_count, return_songids=False, calc_mood=True):
     """Get the latest song_count tracks for userid."""
     querycount = 3 * song_count
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
@@ -34,7 +34,7 @@ def get_history(userid, song_count, songids=True, calc_mood=True):
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
                 count += 1 if count != 1 else 0
-            if not songids:
+            if not return_songids:
                 song = {}
                 song['songid'] = songmood.songid
                 song['excitedness'] = songmood.excitedness
@@ -45,7 +45,7 @@ def get_history(userid, song_count, songids=True, calc_mood=True):
         if calc_mood:
             excitedness /= count
             happiness /= count
-        if songids:
+        if return_songids:
             return excitedness, happiness, songids
         return excitedness, happiness, history
     return None, None, None
@@ -130,17 +130,11 @@ metrics = api.model('Metric over time', {
 @api.response(404, 'No metrics found')
 class Metric(Resource):
     @api.marshal_with(metrics, envelope='resource')
-    def get(self, userid, song_count=0, start="'1678-09-21T00:20:43.145224194Z'",
-            end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
+    def get(self, userid, song_count=0):
         """
-        Obtain metrics of a user within a given timeframe.
-        Possible metrics:
-        'acousticness', 'danceability', 'duration_ms', 'energy',
-        'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
-        'speechiness', 'tempo', 'valence'
+        Obtain metrics of a user for given number of songs.
         """
-        metrics = metrics.split(',')
-        _, _, songids = get_history(userid, 0, True)
+        _, _, songids = get_history(userid, song_count, return_songids=True, calc_mood=False)
 
         if songids:
             songs = db.session.query(models.Song).filter(models.Song.songid.in_((songids)))
@@ -187,7 +181,7 @@ class TopSongs(Resource):
         songs = {song.songid: song.name for song in songdata}
         counted_songs = sorted([(songs[id], id, songids.count(id)) for id in list(set(songids))], key=lambda val: val[2], reverse=True)
         top_x = counted_songs[:int(count)]
-        return_data = [{'songid': data[1],'name': data[0],'count':data[2]} for data in top_x]
+        return_data = [{'songid': data[1], 'name': data[0], 'count':data[2]} for data in top_x]
         return {
             'userid': userid,
             'songs': return_data
@@ -231,7 +225,7 @@ class Recommendation_metric(Resource):
         """
         Obtain recommendations based on an metric selected by user.
         """
-        excitedness, happiness, songids = get_history(userid, 0, False)
+        excitedness, happiness, songids = get_history(userid, 0, return_songids=True)
         recs = recommend_metric(songids[:6], userid, metric, excitedness, happiness)
 
         if recs:

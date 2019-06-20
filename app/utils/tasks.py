@@ -187,6 +187,9 @@ def update_songmoods(tracks_features):
     if analysis_tracks:
         moods = analyse_mood(analysis_tracks)
         for mood in moods:
+            mood['response_count'] = 0
+            mood['response_excitedness'] = 0.0
+            mood['response_happiness'] = 0.0
             Songmood.create_if_not_exist(mood)
 
 
