@@ -92,6 +92,7 @@ metrics = api.model('Metric over time', {
     'userid': fields.String,
     'metric_over_time': fields.Nested(api.model('metric', {
         'time': fields.String,
+        'songid': fields.String,
         'acousticness': fields.Float,
         'danceability': fields.Float,
         'duration_ms': fields.Float,
@@ -128,6 +129,7 @@ class Metric(Resource):
                 api.abort(400, message=f"invalid metric")
 
         metrics_querystring = ','.join(['\"' + metric.strip() + '\"' for metric in metrics])
+        metrics_querystring += ',\"songid\"'
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         user_metrics = client.query(f'select {metrics_querystring} from "{userid}" order by time desc limit {song_count}')
 
@@ -208,7 +210,7 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        recs = find_song_recommendations([songid], userid, 10, target=(excitedness, happiness))
+        recs = find_song_recommendations([songid], userid, 10, target=(float(excitedness), float(happiness)))
         if recs:
             return {
                 'userid': userid,
