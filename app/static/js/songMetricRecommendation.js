@@ -2,19 +2,21 @@ function MakeNewSongMetricRec(targetDiv,metricName) {
   var userid = document.getElementById("username").textContent;
 
   var request = new XMLHttpRequest
-  request.open('GET', 'http://localhost:5000/api/recommendation/' + userid + '/' + metricName, true)
+  request.open('GET', 'http://localhost:5000/api/tracks/recommendation/' + userid + '/' + metricName, true)
   request.onload = function() {
     var alldata = JSON.parse(this.response)
-    var userdata = alldata.resource
-    if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
+    if (request.status >= 200 && request.status < 400) {
+      var userdata = alldata.resource.recommendations
       createSongRecommendationsPlayer(targetDiv,userdata);
     } else {
-      targetDiv.textContent("Error loading the content")
+      targetDiv.innerHTML="Error loading the content"
     }
   }
+  request.send()
 }
 
 function createSongRecommendationsPlayer(mainDivId,songs) {
+  console.log(songs)
   mainDiv = document.getElementById(mainDivId);
   // clear former songs
   mainDiv.innerHTML = "";
@@ -47,7 +49,7 @@ function createSongRecommendationsPlayer(mainDivId,songs) {
 
     // create iframesongId
     spotifyPlayer = document.createElement('iframe');
-    spotifyPlayer.setAttribute("src","https://open.spotify.com/embed/track/" + songs[i].songId);
+    spotifyPlayer.setAttribute("src","https://open.spotify.com/embed/track/" + songs[i].songid);
     spotifyPlayer.setAttribute("frameborder","0");
     spotifyPlayer.setAttribute("allowtransparency","true");
     spotifyPlayer.setAttribute("allow","encrypted-media");

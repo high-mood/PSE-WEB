@@ -23,6 +23,8 @@ ul {
 #Song-Recommendation{
   width: 800px;
   margin-left: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
   margin-right: auto;
   border: 2px solid black;
 }
