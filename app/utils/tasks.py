@@ -225,10 +225,12 @@ def get_features_moods(tracks):
     return features_moods
 
 
-def link_features_mood(tracks=None):
+def link_features_mood(tracks=None, get_responses=False):
     """Link features and moods for tracks or all tracks in db if tracks=none."""
     if tracks:
         results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(Song.songid.in_((tracks.keys()))).all()
+    elif get_responses:
+        results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(Songmood.response_count > 0).all()
     else:
         results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid)
     features_moods = []
@@ -238,6 +240,8 @@ def link_features_mood(tracks=None):
             'songid': mood.songid,
             'excitedness': mood.excitedness,
             'happiness': mood.happiness,
+            'response_excitedness': mood.response_excitedness,
+            'response_happiness': mood.response_happiness,
             'name': song.name,
             'duration_ms': song.duration_ms,
             'key': song.key,
