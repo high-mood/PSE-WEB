@@ -275,7 +275,7 @@ def update_song_features(tracks):
     add_audio_features(new_tracks, access_token)
 
 
-def order_songs(songs, target, n=5):
+def order_songs(songs, target, n):
     """
     It orders songs based on Euclidean distance of the target and recommended songs mood
     :param songs: list of dicts formatted as: [{'songid' : actual song id, excitedness: actual excitedness, happiness: actual happiness}].
@@ -320,7 +320,7 @@ def _get_parameter_string(min_key=-1, min_mode=0,
             f"&min_tempo={min_tempo}&max_tempo={max_tempo}")
 
 
-def find_song_recommendations(tracks, userid, recommendation_count=20, target=(0.0, 0.0), **params):
+def find_song_recommendations(tracks, userid, recommendation_count=20, target=(0.0, 0.0), n=5, **params):
     """
     Find recommendations given max 5 song ID's.
     The recommendations are based on the given songs and can be based on additional parameters for the given mood.
@@ -340,5 +340,5 @@ def find_song_recommendations(tracks, userid, recommendation_count=20, target=(0
     song_recommendation = response['tracks']
     recommendations = {song['id']: {'name': song['name']} for song in song_recommendation}
     moods = get_features_moods(recommendations)
-    top5 = order_songs(moods, target)
+    top5 = order_songs(moods, target, n)
     return top5

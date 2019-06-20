@@ -70,12 +70,19 @@ moods = api.model('Mood over time', {
 @api.response(404, 'No moods found')
 class Mood(Resource):
     @api.marshal_with(moods, envelope='resource')
-    def get(self, userid, start="'1678-09-21T00:20:43.145224194Z'",
-            end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
+    def get(self, userid, start=0, end=24):
         """
-        Obtain moods of a user within a given time frame.
+        Obtain moods of a user within a given time frame in hours of a day.
         """
-        start, end = parse_time(start, end)
+        if start > end:
+            api.abort(400, msg="Timeframe incorrect: start > end")
+
+        if start > 23 or start < 0:
+            api.abort(400, msg="Timeframe incorrect: start time not betwen 0 - 23")
+
+        if end > 24 or end < 1:
+            api.abort(400, msg="Timeframe incorrect: end time not betwen 1 - 24")
+
         print(start, end)
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
