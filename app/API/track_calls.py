@@ -177,14 +177,21 @@ class TopSongs(Resource):
         recent_songs = client.query(f'select songid from "{userid}" order by time desc')
         if not recent_songs:
             print('no history found')
-            return
+            return {
+                'userid': userid,
+                'songs': []
+            }
         recent_song_list = list(recent_songs.get_points(measurement=userid))
         songids = [song['songid'] for song in recent_song_list]
         songdata = db.session.query(models.Song).filter(models.Song.songid.in_((songids))).all()
         songs = {song.songid: song.name for song in songdata}
         counted_songs = sorted([(songs[id], id, songids.count(id)) for id in songids], key=lambda val: val[2], reverse=True)
-        print(counted_songs, count)
-        top_x = counted_songs[:count]
+        top_x = counted_songs[:int(count)]
+        return_data = [{'songid': data[1],'name': data[0],'count':data[2]} for data in top_x]
+        return {
+            'userid': userid,
+            'songs': return_data
+        }
 
 
 recommendations = api.model('Song recommendations', {
