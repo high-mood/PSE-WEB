@@ -8,6 +8,8 @@
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
     <link rel='icon' href="{{ url_for('static',filename='img/favicon.ico') }}" type='image/x-icon'/ >
 
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <!-- Radar Chart -->
     <script src="{{ url_for('static',filename='js/radarChart.js') }}"></script>
@@ -36,6 +38,8 @@
 
     <!-- D3.js -->
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--todo rework external stylesheet? at least place it above with the other stylesheets if needed-->
@@ -191,6 +195,12 @@
         </div>
       </div>
     </div>
+
+
+    <!-- <form class="form-signin" action="/signUp" method="post" role="form">
+        <input type="email" name="username" class="form-control">
+        <button type="button">Register </button>
+    </form> -->
 
     <!--loading user data-->
     <script>
