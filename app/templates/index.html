@@ -215,7 +215,7 @@
       song_count = 50;
       // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
       linechartRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
-      linechartRequest.open('GET', 'http://localhost:5000/api/tracks/metrics/' + userid + '/' + song_count, true)
+      linechartRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/metrics/' + userid + '/' + song_count, true)
       linechartRequest.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
