@@ -319,15 +319,15 @@ def _get_parameter_string(min_key=-1, min_mode=0,
             f"&min_speechiness={min_speechiness}&max_speechiness={max_speechiness}" +
             f"&min_valence={min_valence}&max_valence={max_valence}" +
             f"&min_tempo={min_tempo}&max_tempo={max_tempo}")
-              
+
 
 def calculate_target_mood(target, current):
-        """
-        Updates the target mood, the new mood is the mean between the target and current.
-        :param target: the target mood formatted as: (excitedness, happiness).
-        :param current: the current mood formatted as: (excitedness, happiness).
-        :return: new target formatted as: (excitedness, happiness).
-        """
+    """
+    Updates the target mood, the new mood is the mean between the target and current.
+    :param target: the target mood formatted as: (excitedness, happiness).
+    :param current: the current mood formatted as: (excitedness, happiness).
+    :return: new target formatted as: (excitedness, happiness).
+    """
     return (statistics.mean([target[0], current[0]]), statistics.mean([target[1], current[1]]))
 
 
@@ -384,15 +384,15 @@ def recommend_metric(userid, metric, excitedness, happiness, n=5):
 
 
 def find_song_recommendations(access_token, tracks, target, n, params):
-        """
-        Find recommendations based on the last 5 songs, the given metric and the current mood.
-        :param access_token: A valid access token from the Spotify Accounts service.
-        :param tracks: list of given songs.
-        :param target: the target mood formatted as: (excitedness, happiness).
-        :param n: the amount of recommendations that are returned, standard is 5.
-        :param params: Audio feature parameters.
-        :return: ascending list of n dictionaries formatted as: [{'songid' : actual song id, excitedness: actual excitedness, happiness: actual happiness}].
-        """
+    """
+    Find recommendations based on the last 5 songs, the given metric and the current mood.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    :param tracks: list of given songs.
+    :param target: the target mood formatted as: (excitedness, happiness).
+    :param n: the amount of recommendations that are returned, standard is 5.
+    :param params: Audio feature parameters.
+    :return: ascending list of n dictionaries formatted as: [{'songid' : actual song id, excitedness: actual excitedness, happiness: actual happiness}].
+    """
     track_string = '%2C'.join(tracks[:5])
     response = spotify.get_recommendations(access_token, 50, track_string, params)
 
