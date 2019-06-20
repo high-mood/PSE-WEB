@@ -126,7 +126,10 @@ class Songmood(db.Model):
         if songmood is None:
             songmood = Songmood(songid=json_info['songid'],
                                 excitedness=json_info['excitedness'],
-                                happiness=json_info['happiness'])
+                                happiness=json_info['happiness'],
+                                response_count=json_info['response_count'],
+                                response_excitedness=json_info['response_excitedness'],
+                                response_happiness=json_info['response_happiness'])
 
             db.session.add(songmood)
             db.session.commit()
