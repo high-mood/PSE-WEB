@@ -49,23 +49,21 @@ function getTop10(divId) {
 
     // Add it to the page
     listContainer.appendChild(listElement);
-
     // Set up a loop that goes through the items in listItems one at a time
     var numberOfListItems = songs.length;
-
     for (var i = 0; i < numberOfListItems; ++i) {
         // create an item for each one
         var listItem = document.createElement('li');
 
         // Add the item text
-        listItem.innerHTML = songs[i];
+        listItem.innerHTML = songs[i]['name'];
 
         // Add listItem to the listElement
         listElement.appendChild(listItem);
     }
 }
 
-
+// Mounir's amazing first demo code <3
 
 //new Chart(document.getElementById("barchart"), {
 //  type: 'bar',

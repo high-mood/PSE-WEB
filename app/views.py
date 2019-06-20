@@ -5,6 +5,7 @@ from app import spotifysso
 from app.utils import influx, spotify
 from app.utils.tasks import update_user_tracks
 from app.utils.models import User
+from app.API.track_calls import TopSongs
 
 
 @app.route("/index", methods=['GET', 'POST'])
@@ -43,6 +44,9 @@ def index_js():
     else:
         genres, genre_count = [], []
 
+    songs = TopSongs().get(userid, 10)['resource']['songs']
+    print(songs)
+    song_count = 10
     return render_template("index.js", songs=songs, song_count=song_count,
                            genres=genres, genre_count=genre_count,
                            timestamps=timestamps, duration=duration)
