@@ -30,19 +30,22 @@ ul {
 }
 
 #Song-Recommendation{
-  width: 800px;
+  width: 1000px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 50px;
   border: 2px solid black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .songdiv {
-  border: 2px solid black;
+  /* border: 2px solid black; */
   height: 80px;
 }
 
 .SongRecButton{
   height: 80px;
+  width: 80px;
   float: left;
   background-color: black;
   color: white;
@@ -249,4 +252,12 @@ ul {
 line {
   stroke: #ffffff;
   opacity: 0.85;
+}
+
+.mood {
+  height: 70px;
+  width: 70px;
+  line-height: 70px;
+  text-align: center;
+  border: 2px dashed #f69c55;
 }

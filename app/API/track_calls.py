@@ -37,6 +37,7 @@ class History(Resource):
             history = []
             recent_song_list = list(recent_songs.get_points(measurement=userid))
             songids = list(set([song['songid'] for song in recent_song_list]))
+            print(songids)
             songids = songids[:song_count] if song_count > 0 else songids
             songmoods = models.Songmood.get_moods(songids)
             excitedness = 0
