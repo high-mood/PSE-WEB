@@ -9,7 +9,7 @@ import datetime
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
 
-def get_history(userid, song_count, songids=True, calc_mood=True):
+def get_history(userid, song_count, return_songids=False, calc_mood=True):
     """Get the latest song_count tracks for userid."""
     querycount = 3 * song_count
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
@@ -34,7 +34,9 @@ def get_history(userid, song_count, songids=True, calc_mood=True):
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
                 count += 1 if count != 1 else 0
-            if not songids:
+            print(songids)
+            if not return_songids:
+                print(songmood)
                 song = {}
                 song['songid'] = songmood.songid
                 song['excitedness'] = songmood.excitedness
@@ -42,10 +44,12 @@ def get_history(userid, song_count, songids=True, calc_mood=True):
                 song['time'] = [song['time'] for song in recent_song_list][0]
                 song['name'] = models.Song.get_song_name(song['songid'])
                 history.append(song)
+
         if calc_mood:
             excitedness /= count
             happiness /= count
-        if songids:
+
+        if return_songids:
             return excitedness, happiness, songids
         return excitedness, happiness, history
     return None, None, None
@@ -187,7 +191,7 @@ class TopSongs(Resource):
         songs = {song.songid: song.name for song in songdata}
         counted_songs = sorted([(songs[id], id, songids.count(id)) for id in list(set(songids))], key=lambda val: val[2], reverse=True)
         top_x = counted_songs[:int(count)]
-        return_data = [{'songid': data[1],'name': data[0],'count':data[2]} for data in top_x]
+        return_data = [{'songid': data[1], 'name': data[0], 'count':data[2]} for data in top_x]
         return {
             'userid': userid,
             'songs': return_data
@@ -231,7 +235,7 @@ class Recommendation_metric(Resource):
         """
         Obtain recommendations based on an metric selected by user.
         """
-        excitedness, happiness, songids = get_history(userid, 0, False)
+        excitedness, happiness, songids = get_history(userid, 0, songids=True)
         recs = recommend_metric(songids[:6], userid, metric, excitedness, happiness)
 
         if recs:
