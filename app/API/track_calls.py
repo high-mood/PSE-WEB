@@ -1,7 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
 from app.utils.tasks import find_song_recommendations
 from app.utils import influx, models
-from app import app
+from app import app, db
 
 import dateparser
 import datetime
@@ -138,15 +138,16 @@ class Metric(Resource):
 
 top_genres = api.model('Top x genres', {
     'userid': fields.String,
-    'genres': fields.Nested(api.model('topgenres', {
-        'genre': fields.String,
+    'songs': fields.Nested(api.model('topsongs', {
+        'songid': fields.String,
+        'name': fields.String,
         'count': fields.Integer
     }))
 })
 
 
-@api.route('/genres/<string:userid>/<string:count>')
-class TopGenres(Resource):
+@api.route('/topsongs/<string:userid>/<string:count>')
+class TopSongs(Resource):
     @api.marshal_with(top_genres, envelope='resource')
     def get(self, userid, count):
         """Get the top N genres of the user."""
@@ -156,9 +157,14 @@ class TopGenres(Resource):
             print('no history found')
             return
         recent_song_list = list(recent_songs.get_points(measurement=userid))
-        songids = list(set([song['songid'] for song in recent_song_list]))
-        # TODO you can't do this here
-        # Artist.query(genres).filter()
+        songids = [song['songid'] for song in recent_song_list]
+        songdata = db.session.query(models.Song).filter(models.Song.songid.in_((songids))).all()
+        songs = {song.songid: song.name for song in songdata}
+        counted_songs = sorted([(songs[id], id, songids.count(id)) for id in songids], key=lambda val: val[2], reverse=True)
+        print(counted_songs, count)
+        top_x = counted_songs[:count]
+
+
 
 
 recommendations = api.model('Song recommendations', {
@@ -166,7 +172,7 @@ recommendations = api.model('Song recommendations', {
     'recommendations': fields.Nested(api.model('recommendation', {
         'songid': fields.String,
         'excitedness': fields.String,
-        'happiness': fields.List(fields.String)
+        'happiness': fields.String
     }))
 })
 
