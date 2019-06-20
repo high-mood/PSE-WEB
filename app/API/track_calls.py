@@ -241,7 +241,7 @@ class Recommendation_song(Resource):
 
 @api.route('/recommendation/<string:userid>/<string:metric>')
 @api.response(404, 'No recommendations found')
-class Recommendation_metric_mood(Resource):
+class Recommendation_metric(Resource):
     @api.marshal_with(recommendations, envelope='resource')
     def get(self, userid, songid, excitedness, happiness):
         """
