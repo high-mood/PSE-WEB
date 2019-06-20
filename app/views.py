@@ -32,11 +32,17 @@ def index_js():
     top_songs = influx.get_top_songs(client, userid, 10, access_token)
     timestamps, duration = influx.total_time_spent(client, userid)
     top_genres = influx.get_top_genres(client, userid, 10)
-    songs, song_count = [list(x) for x in list(zip(*top_songs))]
+
+    if top_songs:
+        songs, song_count = [list(x) for x in list(zip(*top_songs))]
+    else:
+        songs, song_count = [], []
     if top_genres:
         genres, genre_count = [list(x) for x in list(zip(*top_genres))]
     else:
         genres, genre_count = [], []
+
+
     return render_template("index.js", songs=songs, song_count=song_count,
                            genres=genres, genre_count=genre_count,
                            timestamps=timestamps, duration=duration)
