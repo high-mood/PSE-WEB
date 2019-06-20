@@ -1,15 +1,15 @@
-function MakeNewSongMetricRec(targetDiv,metricName,excitement,happiness) {
-  console.log(metricName);
+function MakeNewSongMetricRec(targetDiv,metricName) {
+  var userid = document.getElementById("username").textContent;
+
   var request = new XMLHttpRequest
-  request.open('GET', 'someapi' + userid, true)
+  request.open('GET', 'http://localhost:5000/api/recommendation/' + userid + '/' + metricName, true)
   request.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
     if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
-      var index;
       createSongRecommendationsPlayer(targetDiv,userdata);
     } else {
-      // Throw errors
+      targetDiv.textContent("Error loading the content")
     }
   }
 }
@@ -31,11 +31,11 @@ function createSongRecommendationsPlayer(mainDivId,songs) {
 
   excitementDiv = document.createElement('div');
   excitementDiv.setAttribute("style","width: 25%; height: 100%; float: left;")
-  excitementDiv.appendChild(document.createTextNode("excitement"));
+  excitementDiv.appendChild(document.createTextNode("excitedness"));
   songLabelBar.appendChild(excitementDiv);
 
   happinessDiv = document.createElement('div');
-  happinessDiv.setAttribute("style","width: 25%; height: 100%; float: left;")
+  happinessDiv.setAttribute("style","width: 25%; height: 100%Responses; float: left;")
   happinessDiv.appendChild(document.createTextNode("happiness"));
   songLabelBar.appendChild(happinessDiv);
 
@@ -45,7 +45,7 @@ function createSongRecommendationsPlayer(mainDivId,songs) {
     songPlayerBar.setAttribute("class","songPlayerBar");
     mainDiv.appendChild(songPlayerBar);
 
-    // create iframe
+    // create iframesongId
     spotifyPlayer = document.createElement('iframe');
     spotifyPlayer.setAttribute("src","https://open.spotify.com/embed/track/" + songs[i].songId);
     spotifyPlayer.setAttribute("frameborder","0");
@@ -91,7 +91,7 @@ function createSongRecommendationElement(mainDivId) {
   for (i=0;i<4;i++) {
     newDiv = document.createElement('div');
     newDiv.setAttribute("class","metricElement");
-    newDiv.setAttribute("onclick","MakeNewSongMetricRec('songMetricRecPlayer','" + metrics[i] + "',0,0)");
+    newDiv.setAttribute("onclick","MakeNewSongMetricRec('songMetricRecPlayer','" + metrics[i] + "')");
     newDiv.appendChild(document.createTextNode(metrics[i]));
     metricsDiv.appendChild(newDiv);
   }
@@ -110,7 +110,7 @@ function createSongRecommendationElement(mainDivId) {
   for (i=0;i<4;i++) {
     newDiv = document.createElement('div');
     newDiv.setAttribute("class","metricElement");
-    newDiv.setAttribute("onclick","MakeNewSongMetricRec('songMetricRecPlayer','" + moods[i] + "',0,0)");
+    newDiv.setAttribute("onclick","MakeNewSongMetricRec('songMetricRecPlayer','" + moods[i] + "')");
     newDiv.appendChild(document.createTextNode(moods[i]));
     moodsDiv.appendChild(newDiv);
   }
