@@ -258,13 +258,18 @@ function drawLine(svgId, dataset, name) {
 
     var svg = d3.select("#" + svgId);
 
+    var color = d3.select("#" + name).style("background-color")
+
+    console.log("color: ")
+    console.log(color)
+
     svg.append("path")
         .data([dataset])
         .attr("class", "line")
         .attr("id", name + "line")
         .attr("d", line)
         .style("fill", "none")
-        .style("stroke", "#ffab00")
+        .style("stroke", color)
         .style("stroke-width", 3)
 
 
