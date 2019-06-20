@@ -16,8 +16,8 @@ user_data = api.model("inserted_data", {
 })
 
 
-@api.route('/feedback/')
-class Song(Resource):
+@api.route('/mood/<string:userid>')
+class Playlist(Resource):
     """Add feedback for song"""
 
     @api.expect(user_data)
