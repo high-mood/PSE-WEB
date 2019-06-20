@@ -26,13 +26,13 @@ function createRadarChart(userdata) {
 
   var finaldata = [];
   var song;
-  for (i = 0; i < userdata.moods.length; i++) {
+  for (i = 0; i < userdata.songs.length; i++) {
 
     song = {
       name : 'Song',
       axes : [
-        {axis:"High Excitedness",value:userdata.moods[i].excitedness},
-        {axis:"High Happiness",value:userdata.moods[i].happiness},
+        {axis:"High Excitedness",value:userdata.songs[i].excitedness},
+        {axis:"High Happiness",value:userdata.songs[i].happiness},
         {axis:"Low Excitedness",value:0.0},
         {axis:"Low Happiness",value:0.0}
       ]
