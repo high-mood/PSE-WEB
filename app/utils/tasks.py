@@ -339,47 +339,41 @@ def recommend_input(tracks, userid, target=(0.0, 0.0), n=5):
     :param userid: Spotify user id of the user.
     :param target: the target mood formatted as: (excitedness, happiness).
     :param n: the amount of recommendations that are returned, standard is 5.
-    :return: ascending list of n dictionaries formatted as: [{'songid' : actual song id, excitedness: actual excitedness, happiness: actual happiness}].
+    :return: ascending list of n dictionaries formatted as: [{'songid': actual song id, excitedness: actual excitedness, happiness: actual happiness}].
     """
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
     return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
 
 
-def recommend_metric(tracks, userid, metric, excitedness, happiness, n=5):
-    moods = {'sad': (-10, -10), 'mellow': (-10, 10), 'angry': (10, -10), 'excited': (10, 10)}
-    events = {'dance': _get_parameter_string(min_acousticness=0.0, min_danceablility=0.0,
-                                             min_energy=0.0, min_instrumentalness=0.0,
-                                             min_loudness=-60, min_speechiness=0.0,
-                                             min_valence=0.0, min_tempo=0,
-                                             max_acousticness=1.0, max_danceablility=1.0,
-                                             max_energy=1.0, max_instrumentalness=1.0,
-                                             max_loudness=0, max_speechiness=1.0,
-                                             max_valence=1.0, max_tempo=99999),
+def recommend_metric(userid, metric, excitedness, happiness, n=5):
+    """
+    Find recommendations based on the last 5 songs, the given metric and the current mood.
+    :param userid: Spotify user id of the user.
+    :param metric: keywords for moods and events, the possible keywords are: sad, mellow, angry, excited, dance, study, karaoke, neutral.
+    :param excitedness: the excitedness of a user.
+    :param happiness: the happiness of a user.
+    :param n: the amount of recommendations that are returned, standard is 5.
+    :return: ascending list of n dictionaries formatted as: [{'songid': actual song id, excitedness: actual excitedness, happiness: actual happiness}].
+    """
+    moods = {'sad': (-10, -10), 'mellow': (-10, 10), 'angry': (10, -10), 'excited': (10, 10), }
+    events = {'dance': _get_parameter_string(min_danceablility=0.4,
+                                             min_energy=0.5, min_loudness=-10, min_speechiness=0.0,
+                                             min_tempo=60, max_acousticness=0.2,
+                                             max_instrumentalness=0.15, max_loudness=-2, max_speechiness=0.3,
+                                             max_tempo=130),
               'study': _get_parameter_string(min_acousticness=0.6,
-                                             min_instrumentalness=0.5,
-                                             min_loudness=-30,
-                                             max_danceablility=0.1,
-                                             max_energy=0.35, max_instrumentalness=1.0,
+                                             min_instrumentalness=0.5, min_loudness=-30,
+                                             max_danceablility=0.1, max_energy=0.35, max_instrumentalness=1.0,
                                              max_loudness=-10, max_speechiness=0.1),
-              'karaoke': _get_parameter_string(min_acousticness=0.0, min_danceablility=0.0,
-                                               min_energy=0.0, min_instrumentalness=0.0,
-                                               min_loudness=-60, min_speechiness=0.0,
-                                               min_valence=0.0, min_tempo=0,
-                                               max_acousticness=1.0, max_danceablility=1.0,
-                                               max_energy=1.0, max_instrumentalness=1.0,
-                                               max_loudness=0, max_speechiness=1.0,
-                                               max_valence=1.0, max_tempo=99999),
-              'nogiets': _get_parameter_string(min_acousticness=0.0, min_danceablility=0.0,
-                                               min_energy=0.0, min_instrumentalness=0.0,
-                                               min_loudness=-60, min_speechiness=0.0,
-                                               min_valence=0.0, min_tempo=0,
-                                               max_acousticness=1.0, max_danceablility=1.0,
-                                               max_energy=1.0, max_instrumentalness=1.0,
-                                               max_loudness=0, max_speechiness=1.0,
-                                               max_valence=1.0, max_tempo=99999)}
+              'karaoke': _get_parameter_string(min_energy=0.1,
+                                               min_loudness=-15, max_instrumentalness=0.15,
+                                               max_loudness=-4.0, max_speechiness=0.2),
+              'neutral': _get_parameter_string()}
 
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
+    tracks, _ = get_latest_tracks(userid, access_token)
 
+    # Calculates the target mood and recommends songs based on this target.
     if metric in moods:
         target = calculate_target_mood(moods[metric], (excitedness, happiness))
         return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
@@ -397,13 +391,13 @@ def find_song_recommendations(access_token, tracks, target, n, params):
     :param target: the target mood formatted as: (excitedness, happiness).
     :param n: the amount of recommendations that are returned, standard is 5.
     :param params: Audio feature parameters.
-    :return: ascending list of n dictionaries formatted as: [{'songid' : actual song id, excitedness: actual excitedness, happiness: actual happiness}].
+    :return: ascending list of n dictionaries formatted as: [{'songid': actual song id, excitedness: actual excitedness, happiness: actual happiness}].
     """
     track_string = '%2C'.join(tracks[:5])
     response = spotify.get_recommendations(access_token, 50, track_string, params)
 
     song_recommendation = response['tracks']
-    recommendations = {song['id'] : {'name' : song['name']} for song in song_recommendation}
+    recommendations = {song['id']: {'name': song['name']} for song in song_recommendation}
 
     moods = get_features_moods(recommendations)
     return order_songs(moods, target, n)
