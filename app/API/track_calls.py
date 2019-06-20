@@ -194,24 +194,19 @@ class Recommendation_user(Resource):
                 api.abort(404, message=f"No recommendations not found for '{userid}'")
 
 
-@api.route('/recommendation/<string:songid>/<float:excitedness>/<float:happiness')
+@api.route('/recommendation/<string:userid>/<string:songid>/<float:excitedness>/<float:happiness>')
 @api.response(404, 'No recommendations found')
 class Recommendation_song(Resource):
     @api.marshal_with(recommendations, envelope='resource')
-    def get(self, songid, excitedness, happiness):
+    def get(self, userid, songid, excitedness, happiness):
         """
-        Obtain recommendations for the user along with their features.
+        Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit 5')
-        if recent_songs:
-            recent_songs = list(recent_songs.get_points(measurement=userid))
-            songids = [song['songid'] for song in recent_songs]
-            recs = find_song_recommendations(songids, userid, recommendation_count)
-            if recs:
-                return {
-                    'userid': userid,
-                    'recommendations': recs
-                }
-            else:
-                api.abort(404, message=f"No recommendations not found for '{userid}'")
+        recs = find_song_recommendations([songid], userid, 10)
+        if recs:
+            return {
+                'userid': userid,
+                'recommendations': recs
+            }
+        else:
+            api.abort(404, message=f"No recommendations not found for '{userid}'")

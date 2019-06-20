@@ -274,6 +274,7 @@ def update_song_features(tracks):
     access_token = spotify.get_access_token(refresh_token)
     add_audio_features(new_tracks, access_token)
 
+
 def order_songs(songs, target, n=5):
     """
     It orders songs based on Euclidean distance of the target and recommended songs mood
@@ -337,8 +338,8 @@ def find_song_recommendations(tracks, userid, recommendation_count=20, target=(0
     response = spotify.get_recommendations(access_token, recommendation_count, track_string, param_string)
 
     song_recommendation = response['tracks']
-    recommendations = [song['id'] : {'name' : song['name']} for song in song_recommendation]
+    recommendations = [{song['id']: {'name': song['name']}} for song in song_recommendation]
 
-    moods = get_features_moods(songs)
+    moods = get_features_moods(recommendations)
     top5 = order_songs(moods, target)
     return top5
