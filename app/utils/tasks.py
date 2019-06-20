@@ -357,17 +357,17 @@ def recommend_metric(userid, metric, excitedness, happiness, n=5):
     """
     moods = {'sad' : (-10, -10), 'mellow' : (-10, 10), 'angry' : (10, -10), 'excited' : (10, 10), }
     events = {'dance' : _get_parameter_string(min_danceablility=0.4,
-                                min_energy=0.5, min_loudness=-10, min_speechiness=0.0,
-                                min_tempo=60, max_acousticness=0.2,
-                                max_instrumentalness=0.15, max_loudness=-2, max_speechiness=0.3,
-                                max_tempo=130),
+                              min_energy=0.5, min_loudness=-10, min_speechiness=0.0,
+                              min_tempo=60, max_acousticness=0.2,
+                              max_instrumentalness=0.15, max_loudness=-2, max_speechiness=0.3,
+                              max_tempo=130),
               'study' : _get_parameter_string(min_acousticness=0.6,
-                                min_instrumentalness=0.5, min_loudness=-30,
-                                max_danceablility=0.1, max_energy=0.35, max_instrumentalness=1.0,
-                                max_loudness=-10, max_speechiness=0.1),
+                              min_instrumentalness=0.5, min_loudness=-30,
+                              max_danceablility=0.1, max_energy=0.35, max_instrumentalness=1.0,
+                              max_loudness=-10, max_speechiness=0.1),
               'karaoke' : _get_parameter_string(min_energy=0.1,
-                                min_loudness=-15, max_instrumentalness=0.15,
-                                max_loudness=-4.0, max_speechiness=0.2),
+                              min_loudness=-15, max_instrumentalness=0.15,
+                              max_loudness=-4.0, max_speechiness=0.2),
               'neutral' : _get_parameter_string()}
 
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
