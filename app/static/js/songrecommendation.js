@@ -41,7 +41,7 @@ function createSongRecommendationWidget(userid) {
       songWidgetContainer.appendChild(form);
 
       for (var i = 0; i < userdata.songs.length; i++) {
-        console.log(userdata.songs[i].songid);
+//        console.log(userdata.songs[i].songid);
 
         var songdiv = document.createElement('div')
         songdiv.classList.add('songdiv');
@@ -83,23 +83,23 @@ function createSongRecommendationWidget(userid) {
 
 function showSong(clickevent) {
   var songid = [clickevent.path[0].parentElement.id];
-  console.log(songid);
+//  console.log(songid);
 
   // alert(songid);
 }
 
-$(function() {
-    $('button').click(function() {
-        $.ajax({
-            url: '/sendSong',
-            data: $('form').serialize(),
-            type: 'POST',
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
-    });
-});
+//$(function() {
+//    $('button').click(function() {
+//        $.ajax({
+//            url: '/sendSong',
+//            data: $('form').serialize(),
+//            type: 'POST',
+//            success: function(response) {
+//                console.log(response);
+//            },
+//            error: function(error) {
+//                console.log(error);
+//            }
+//        });
+//    });
+//});
