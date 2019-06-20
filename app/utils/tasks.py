@@ -403,7 +403,7 @@ def find_song_recommendations(access_token, tracks, target, n, params):
     response = spotify.get_recommendations(access_token, 50, track_string, params)
 
     song_recommendation = response['tracks']
-    recommendations = [{song['id'] : {'name' : song['name']}} for song in song_recommendation]
+    recommendations = {song['id'] : {'name' : song['name']} for song in song_recommendation}
 
     moods = get_features_moods(recommendations)
     return order_songs(moods, target, n)
