@@ -330,7 +330,7 @@ def recommend_input(tracks, userid, target=(0.0, 0.0), n=5):
     return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
 
 
-def recommend_metric(userid, metric, excitedness, happiness, n=5):
+def recommend_metric(tracks, userid, metric, excitedness, happiness, n=5):
     moods = {'sad': (-10, -10), 'mellow': (-10, 10), 'angry': (10, -10), 'excited': (10, 10)}
     events = {'dance': _get_parameter_string(min_acousticness=0.0, min_danceablility=0.0,
                                              min_energy=0.0, min_instrumentalness=0.0,
@@ -364,7 +364,6 @@ def recommend_metric(userid, metric, excitedness, happiness, n=5):
                                                max_valence=1.0, max_tempo=99999)}
 
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
-    tracks, _ = get_latest_tracks(userid, access_token)
 
     if metric in moods:
         target = calculate_target_mood(moods[metric], (excitedness, happiness))

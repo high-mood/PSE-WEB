@@ -237,7 +237,7 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        recs = recommend_input([songid], userid, 5, target=(float(excitedness), float(happiness)))
+        recs = recommend_input([songid], userid, target=(float(excitedness), float(happiness)))
 
         if recs:
             return {
@@ -257,7 +257,7 @@ class Recommendation_metric(Resource):
         Obtain recommendations based on an metric selected by user.
         """
         excitedness, happiness, history = get_history(userid, 0, False)
-        recs = recommend_metric(history, userid, excitedness, happiness)
+        recs = recommend_metric(history, userid, metric, excitedness, happiness)
 
         if recs:
             return {
