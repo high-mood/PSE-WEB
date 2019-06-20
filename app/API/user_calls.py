@@ -1,3 +1,5 @@
+import time
+
 from flask_restplus import Namespace, Resource, fields
 from app.utils import influx, models
 from app import app
@@ -65,36 +67,56 @@ moods = api.model('Mood over time', {
 })
 
 
-@api.route('/mood/<string:userid>/<string:start>/<string:end>')
+@api.route('/mood/<string:userid>/<int:start>/<int:end>')
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class Mood(Resource):
+
     @api.marshal_with(moods, envelope='resource')
-    def get(self, userid, start="'1678-09-21T00:20:43.145224194Z'",
-            end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
+    # @app.route("/whatever")
+    def get(self=None, userid="snipy12", start=3,  # ALL ZERO PADDED TODO DOCUMENT
+            end=24, endoftime=False):
         """
         Obtain moods of a user within a given time frame.
         """
-        start, end = parse_time(start, end)
-        print(start, end)
+
+        # start = int(time.mktime(time.strptime(start, '%Y-%m-%d %H:%M')) * np.power(10, 9))
+        # if not endoftime:
+        #     end = int(time.mktime(time.strptime(end, '%Y-%m-%d %H:%M')) * np.power(10, 9))
+        # else:
+        #     end = int(time.time() * np.power(10, 9))
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        user_mood = client.query(f'select excitedness, happiness, songcount from "{userid}" where time > {start} and time < {end}')
+        client.switch_database('moods')
+        user_mood = client.query(
+            f'select excitedness, happiness, songcount from "{userid}"')
 
         if user_mood:
-            mood_list = list(user_mood.get_points(measurement=userid))
+            resultset = []
+            excitedness = 0
+            happiness = 0
+            total_songs = 0
+            for record in user_mood[userid]:
+                mood_time = record['time'].split(".")[0]
+                mood_time = datetime.datetime.strptime(mood_time[:-1], '%Y-%m-%dT%H:%M:%S')
+                mood_hour = mood_time.hour
 
-            v = [[mood['excitedness'], mood['happiness'], mood['songcount']] for mood in mood_list]
-            mean_happiness, mean_excitedness, _ = np.mean(v, axis=0)
-            _, _, sum_song_count = np.sum(v, axis=0)
+                if start <= mood_hour <= end:
+                    total_songs += record['songcount']
+                    excitedness += record['excitedness'] * record['songcount']
+                    happiness += record['happiness'] * record['songcount']
+                    resultset.append(record)
+            if total_songs < 1:
+                api.abort(404, msg=f"No moods found for '{userid}'")
 
             return {
                 'userid': userid,
-                'mean_excitedness': mean_excitedness,
-                'mean_happiness': mean_happiness,
-                'sum_song_count': sum_song_count,
-                'moods': mood_list
+                'mean_excitedness': excitedness / total_songs,
+                'mean_happiness': happiness / total_songs,
+                'sum_song_count': total_songs,
+                'moods': resultset
             }
+
+
         else:
             api.abort(404, msg=f"No moods found for '{userid}'")
-
