@@ -3,11 +3,12 @@ function createSongRecommendationWidget(userid) {
   var request = new XMLHttpRequest()
 
   // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-  request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/5', true)
+  request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/0', true)
 
   request.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
+    console.log(userdata)
 
 
     if (request.status >= 200 && request.status < 400) {
