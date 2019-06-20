@@ -20,6 +20,12 @@ ul {
   padding: 0px;
 }
 
+#Song-Recommendation{
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid black;
+}
 
 #top10 {
   /* display:inline; */
@@ -27,6 +33,18 @@ ul {
   text-align: left;
   color: white;
   /* width: 300px; */
+}
+
+.songdiv {
+  border: 2px solid black;
+  height: 80px;
+}
+
+.SongRecButton{
+  height: 80px;
+  float: left;
+  background-color: black;
+  color: white;
 }
 
 .radarChart {

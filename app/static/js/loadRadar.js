@@ -73,7 +73,7 @@ function navigateTo(location) {
   var elmnt = document.getElementById(location);
   elmnt.scrollIntoView({behavior: 'smooth'});
 
-  changeActiveTab(location + 'Tab');
+  // changeActiveTab(location + 'Tab');
   showTabs();
 
 }
@@ -103,7 +103,7 @@ function tabHighLightFromPosition() {
   var min = Math.min.apply(null, pageLocations);
   var closestTab = pageLocations.indexOf(min);
 
-  changeActiveTab(pages[closestTab].id + 'Tab');
+  // changeActiveTab(pages[closestTab].id + 'Tab');
 
   var x = document.getElementById("myNavigationBar");
 
