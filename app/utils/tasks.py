@@ -349,7 +349,7 @@ def recommend_input(tracks, userid, target=(0.0, 0.0), n=5):
     return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
 
 
-def recommend_metric(userid, metric, excitedness, happiness, n=5):
+def recommend_metric(tracks, userid, metric, excitedness, happiness, n=5):
     """
     Find recommendations based on the last 5 songs, the given metric and the current mood.
     :param userid: Spotify user id of the user.
@@ -375,7 +375,6 @@ def recommend_metric(userid, metric, excitedness, happiness, n=5):
               'neutral': _get_parameter_string()}
 
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
-    tracks, _ = get_latest_tracks(userid, access_token)
 
     # Calculates the target mood and recommends songs based on this target.
     if metric in moods:
