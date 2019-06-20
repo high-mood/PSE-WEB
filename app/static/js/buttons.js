@@ -23,7 +23,7 @@ function parse_metrics(id) {
 
 function generateButtons(id) {
     metrics = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence'];
-    colours = ['rgb(255, 153, 0)', 'rgb(0, 255, 255)', 'rgb(64, 255, 0)', 'rgb(0, 64, 255)', 'rgb(191, 0, 255)', 'rgb(255, 0, 64)', 'rgb(255, 255, 0)', 'rgb(128, 0, 255)', 'rgb(0, 255, 0)'];
+    colours = ['rgb(255, 153, 0)', 'rgb(0, 255, 255)', 'rgb(64, 255, 0)', 'rgb(0, 64, 255)', 'rgb(191, 0, 255)', 'rgb(255, 0, 64)', 'rgb(255, 255, 0)', 'rgb(128, 0, 255)', 'rgb(255, 0, 255)'];
     for (let i = 0; i < metrics.length; i++) {
         spawnButton(metrics[i], id);
         document.getElementById(metrics[i]).setAttribute("style", "background-color:" + colours[i]);
