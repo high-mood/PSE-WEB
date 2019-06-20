@@ -2,7 +2,7 @@ var songs = {{ songs }}
 var song_count = {{ song_count }}
 var genres = {{ genres }}
 var genre_count = {{ genre_count }}
-var timestamps = {{ timestamps }}
+// var timestamps = {{ timestamps }}
 var duration = {{ duration }}
 
 function randomColor() {

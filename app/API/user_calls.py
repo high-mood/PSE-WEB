@@ -6,7 +6,7 @@ import numpy as np
 import dateparser
 import datetime
 
-api = Namespace('user', description='User information', path="/user")
+api = Namespace('user', description='Information about user (over time)', path="/user")
 
 user_info = api.model('UserInfo', {
     'userid': fields.String,
@@ -21,7 +21,7 @@ user_info = api.model('UserInfo', {
 })
 
 
-@api.route("/<string:userid>")
+@api.route('/info/<string:userid>')
 @api.response(404, 'Userid not found')
 class User(Resource):
     @api.marshal_with(user_info, envelope='resource')
@@ -31,7 +31,7 @@ class User(Resource):
         """
         user = models.User.query.filter_by(userid=userid).first()
         if not user:
-            api.abort(404, message="userid not found")
+            api.abort(404, msg="userid not found")
 
         return user
 
@@ -42,11 +42,11 @@ def parse_time(start, end):
 
     start_date = dateparser.parse(start)
     if not start_date:
-        api.abort(400, message=f"could not parse '{start}' as start date")
+        api.abort(400, msg=f"could not parse '{start}' as start date")
 
     end_date = dateparser.parse(end)
     if not end_date:
-        api.abort(400, message=f"could not parse '{end}' as end date")
+        api.abort(400, msg=f"could not parse '{end}' as end date")
 
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
@@ -65,17 +65,25 @@ moods = api.model('Mood over time', {
 })
 
 
-@api.route('/<string:userid>/<string:start>/<string:end>')
+@api.route('/mood/<string:userid>/<int:start>/<int:end>')
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class Mood(Resource):
     @api.marshal_with(moods, envelope='resource')
-    def get(self, userid, start="'1678-09-21T00:20:43.145224194Z'",
-            end=str("'" + datetime.datetime.now().isoformat() + "Z'")):
+    def get(self, userid, start=0, end=24):
         """
-        Obtain moods of a user within a given time frame.
+        Obtain moods of a user within a given time frame in hours of a day.
         """
-        start, end = parse_time(start, end)
+        if start > end:
+            api.abort(400, msg="Timeframe incorrect: start > end")
+
+        if start > 23 or start < 0:
+            api.abort(400, msg="Timeframe incorrect: start time not between 0 - 23")
+
+        if end > 24 or end < 1:
+            api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
+
+        print(start, end)
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         user_mood = client.query(f'select excitedness, happiness, songcount from "{userid}" where time > {start} and time < {end}')
@@ -95,4 +103,5 @@ class Mood(Resource):
                 'moods': mood_list
             }
         else:
-            api.abort(404, message=f"No moods found for '{userid}'")
+            api.abort(404, msg=f"No moods found for '{userid}'")
+
