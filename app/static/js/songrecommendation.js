@@ -1,5 +1,3 @@
-/* global $, document*/
-
 function createSongRecommendationWidget(userid) {
 
   var request = new XMLHttpRequest()
@@ -17,7 +15,7 @@ function createSongRecommendationWidget(userid) {
 
       var songWidgetContainer = document.getElementById('Song-Recommendation');
 
-      var form = document.createElement('form');
+      var form = document.createElement('form')
 
       songWidgetContainer.appendChild(form);
 
@@ -46,8 +44,8 @@ function createSongRecommendationWidget(userid) {
 
 
         songdiv.appendChild(ifrm);
-
         form.appendChild(songdiv)
+
 
       }
 
@@ -108,24 +106,15 @@ function showSong(clickevent) {
         ifrm.style.width = "300px";
         ifrm.style.height = "80px";
 
-
         var mood = document.createElement("div");
         mood.classList.add('mood');
         mood.innerHTML = "hallo";
 
-
-
         songdivs[i].appendChild(ifrm)
-        // songdivs[i].appendChild(ifrm)
       }
-
-
 
     }
   }
   request.send()
 
-
-
-  // alert(songid);
 }

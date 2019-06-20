@@ -17,13 +17,13 @@
 
     <!-- js for text todo move to the specific charts js file-->
     <script src="{{ url_for('static',filename='js/chartText.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/buttons.js') }}"></script>
 
     <!-- js for making the layout-->
     <script src="{{ url_for('static',filename='js/mainPage.js') }}"></script>
 
     <!-- lineChart-->
     <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
-
 
     <!-- Song Recommendation-->
     <script src="{{ url_for('static',filename='js/songrecommendation.js') }}"></script>
@@ -118,6 +118,23 @@
     <!--heatmap-->
     <div class="mainPage" id="Heat-Graph"></div>
 
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <div class="mainPage">
+      <div id="Song-Recommendation">
+        <h4>Song Recommendation Tool</h4>
+        <!-- <form action="">
+          <input type="radio" name="gender" value="male"><iframe src="https://open.spotify.com/embed/track/3Lsxzkhu8U9hTApMjTrCzm" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><br>
+          <input type="radio" name="gender" value="male"><iframe src="https://open.spotify.com/embed/track/1THV5YxgNvJvlVwc9yJmAv" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><br>
+          <input type="radio" name="gender" value="male"><iframe src="https://open.spotify.com/embed/track/4wnLWNl08ugaU7PbenbQ4f" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><br>
+        </form> -->
+      </div>
+    </div>
+
     <script>
       createMainPageChart("Heat-Graph","heatmap","","heatmapText","",true,bigScreen);
     </script>
@@ -197,7 +214,8 @@
 
       var request = new XMLHttpRequest()
 
-      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/0', true)
       request.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
@@ -225,11 +243,14 @@
 
       var linechartRequest= new XMLHttpRequest()
 
+      var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
+      song_count = 50;
       // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-      linechartRequest.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/10', true)
+      linechartRequest.open('GET', 'http://localhost:5000/api/tracks/metrics/' + "mmpbulk" + '/' + metrics + '/' + song_count, true)
       linechartRequest.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
+        console.log(userdata)
 
         if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
           // lineGraph
@@ -242,8 +263,11 @@
       }
       linechartRequest.send()
 
-      createSongRecommendationWidget(userid);
 
-    </script>
+    createSongRecommendationWidget(userid);
+
+    <div id="linechartButtons"></div>
+    <script>generateButtons("linechartButtons");</script>
+
   </body>
 </html>
