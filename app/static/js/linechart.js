@@ -5,7 +5,7 @@ var xScale, yScale;
 
 function createLineGraph(data, id) {
 
-   console.log(data);
+//    console.log(data);
 
 
 
@@ -46,7 +46,7 @@ function createLineGraph(data, id) {
         }
     }
 
-    console.log(dataset)
+    // console.log(dataset)
 
     // Object.keys(dataset).forEach(function(key) {
     //     console.log(key);
@@ -249,7 +249,7 @@ function createLineGraph(data, id) {
 
 function drawLine(svgId, dataset, name) {
 
-    console.log("Test")
+    // console.log("Test")
 
     var line = d3.line()
         .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
@@ -261,8 +261,8 @@ function drawLine(svgId, dataset, name) {
 
     var color = d3.select("#" + name).style("background-color")
 
-    console.log("color: ")
-    console.log(color)
+    // console.log("color: ")
+    // console.log(color)
 
     svg.append("path")
         .data([dataset])
