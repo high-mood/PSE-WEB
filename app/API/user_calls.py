@@ -105,6 +105,3 @@ class Mood(Resource):
         else:
             api.abort(404, msg=f"No moods found for '{userid}'")
 
-    # TODO Post mood for given songid
-    def post(songid, excitedness, happiness):
-        pass
