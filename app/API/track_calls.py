@@ -34,9 +34,8 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
                 count += 1 if count != 1 else 0
-            print(songids)
+
             if not return_songids:
-                print(songmood)
                 song = {}
                 song['songid'] = songmood.songid
                 song['excitedness'] = songmood.excitedness
@@ -145,7 +144,7 @@ class Metric(Resource):
         'speechiness', 'tempo', 'valence'
         """
         metrics = metrics.split(',')
-        _, _, songids = get_history(userid, 0)
+        _, _, songids = get_history(userid, 0, return_songids=True)
 
         if songids:
             songs = db.session.query(models.Song).filter(models.Song.songid.in_((songids)))
@@ -235,7 +234,7 @@ class Recommendation_metric(Resource):
         """
         Obtain recommendations based on an metric selected by user.
         """
-        excitedness, happiness, songids = get_history(userid, 0, songids=True)
+        excitedness, happiness, songids = get_history(userid, 0, return_songids=True)
         recs = recommend_metric(songids[:6], userid, metric, excitedness, happiness)
 
         if recs:
