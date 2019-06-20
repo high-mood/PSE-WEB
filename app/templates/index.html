@@ -195,7 +195,25 @@
         </div>
       </div>
     </div>
+    <script>
+      var request = new XMLHttpRequest
 
+      request.open('GET', 'someapi' + userid, true)
+      request.onload = function() {
+        var alldata = JSON.parse(this.response)
+        var userdata = alldata.resource
+
+        if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
+          var index;
+          for (i = 0; i < 5; i++)   {
+            var song_data = userdata[i];
+            // Make iframes and divs with appropirate content
+          }
+        } else {
+          // Throw errors
+        }
+      }
+    </script>
 
     <!-- <form class="form-signin" action="/signUp" method="post" role="form">
         <input type="email" name="username" class="form-control">
