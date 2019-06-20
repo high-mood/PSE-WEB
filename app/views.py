@@ -23,13 +23,6 @@ def index():
                                id=session['json_info']['id'])
 
 
-@app.route('/sendSong', methods=['POST'])
-def signUpUser():
-    print("called me")
-    user =  request.form['username'];
-    print(user)
-    return json.dumps({'status':'OK','user':user});
-
 @app.route("/index_js")
 def index_js():
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
