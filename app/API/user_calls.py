@@ -65,7 +65,7 @@ moods = api.model('Mood over time', {
 })
 
 
-@api.route('/mood/<string:userid>/<string:start>/<string:end>')
+@api.route('/mood/<string:userid>/<int:start>/<int:end>')
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class Mood(Resource):
@@ -78,10 +78,10 @@ class Mood(Resource):
             api.abort(400, msg="Timeframe incorrect: start > end")
 
         if start > 23 or start < 0:
-            api.abort(400, msg="Timeframe incorrect: start time not betwen 0 - 23")
+            api.abort(400, msg="Timeframe incorrect: start time not between 0 - 23")
 
         if end > 24 or end < 1:
-            api.abort(400, msg="Timeframe incorrect: end time not betwen 1 - 24")
+            api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
 
         print(start, end)
 
