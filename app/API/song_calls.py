@@ -6,7 +6,7 @@ from app import app
 import dateparser
 import datetime
 
-api = Namespace('songs', description='Song information', path="/songs")
+api = Namespace('songs', description='Information about songs', path="/songs")
 
 user_data = api.model("inserted_data", {
     "songid": fields.String,

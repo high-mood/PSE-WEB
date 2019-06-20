@@ -24,7 +24,7 @@ class User(db.Model):
                         image_url=None,
                         birthdate=datetime.datetime.strptime(json_info['birthdate'], "%Y-%m-%d"),
                         country=json_info['country'],
-                        is_premium=(json_info['product'] is "premium"),  # TODO this doens't work
+                        is_premium=(json_info['product'] == "premium"),  # TODO this doens't work
                         refresh_token=refresh_token,
                         user_is_active=True)
 
@@ -116,9 +116,9 @@ class Songmood(db.Model):
     songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
     happiness = db.Column(db.Float())
-    response_excitedness = db.Column(db.Float(), default=0)
-    response_happiness = db.Column(db.Float(), default=0)
-    response_count = db.Column(db.Integer(), db.ColumnDefault(50), default=0)
+    response_excitedness = db.Column(db.Float(), default=0.0)
+    response_happiness = db.Column(db.Float(), default=0.0)
+    response_count = db.Column(db.Integer(), db.ColumnDefault(0), default=0)
 
     @staticmethod
     def create_if_not_exist(json_info):

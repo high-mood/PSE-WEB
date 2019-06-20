@@ -9,7 +9,7 @@ import datetime
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
 
-def get_history(userid, song_count, return_history=True):
+def get_history(userid, song_count, all_history=True):
     """Get the latest song_count tracks for userid."""
     querycount = 3 * song_count
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
@@ -34,7 +34,7 @@ def get_history(userid, song_count, return_history=True):
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
                 mean_count += 1 if mean_count != 1 else 0
-            if return_history:
+            if all_history:
                 song = {}
                 song['songid'] = songmood.songid
                 song['excitedness'] = songmood.excitedness
@@ -44,7 +44,9 @@ def get_history(userid, song_count, return_history=True):
                 history.append(song)
         excitedness /= mean_count
         happiness /= mean_count
-        return excitedness, happiness, history
+        if all_history:
+            return excitedness, happiness, history
+        return excitedness, happiness, songids[:6]
     return None, None, None
 
 
@@ -250,12 +252,12 @@ class Recommendation_song(Resource):
 @api.response(404, 'No recommendations found')
 class Recommendation_metric(Resource):
     @api.marshal_with(recommendations, envelope='resource')
-    def get(self, userid, songid, excitedness, happiness):
+    def get(self, userid, metric):
         """
         Obtain recommendations based on an metric selected by user.
         """
-        excitedness, happiness, _ = get_history(userid, 0, False)
-        recs = find_song_recommendations([songid], userid, 5, target=(float(excitedness), float(happiness)))
+        excitedness, happiness, history = get_history(userid, 0, False)
+        recs = recommend_metric(history, userid, excitedness, happiness)
 
         if recs:
             return {
