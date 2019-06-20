@@ -1,5 +1,8 @@
+<<<<<<< HEAD
+=======
 /* global $, document*/
 
+>>>>>>> d8148df42890942b08de08e64e429ec40eecb303
 function createSongRecommendationWidget(userid) {
 
   var request = new XMLHttpRequest()
@@ -16,6 +19,9 @@ function createSongRecommendationWidget(userid) {
 
       var songWidgetContainer = document.getElementById('Song-Recommendation');
 
+<<<<<<< HEAD
+      var form = document.createElement('form')
+=======
       var form = document.createElement('form');
       form.setAttribute("class", "form-signin");
       form.setAttribute("action", "/signUp");
@@ -37,6 +43,7 @@ function createSongRecommendationWidget(userid) {
 
       form.appendChild(input);
       form.appendChild(button);
+>>>>>>> d8148df42890942b08de08e64e429ec40eecb303
 
       songWidgetContainer.appendChild(form);
 
@@ -47,10 +54,33 @@ function createSongRecommendationWidget(userid) {
         songdiv.classList.add('songdiv');
         songdiv.id = userdata.songs[i].songid;
 
+<<<<<<< HEAD
+        // songdiv.onclick = function() { alert('hallo'); };
+        // songdiv.onclick = showSong(userdata.songs[i].songid);
+        //
+        // var radioHtml = '<input type="radio" name="' + userdata.songs[i].name + '" value="' + userdata.songs[i].songid+ '"';
+        // radioHtml += '/>';
+        //
+        // var radiobutton = document.createElement("INPUT");
+        // radiobutton.setAttribute("type", "radio");
+        // radiobutton.setAttribute("value", userdata.songs[i].songid)
+
+=======
+>>>>>>> d8148df42890942b08de08e64e429ec40eecb303
         var songid = userdata.songs[i].songid;
 
         var btn = document.createElement("BUTTON");
         btn.innerHTML = "Select";
+<<<<<<< HEAD
+        // btn.onclick = showSong("hallo");
+        btn.setAttribute("type","button");
+        // btn.setAttribute("onclick","showSong(" + userdata.songs[i].songid + ")");
+        btn.onclick = function(songid) { showSong(songid); };
+        // btn.addEventListener("click", showSong("hallo"));
+        btn.classList.add('SongRecButton');
+        songdiv.appendChild(btn);
+
+=======
         btn.setAttribute("type","button");
         btn.onclick = function(songid) { showSong(songid); };
         btn.classList.add('SongRecButton');
@@ -60,6 +90,7 @@ function createSongRecommendationWidget(userid) {
         //     <input type="email" name="username" class="form-control">
         //     <button type="button">Register </button>
         // </form>
+>>>>>>> d8148df42890942b08de08e64e429ec40eecb303
 
 
         var ifrm = document.createElement("iframe");
@@ -68,10 +99,24 @@ function createSongRecommendationWidget(userid) {
         ifrm.style.width = "300px";
         ifrm.style.height = "80px";
 
+<<<<<<< HEAD
+
+
+        // form.appendChild(radiobutton);
+        songdiv.appendChild(ifrm);
+
+
+        // songdiv.innerHTML = radioHtml;
+        form.appendChild(songdiv)
+        // form.appendChild('<br>')
+        // form.innerHTML = radioHtml;
+        // form.appendChild(radioHtml);
+=======
         songdiv.appendChild(ifrm);
 
         form.appendChild(songdiv)
 
+>>>>>>> d8148df42890942b08de08e64e429ec40eecb303
       }
 
 
@@ -84,6 +129,10 @@ function createSongRecommendationWidget(userid) {
 function showSong(clickevent) {
   var songid = [clickevent.path[0].parentElement.id];
   console.log(songid);
+<<<<<<< HEAD
+  // alert(songid);
+}
+=======
 
   // alert(songid);
 }
@@ -103,3 +152,4 @@ $(function() {
         });
     });
 });
+>>>>>>> d8148df42890942b08de08e64e429ec40eecb303
