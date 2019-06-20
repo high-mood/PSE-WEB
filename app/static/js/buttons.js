@@ -23,11 +23,10 @@ function parse_metrics(id) {
 
 function generateButtons(id) {
     metrics = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence'];
-    colours = ['rgba(255, 153, 0, 1)', 'rgba(0, 255, 255, 1)', 'rgba(64, 255, 0, 1)', 'rgba(0, 64, 255, 1)', 'rgba(191, 0, 255, 1)', 'rgba(255, 0, 64, 1)', 'rgba(255, 255, 0, 1)', 'rgba(128, 0, 255, 1)', 'rgba(0, 255, 0, 1)'];
+    colours = ['rgb(255, 153, 0)', 'rgb(0, 255, 255)', 'rgb(64, 255, 0)', 'rgb(0, 64, 255)', 'rgb(191, 0, 255)', 'rgb(255, 0, 64)', 'rgb(255, 255, 0)', 'rgb(128, 0, 255)', 'rgb(0, 255, 0)'];
     for (let i = 0; i < metrics.length; i++) {
         spawnButton(metrics[i], id);
         document.getElementById(metrics[i]).setAttribute("style", "background-color:" + colours[i]);
-        console.log(colours[i]);
     }
 }
 
@@ -38,7 +37,18 @@ function spawnButton(metric, id) {
     buttonDiv.setAttribute("id", metric);
     buttonDiv.setAttribute("class", "linechartMetricButton");
     buttonDiv.setAttribute("style", "float: left; margin: 3px;");
+    buttonDiv.setAttribute("onclick", "press(this.id)");
     buttonDiv.innerHTML = metric;
-    // buttonDiv.setAttribute("onclick", )
     buttonsDiv.appendChild(buttonDiv);
+}
+
+function press(id) {
+    elem = document.getElementById(id);
+    if (elem.style.opacity == 0.5) {
+        elem.style.opacity = 1;
+        showLine(id);
+    } else {
+        elem.style.opacity = 0.5;
+        hideLine(id);
+    }
 }
