@@ -17,6 +17,7 @@
 
     <!-- js for text todo move to the specific charts js file-->
     <script src="{{ url_for('static',filename='js/chartText.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/buttons.js') }}"></script>
 
     <!-- js for making the layout-->
     <script src="{{ url_for('static',filename='js/mainPage.js') }}"></script>
@@ -284,6 +285,9 @@
       
       createSongRecommendationWidget('bap');
     </script>
+
+    <div id="linechartButtons"></div>
+    <script>generateButtons("linechartButtons");</script>
 
   </body>
 </html>
