@@ -83,10 +83,10 @@ class Mood(Resource):
             api.abort(400, msg="Timeframe incorrect: start > end")
 
         if start > 23 or start < 0:
-            api.abort(400, msg="Timeframe incorrect: start time not betwen 0 - 23")
+            api.abort(400, msg="Timeframe incorrect: start time not between 0 - 23")
 
         if end > 24 or end < 1:
-            api.abort(400, msg="Timeframe incorrect: end time not betwen 1 - 24")
+            api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
 
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])

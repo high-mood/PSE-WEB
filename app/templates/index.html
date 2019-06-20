@@ -2,11 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Welcome To Highmood</title>
+    {% if id %}
+        <title>{{ id }}'s mood</title>
+    {% else %}
+        <title>Welcome to High Mood </title>
+    {% endif %}
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
-    <link rel='icon' href="{{ url_for('static',filename='img/favicon.ico') }}" type='image/x-icon'/ >
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/songMetric.css') }}">
+    <link rel='icon' href="{{ url_for('static',filename='img/favicon.ico') }}" type='image/x-icon'>
 
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -17,6 +22,7 @@
 
     <!-- js for text todo move to the specific charts js file-->
     <script src="{{ url_for('static',filename='js/chartText.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/buttons.js') }}"></script>
 
     <!-- js for making the layout-->
     <script src="{{ url_for('static',filename='js/mainPage.js') }}"></script>
@@ -24,9 +30,9 @@
     <!-- lineChart-->
     <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
 
-
     <!-- Song Recommendation-->
     <script src="{{ url_for('static',filename='js/songrecommendation.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/songMetricRecommendation.js') }}"></script>
 
     <!-- Heatmap-->
     <script src="{{ url_for('static',filename='js/heatmap2.js') }}"></script>
@@ -38,7 +44,6 @@
 
     <!-- D3.js -->
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -59,8 +64,8 @@
             <a onclick="navigateTo('Radar-Graph')" id="RadarTab">RadarChart</a>
             <a onclick="navigateTo('Line-Graph')" id="LineTab">LineGraph</a>
             <a onclick="navigateTo('Heat-Graph')" id="HeatTab">HeatMap</a>
+            <a onclick="navigateTo('Song-Metric-Recommendation')" id="SongRecTab">Metric-Recommendation</a>
             <a onclick="navigateTo('Song-Recommendation')" id="Song-Recommendation-Tab">Song-Recommendation</a>
-            <a onclick="navigateTo('Song-Recommandation')" id="SongRecTab">Event-Recommendation</a>
             <a href="/logout">Logout</a>
             <a class="icon" onclick="showTabs()"><i class="fa fa-bars"></i></a>
         </div>
@@ -77,14 +82,6 @@
         <p id="username" hidden>{{ id }}</p>
       {% endif %}
     </div>
-
-    <!--todo remove old top songs-->
-    <!--element with your top songs-->
-    <!--<div class="w3-container">-->
-      <!--<div class="w3-ul w3-card-4" style="width:300px; margin-left:20px; margin-top: 70px; padding: 15px; float:left; border: 2px solid white; border-radius: 25px;" id="top10">-->
-        <!--<h4 style="text-align: center;">Your Top 10 Songs</h4>-->
-      <!--</div>-->
-    <!--</div>-->
 
     <div class="divider"> <!------------------------------------------------------------------------------------------->
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
@@ -116,6 +113,9 @@
       createMainPageChart("Line-Graph","lineGraph","","lineGraphText","",false,bigScreen);
     </script>
 
+    <div id="linechartButtons" style="width: 100%;"></div>
+    <script>generateButtons("linechartButtons");</script>
+
     <div class="divider"> <!------------------------------------------------------------------------------------------->
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
         <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
@@ -129,6 +129,21 @@
       createMainPageChart("Heat-Graph","heatmap","","heatmapText","",true,bigScreen);
     </script>
 
+
+    <div class="divider"> <!------------------------------------------------------------------------------------------->
+      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
+      </svg>
+    </div>
+
+    <!--Song Recommendations-->
+    <div class="mainPage" id="Song-Metric-Recommendation"></div>
+
+    <script>
+      createSongRecommendationElement("Song-Metric-Recommendation");
+      MakeNewSongMetricRec("songMetricRecPlayer", "neutral");
+    </script>
+
     <div class="divider"> <!------------------------------------------------------------------------------------------->
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
         <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
@@ -137,79 +152,19 @@
 
     <div class="mainPage">
       <div id="Song-Recommendation">
-        <h4>Song Recommendation Tool</h4>
+        <h4 >Song Recommendation Tool</h4>
       </div>
     </div>
-
-    <div class="divider"> <!------------------------------------------------------------------------------------------->
-      <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
-        <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
-      </svg>
-    </div>
-
-    <!--Song Recomandations-->
-    <div class="mainPage" id="Song-Recommandation">
-
-      <!-- Event bar -->
-      <div style="width: 26%; height: 96%; float: left; padding:2% 2%">
-        <div style="width: 100%; height: 10%; text-align: center; font-size: 190%; font-weight: 550"; text>select event</div>
-        <div style="width:100%; height: 15%">Genre1</div>
-        <div style="width:100%; height: 15%">Genre2</div>
-        <div style="width:100%; height: 15%">Genre3</div>
-        <div style="width:100%; height: 15%">Genre4</div>
-        <div style="width:100%; height: 15%">Genre5</div>
-        <div style="width:100%; height: 15%">Genre6</div>
-      </div>
-
-      <!-- Recomandations -->
-      <div style="width: 70%; height: 96%; float: left; padding:2% 0%">
-        <div style="width: 100%; height: 10%; float: right">
-          <div style="width: 50%; height: 100%; float: left; text-align: center; font-size: 190%; font-weight: 550">recommendation</div>
-          <div style="width: 25%; height: 100%; float: left; text-align: center; font-size: 190%; font-weight: 550">excitement</div>
-          <div style="width: 25%; height: 100%; float: left; text-align: center; font-size: 190%; font-weight: 550">happiness</div>
-        </div>
-        <div style="width: 100%; height: 18%">
-          <div style="width: 50%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-        </div>
-        <div style="width: 100%; height: 18%">
-          <div style="width: 50%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-        </div>
-        <div style="width: 100%; height: 18%">
-          <div style="width: 50%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-        </div>
-        <div style="width: 100%; height: 18%">
-          <div style="width: 50%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-        </div>
-        <div style="width: 100%; height: 18%">
-          <div style="width: 50%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-          <div style="width: 25%; height: 100%; float: left"></div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- <form class="form-signin" action="/signUp" method="post" role="form">
-        <input type="email" name="username" class="form-control">
-        <button type="button">Register </button>
-    </form> -->
 
     <!--loading user data-->
     <script>
       var userid = document.getElementById("username").textContent;
+      console.log(userid);
 
       var request = new XMLHttpRequest()
 
-      request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
-      // request.open('GET', 'http://localhost:5000/api/mood/' + userid + '/beginning%20of%20time/now', true)
+      // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
+      request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/0', true)
       request.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
@@ -223,10 +178,6 @@
           document.getElementsByClassName("radar")[0].onmousemove = hoverRadar;
           document.getElementsByClassName("radar")[0].onmouseout = resetRadarText;
 
-          // lineGraph
-          // createLineGraph(userdata,"lineGraph");
-          // giveText(userdata,"lineGraphText");
-
           // Heatmap
           createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
                         ,-10,10,5,"exitedness",-10,10,5,"happiness"
@@ -239,34 +190,30 @@
       }
       request.send()
 
-
       var linechartRequest= new XMLHttpRequest()
 
       var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
       song_count = 50;
       // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-      lineChartRequest.open('GET', 'http://localhost:5000/api/tracks/' + userid + '/' + metrics + '/' + song_count, true)
+      linechartRequest.open('GET', 'http://localhost:5000/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
       linechartRequest.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
         console.log(userdata)
 
         if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
-
-
           // lineGraph
           createLineGraph(userdata,"lineGraph");
           giveText(userdata,"lineGraphText");
-
         }
         else {
           document.getElementById("userwelcome").innerHTML = "Error retrieving data!"
         }
       }
       linechartRequest.send()
-      
-      
-      createSongRecommendationWidget('bap');
+
+
+      createSongRecommendationWidget(userid);
     </script>
 
   </body>
