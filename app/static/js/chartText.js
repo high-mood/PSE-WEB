@@ -1,6 +1,6 @@
 var mean_excitedness, mean_happiness;
 
-const radarTexts = ["\
+const graphTexts = ["\
 High Excitedness, High Happiness <br> (happy, upbeat, energetic)<br><br>\
 The music you listen to is generally very happy and has high energy. <br><br>\
 This means that the beat is faster, a higher bpm (beats per minute), <br> \
@@ -25,20 +25,30 @@ The music you listen to is generally slow and has less energy.<br><br>\
 This means that the beat is pretty slow, low bpm (beats per minute), and that the music is perceived as sad.<br><br>\
 You seem sad or a bit down on your luck."];
 
+const heatMapText = "In this heatmap the number of songs in each square <br>\
+determine the color.<br><br>\
+The color changes from light blue (no songs) to green (average) to yellow (highest count)";
+
 function giveText(data, id) {
-    var texts;
-//    if (id == "radarText") {
-        texts = radarTexts;
+//     var texts;
+//    if (id == "heatmapText") {
+    var texts = graphTexts;
+//    } else {
+//         texts = graphTexts;
 //    }
 
     mean_excitedness = data.mean_excitedness;
     mean_happiness = data.mean_happiness;
 
-    document.getElementById(id).innerHTML = getText(mean_excitedness, mean_happiness, texts);
+   if (id == "heatmapText") {
+        document.getElementById(id).innerHTML = (getText(mean_excitedness, mean_happiness, texts) + "<br><br>" + heatMapText);
+   } else {
+        document.getElementById(id).innerHTML = getText(mean_excitedness, mean_happiness, texts);
+   }
 }
 
 function resetRadarText() {
-    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, radarTexts);    
+    document.getElementById("radarText").innerHTML = getText(mean_excitedness, mean_happiness, graphTexts);    
 }
 
 function hoverRadar(e) {
@@ -46,16 +56,29 @@ function hoverRadar(e) {
     x = e.pageX;
     y = e.pageY;
 
-    x = x - xy_pos['xp'] - this.offsetWidth/2;
-    y = this.offsetHeight/2 - (y - xy_pos['yp']);
-    document.getElementById('radarText').innerHTML = getText(y, x, radarTexts);
+    if (this.tagName === "svg") {
+        x = x - xy_pos['xp'] - this.width.baseVal.value/2;
+        y = this.height.baseVal.value/2 - (y - xy_pos['yp']);
+    } else {
+        x = x - xy_pos['xp'] - this.offsetWidth/2;
+        y = this.offsetHeight/2 - (y - xy_pos['yp']);
+    }
+
+    document.getElementById('radarText').innerHTML = getText(y, x, graphTexts);
 }
 
 function getXYpos(elem) {
-    x = elem.offsetLeft;        // set x to elem’s offsetLeft
-    y = elem.offsetTop;         // set y to elem’s offsetTop
-  
-    elem = elem.offsetParent;    // set elem to its offsetParent
+    var x = 0;
+    var y = 0;
+
+    if (elem.tagName === "svg") {
+        elem = elem.parentElement;    // set elem to its offsetParent
+    } else {
+        x = elem.offsetLeft;
+        y = elem.offsetTop;
+
+        elem = elem.offsetParent;    // set elem to its offsetParent
+    }
   
     //use while loop to check if elem is null
     // if not then add current elem’s offsetLeft to x
