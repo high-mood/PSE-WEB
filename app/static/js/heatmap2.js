@@ -10,8 +10,10 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
 
   // make svg in <div id=divID>
   var svg = d3.select("#" + divID).append("svg")
-              .attr('width', width)
-              .attr('height', height);
+              .attr('width', "100%")
+              .attr('height', "100%")
+              .attr("viewBox","0 0 500 500")
+              .attr("preserveAspectRatio","xMidYMid meet");
 
   // Convert data to a usable dataSet with the format [{x:?,y:?,size(),names:[?,...]},...].
   var dataSet = [];
@@ -36,7 +38,7 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
   var maxSize = d3.max(dataSet.map(function(data) { return data.size; }));
   var colorScale = d3.scaleLinear()
                            .domain([0, maxSize])
-                           .range(['rgba(21,21,243,0.2)','rgba(243,21,21,0.8)']);
+                           .range(['steelblue','#ffab00']);
 
 
   // Add in squares for all dataPoints in dataSet.
@@ -73,11 +75,13 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
   var xScale = d3.scaleLinear()
     .domain([xMin,xMax])
     .range([0,16 * width / 20]);
+    // .style('stroke', '#ffffff');
   var xAxis = d3.axisBottom()
     .scale(xScale)
-    .ticks(d3.min([xSamples,20]));
-  svg.append("g").call(xAxis)
-    .attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")");
+    .ticks(d3.min([xSamples,20]))
+    svg.append("g").call(xAxis)
+    .attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")")
+    .style('stroke', '#ffffff');
 
   var yScale = d3.scaleLinear()
     .domain([yMin,yMax])

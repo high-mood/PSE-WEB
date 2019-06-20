@@ -73,18 +73,21 @@ moods = api.model('Mood over time', {
 class Mood(Resource):
 
     @api.marshal_with(moods, envelope='resource')
-    # @app.route("/whatever")
-    def get(self=None, userid="snipy12", start=3,  # ALL ZERO PADDED TODO DOCUMENT
-            end=24, endoftime=False):
+
+    def get(self, userid, start=0, end=24):
         """
-        Obtain moods of a user within a given time frame.
+        Obtain moods of a user within a given time frame in hours of a day.
         """
 
-        # start = int(time.mktime(time.strptime(start, '%Y-%m-%d %H:%M')) * np.power(10, 9))
-        # if not endoftime:
-        #     end = int(time.mktime(time.strptime(end, '%Y-%m-%d %H:%M')) * np.power(10, 9))
-        # else:
-        #     end = int(time.time() * np.power(10, 9))
+        if start > end:
+            api.abort(400, msg="Timeframe incorrect: start > end")
+
+        if start > 23 or start < 0:
+            api.abort(400, msg="Timeframe incorrect: start time not betwen 0 - 23")
+
+        if end > 24 or end < 1:
+            api.abort(400, msg="Timeframe incorrect: end time not betwen 1 - 24")
+
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         client.switch_database('moods')

@@ -1,7 +1,7 @@
 from flask_restplus import Namespace, Resource, fields
-from app.utils.tasks import find_song_recommendations
+from app.utils.tasks import recommend_input, recommend_metric
 from app.utils import influx, models
-from app import app
+from app import app, db
 
 import dateparser
 import datetime
@@ -129,9 +129,7 @@ class Metric(Resource):
                 api.abort(400, message=f"invalid metric")
 
         metrics_querystring = ','.join(['\"' + metric.strip() + '\"' for metric in metrics])
-        print(metrics_querystring)
         metrics_querystring += ',\"songid\"'
-        print(metrics_querystring)
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         user_metrics = client.query(f'select {metrics_querystring} from "{userid}" order by time desc limit {song_count}')
 
@@ -148,15 +146,16 @@ class Metric(Resource):
 
 top_genres = api.model('Top x genres', {
     'userid': fields.String,
-    'genres': fields.Nested(api.model('topgenres', {
-        'genre': fields.String,
+    'songs': fields.Nested(api.model('topsongs', {
+        'songid': fields.String,
+        'name': fields.String,
         'count': fields.Integer
     }))
 })
 
 
-@api.route('/genres/<string:userid>/<string:count>')
-class TopGenres(Resource):
+@api.route('/topsongs/<string:userid>/<string:count>')
+class TopSongs(Resource):
     @api.marshal_with(top_genres, envelope='resource')
     def get(self, userid, count):
         """Get the top N genres of the user."""
@@ -166,9 +165,14 @@ class TopGenres(Resource):
             print('no history found')
             return
         recent_song_list = list(recent_songs.get_points(measurement=userid))
-        songids = list(set([song['songid'] for song in recent_song_list]))
-        # TODO you can't do this here
-        # Artist.query(genres).filter()
+        songids = [song['songid'] for song in recent_song_list]
+        songdata = db.session.query(models.Song).filter(models.Song.songid.in_((songids))).all()
+        songs = {song.songid: song.name for song in songdata}
+        counted_songs = sorted([(songs[id], id, songids.count(id)) for id in songids], key=lambda val: val[2], reverse=True)
+        print(counted_songs, count)
+        top_x = counted_songs[:count]
+
+
 
 
 recommendations = api.model('Song recommendations', {
@@ -212,7 +216,8 @@ class Recommendation_song(Resource):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
         """
-        recs = find_song_recommendations([songid], userid, 10, target=(float(excitedness), float(happiness)))
+        recs = recommend_input([songid], userid, 5, target=(float(excitedness), float(happiness)))
+
         if recs:
             return {
                 'userid': userid,
