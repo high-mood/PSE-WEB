@@ -8,8 +8,87 @@ body {
   font-weight: 300;
   fill: #ffffff;
   text-align: center;
-  /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
+  color: white;
   cursor: default;
+}
+
+li {
+    font-size: 25px;
+    list-style-type: none;
+}
+
+ul {
+  padding: 0px;
+}
+
+#history {
+    /* align-items: left; */
+    font-size: 40px;
+    text-align: left;
+    padding-left: 40px;
+    margin: 40px;
+    width: auto;
+    float: none;
+    height: 800px;
+    overflow-y: auto;
+    border-radius: 5%;
+    background-color: #485563;
+}
+
+#top-Songs {
+  /* display:inline; */
+  /* float: left; */
+  text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
+  color: white;
+  /* width: 300px; */
+}
+
+#top-Songs li {
+  border-bottom: 1px rgba(255, 255, 255, 0.767);
+}
+
+#top10animeendings {
+  border-bottom: 5px solid transparent;
+  border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
+  border-image-slice: 1;
+  margin: 20px auto;
+}
+
+#Song-Recommendation{
+  width: 686px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  border: 2px solid black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.songdiv {
+  /* border: 2px solid black; */
+  height: 80px;
+}
+
+.SongRecButton{
+  height: 80px;
+  width: 80px;
+  float: left;
+  background-color: black;
+  color: white;
+}
+
+.radarChart {
+  float: right;
+  /* display: inline; */
+  width: 800px;
+}
+
+.radarText {
+  color: #ffffff;
+  float: right;
+  width: 30%;
 }
 
 #userwelcome {
@@ -20,10 +99,30 @@ body {
 #Welcome-User {
   margin-top: 100px;
 }
+
 .mainPage {
-  padding-top: 50px;
-  height: 800px;
-  /* border: 1px solid white; */
+  width: 100%;
+  height: 60vh;
+}
+
+.mainPageSmall {
+  width: 100%;
+  height: auto;
+}
+
+.mainPageTop {
+  width: 100%;
+  height: 70vh;
+}
+
+.mainPageTopSmall {
+  width: 100%;
+  height: auto;
+}
+
+.divider {
+  width: 100%;
+  height: 10vh;
 }
 
 .legend {
@@ -35,12 +134,83 @@ body {
   fill: #ffffff;
 }
 
-.inner-div
+.innerTextDiv
 {
-     margin: auto;
-     margin-top: 70px;
-     width: 800px;
-     height: 800px;
+     margin: 0 5%;
+     width: 46%;
+     height: 100%;
+     float: left;
+}
+
+.innerChartDiv
+{
+     margin: 0 2%;
+     width: 40%;
+     height: 100%;
+     float: left;
+}
+
+.innerTextDivSmall
+{
+     margin: 0;
+     width: 100%;
+     height: auto;
+}
+
+.innerChartDivSmall
+{
+     margin: 0;
+     width: auto;
+}
+
+.topSongsDiv
+{
+  margin-left: 5%;
+  width: 25%;
+  height: 100%;
+  float: left;
+  border-radius: 10%;
+  background-color: rgba(0,0,0,0.2);
+}
+
+.innerTextTopDiv
+{
+     margin-right: 5%;
+     width: 25%;
+     height: 100%;
+     float: left;
+}
+
+.innerChartTopDiv
+{
+     margin: 0 0%;
+     width: 40%;
+     height: 100%;
+     float: left;
+}
+
+.topSongsDivSmall
+{
+  width: 100%;
+  height: auto;
+  float: left;
+  border-radius: 10%;
+  background-color: rgba(0,0,0,0.2);
+}
+
+.innerTextTopDivSmall
+{
+  width: 100%;
+  height: 100%;
+  float: left;
+}
+
+.innerChartTopDivSmall
+{
+  margin: 0 0%;
+  width: 100%;
+  height: 100%;
+  float: left;
 }
 
 .navigation-bar {
@@ -49,15 +219,18 @@ body {
   right: 0;
   top: 0;
   width: 100%;
-  background-color: white;
   overflow: hidden;
+  background: #485563;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .navigation-bar a {
   display: inline-block;
   font-size: 20px;
   padding: 12px 24px 12px 24px;
-  color: rgba(0,0,0,0.6);
+  /* color: rgba(0,0,0,0.6); */
+  color: white;
 
   text-decoration: none;
   text-align: center;
@@ -69,13 +242,15 @@ body {
   display: none;
 }
 
-.lineGraph {
-  margin-top: 200px;
-}
-
 .active {
   border: none;
   border-bottom: 2px solid #4CAF50;
+}
+
+.navigation-bar a{
+  border-bottom: 2px solid #485563;  /* fallback for old browsers */
+  border-bottom: 2px solid -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+  border-bottom: 2px solid linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .navigation-bar a:hover:not(.active) {
@@ -85,4 +260,32 @@ body {
 
 .navItems {
   float: right;
+}
+
+.domain {
+  stroke: #ffffff;
+  opacity: 0.85;
+}
+
+.axis {
+  stroke: #ffffff;
+  opacity: 0.85;
+}
+
+.tick {
+  stroke: #ffffff;
+  opacity: 0.85;
+}
+
+line {
+  stroke: #ffffff;
+  opacity: 0.85;
+}
+
+.mood {
+  height: 70px;
+  width: 70px;
+  line-height: 70px;
+  text-align: center;
+  border: 2px dashed #f69c55;
 }
