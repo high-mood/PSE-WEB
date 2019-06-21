@@ -25,7 +25,8 @@ def main():
     H_est = GBR(n_estimators=50, max_depth=3)
     H_est.fit(traindata, happiness)
     dump(E_est, 'Retrained-Energy.joblib')
-    dump(H_est, 'Retrained-Happiness.joblib')        
+    dump(H_est, 'Retrained-Happiness.joblib')
 
+    
 if __name__ == "__main__":
     main()
