@@ -88,7 +88,7 @@ function createSongRecommendationElement(mainDivId) {
   metricsHeaderDiv.appendChild(document.createTextNode("By metric"));
   metricsDiv.appendChild(metricsHeaderDiv);
 
-  var metrics = ["dancability","energy","metric2","metric3"];
+  var metrics = ["dance","karaoke","study","neutral"];
 
   for (i=0;i<4;i++) {
     newDiv = document.createElement('div');
