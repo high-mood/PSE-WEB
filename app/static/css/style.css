@@ -13,6 +13,7 @@ body {
 }
 
 li {
+    font-size: 25px;
     list-style-type: none;
 }
 
@@ -20,29 +21,59 @@ ul {
   padding: 0px;
 }
 
+#history {
+    /* align-items: left; */
+    font-size: 40px;
+    text-align: left;
+    padding-left: 40px;
+    margin: 40px;
+    width: auto;
+    float: none;
+    height: 800px;
+    overflow-y: auto;
+    border-radius: 5%;
+    background-color: #485563;
+}
 
-#top10 {
+#top-Songs {
   /* display:inline; */
   /* float: left; */
   text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
   color: white;
   /* width: 300px; */
 }
 
+#top-Songs li {
+  border-bottom: 1px rgba(255, 255, 255, 0.767);
+}
+
+#top10animeendings {
+  border-bottom: 5px solid transparent;
+  border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
+  border-image-slice: 1;
+  margin: 20px auto;
+}
+
 #Song-Recommendation{
-  width: 800px;
+  width: 686px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 50px;
   border: 2px solid black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .songdiv {
-  border: 2px solid black;
+  /* border: 2px solid black; */
   height: 80px;
 }
 
 .SongRecButton{
   height: 80px;
+  width: 80px;
   float: left;
   background-color: black;
   color: white;
@@ -249,4 +280,12 @@ ul {
 line {
   stroke: #ffffff;
   opacity: 0.85;
+}
+
+.mood {
+  height: 70px;
+  width: 70px;
+  line-height: 70px;
+  text-align: center;
+  border: 2px dashed #f69c55;
 }

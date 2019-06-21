@@ -3,8 +3,10 @@ from flask_restplus import Api
 from flask import Blueprint
 from app import app
 
-from .users import api as user_name_space
-from .tracks import api as track_name_space
+from .user_calls import api as user_name_space
+from .track_calls import api as track_name_space
+from .song_calls import api as song_name_space
+from .playlist import api as playlist_name_space
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
@@ -12,6 +14,8 @@ app.register_blueprint(blueprint)
 
 api.add_namespace(user_name_space)
 api.add_namespace(track_name_space)
+api.add_namespace(song_name_space)
+api.add_namespace(playlist_name_space)
 
 
 @api.errorhandler

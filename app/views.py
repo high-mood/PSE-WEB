@@ -1,10 +1,11 @@
-from flask import render_template, redirect, request, session, url_for, flash
+from flask import Flask, send_from_directory, jsonify, json, render_template, redirect, request, session, flash, url_for
 from app import app
 # Refactor later
 from app import spotifysso
 from app.utils import influx, spotify
 from app.utils.tasks import update_user_tracks
 from app.utils.models import User
+from app.API.track_calls import TopSongs
 
 
 @app.route("/index", methods=['GET', 'POST'])
@@ -13,12 +14,15 @@ def index():
     if "json_info" not in session:
         return render_template("login.html", **locals())
     else:
+
+        # client = query.create_client('pse-ssh.diallom.com', 8086)
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
+        all_songs = set(influx.get_songs(client, userid, access_token)[1])
 
         return render_template("index.html", **locals(), text=session['json_info']['display_name'],
-                               id=session['json_info']['id'])
+                               id=session['json_info']['id'], song_history=all_songs)
 
 
 @app.route("/index_js")
@@ -30,12 +34,23 @@ def index_js():
     top_songs = influx.get_top_songs(client, userid, 10, access_token)
     timestamps, duration = influx.total_time_spent(client, userid)
     top_genres = influx.get_top_genres(client, userid, 10)
-    songs, song_count = [list(x) for x in list(zip(*top_songs))]
-    genres, genre_count = [list(x) for x in list(zip(*top_genres))]
 
+    if top_songs:
+        songs, song_count = [list(x) for x in list(zip(*top_songs))]
+    else:
+        songs, song_count = [], []
+    if top_genres:
+        genres, genre_count = [list(x) for x in list(zip(*top_genres))]
+    else:
+        genres, genre_count = [], []
+
+    songs = TopSongs().get(userid, 10)['resource']['songs']
+    print(songs)
+    song_count = 10
     return render_template("index.js", songs=songs, song_count=song_count,
                            genres=genres, genre_count=genre_count,
                            timestamps=timestamps, duration=duration)
+
 
 
 @app.route("/login")
@@ -45,6 +60,9 @@ def login():
 
 @app.route('/callback')
 def authorized():
+    if "json_info" in session:
+        return redirect(url_for("index"))
+
     resp = spotifysso.authorized_response()
 
     if resp is None:

@@ -1,0 +1,52 @@
+.songMetricBar {
+  width: 20%;
+  height: 96%;
+  padding: 2%;
+  margin: 2% 5%;
+  float: left;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 5%;
+}
+
+.songMetricBar div {
+  height: 50%;
+  width: 100%;
+}
+
+.songMetricBar div div.metricHeader {
+  height: 20%;
+  width: 100%;
+}
+
+.songMetricBar div div.metricElement.active {
+  height: 20%;
+  width: 100%;
+}
+
+.songMetricBar div div.metricElement:not(.active) {
+  height: 20%;
+  width: 100%;
+}
+
+.songMetricBar div div.metricElement:hover:not(.active) {
+  height: 20%;
+  width: 100%;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+}
+
+
+.songRecBar {
+  width: 66%;
+  height: 96%;
+  padding: 2%;
+  margin: 2%;
+  float: left;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 5%;
+}
+
+.songPlayerBar {
+  width: 100%;
+  height: 16.7%;
+}

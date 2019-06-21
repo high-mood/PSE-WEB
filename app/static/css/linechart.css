@@ -58,3 +58,11 @@ Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html */
     fill: steelblue;
     stroke: #fff;
 }
+
+
+.linechartMetricButton {
+    width: 11.1%;
+    border-radius: 4px;
+    color: black;
+    float: left;
+}
