@@ -27,6 +27,6 @@ def main():
     dump(E_est, 'Retrained-Energy.joblib')
     dump(H_est, 'Retrained-Happiness.joblib')
 
-    
+
 if __name__ == "__main__":
     main()
