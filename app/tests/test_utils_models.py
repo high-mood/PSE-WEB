@@ -41,7 +41,8 @@ class TestUsers(unittest.TestCase):
     def test_add_user_again(self):
         User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
 
-        self.assertEqual(len(User.get_all_users()), 1)
+        self.assertEqual(User.get_all_tokes(), [self.user_info['refresh_token']])
+        self.assertEqual(User.get_all_users(), [self.user_info['id']])
 
     def test_refresh_token(self):
         self.assertEqual(User.get_refresh_token(self.user_info['id']), self.user_info['refresh_token'])
@@ -70,8 +71,18 @@ class TestSongs(unittest.TestCase):
                    'popularity': 60}
 
     mood_info = {'songid': "6obJhxyLxEFlNOiqPKVR8i",
-                 'excitedness': 10,
-                 'happiness': 10}
+                 'excitedness': 10.0,
+                 'happiness': 10.0,
+                 'response_excitedness': 10.0,
+                 'response_happiness': 10.0,
+                 'response_count': 20}
+
+    @staticmethod
+    def _row_to_dict(row):
+        sql_dict = dict(row.__dict__)
+        sql_dict.pop('_sa_instance_state', None)
+
+        return sql_dict
 
     def test_add_song(self):
         Song.create_if_not_exist(self.song_info)
@@ -80,8 +91,15 @@ class TestSongs(unittest.TestCase):
         Artist.create_if_not_exist(self.artist_info)
 
         Songmood.create_if_not_exist(self.mood_info)
-        self.assertEqual(Songmood.get_moods(self.song_info['songid']), None)
+        moods = filter(lambda row: row.songid == self.song_info['songid'],
+                       Songmood.get_moods([self.mood_info['songid']]))
+        self.assertDictEqual(self._row_to_dict(next(moods)), self.mood_info)
 
         song_artist = {'songid': self.song_info['songid'],
                        'artistid': self.artist_info['artistid']}
         SongArtist.create_if_not_exist(song_artist)
+
+    def test_update_mood(self):
+        Songmood.update_response_mood(self.song_info['songid'], 5.0, 5.0)
+        self.assertAlmostEqual(Songmood.get_moods([self.mood_info['songid']])[0].response_excitedness, 9.7, delta=0.1)
+        self.assertAlmostEqual(Songmood.get_moods([self.mood_info['songid']])[0].response_happiness, 9.7, delta=0.1)

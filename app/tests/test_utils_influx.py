@@ -3,11 +3,6 @@ import unittest
 
 from app.utils.influx import *
 
-from influxdb.tests.server_tests.base import ManyTestCasesWithServerMixin
-import os
-
-THIS_DIR = os.path.abspath(os.path.dirname(__file__))
-
 dummy_point = [  # some dummy points
     {
         "measurement": "cpu_load_short",
@@ -22,17 +17,26 @@ dummy_point = [  # some dummy points
     }
 ]
 
+cli = None
+@pytest.fixture(autouse=True, scope="module")
+def influx_setup(request):
+    app.config['TESTING'] = True
 
-# TODO test this on linux
-class TestSongs(ManyTestCasesWithServerMixin, unittest.TestCase):
-    influxdb_template_conf = os.path.join(THIS_DIR, 'influxdb.conf.template')
+    global cli
+    cli = InfluxDBClient(host=app.config['INFLUX_HOST'], port=app.config['INFLUX_PORT'],
+                         username=app.config['INFLUX_USER'], password=app.config['INFLUX_PASSWORD'])
+    cli.create_database('test_db')
+    cli.switch_database('test_db')
 
+    request.addfinalizer(influx_teardown)
+
+
+def influx_teardown():
+    cli.drop_database('test_db')
+
+
+class TestDB(unittest.TestCase):
     def test_write(self):
-        """ Test write to the server. """
-        self.assertIs(True, self.cli.write(
-            {'points': dummy_point},
-            params={'db': 'db'},
-        ))
-
-    def test_get_genres(self):
-        pass
+        """Test write to the server."""
+        __import__('time').sleep(10)
+        self.assertTrue(cli.write_points(dummy_point))
