@@ -88,6 +88,9 @@ class Song(db.Model):
     @staticmethod
     def get_song_name(songid):
         song = Song.query.filter_by(songid=songid).first()
+        if not song:
+            return None
+
         return song.name
 
 

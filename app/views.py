@@ -18,7 +18,7 @@ def index():
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
-        all_songs = set(influx.get_songs(client, userid, access_token)[1])
+        all_songs = set(influx.get_songs(client, userid)[1])
 
         return render_template("index.html", **locals(), text=session['json_info']['display_name'],
                                id=session['json_info']['id'], song_history=all_songs)
@@ -28,9 +28,8 @@ def index():
 def index_js():
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     userid = session['json_info']['id']
-    access_token = spotify.get_access_token(session['json_info']['refresh_token'])
 
-    top_songs = influx.get_top_songs(client, userid, 10, access_token)
+    top_songs = influx.get_top_songs(client, userid, 10)
     timestamps, duration = influx.total_time_spent(client, userid)
     top_genres = influx.get_top_genres(client, userid, 10)
 

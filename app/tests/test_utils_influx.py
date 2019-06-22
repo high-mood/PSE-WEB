@@ -1,42 +1,128 @@
 import pytest
 import unittest
 
-from app.utils.influx import *
+from app.utils import influx
 
-dummy_point = [  # some dummy points
+from app.tests.presets import UseTestInfluxDB
+
+# some dummy points
+k3_album = [
     {
-        "measurement": "cpu_load_short",
-        "tags": {
-            "host": "server01",
-            "region": "us-west"
-        },
-        "time": "2009-11-10T23:00:00Z",
+        "measurement": "test_user",
+        "time": "2019-03-12T10:41:06",
         "fields": {
-            "value": 0.64
+            "songid": "6obJhxyLxEFlNOiqPKVR8i"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T10:47:35Z",
+        "fields": {
+            "songid": "035czDmDakmsSlElgid5d9"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T10:51:23Z",
+        "fields": {
+            "songid": "6obJhxyLxEFlNOiqPKVR8i"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T10:52:19Z",
+        "fields": {
+            "songid": "2qJ5tIxB6mWfpo4M5DVvL6"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T10:55:25Z",
+        "fields": {
+            "songid": "19rmEKeQCsaYGI1g25i31N"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T10:57:48Z",
+        "fields": {
+            "songid": "37xPKDIqDyEbA0H0WSJkG0"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T10:59:03Z",
+        "fields": {
+            "songid": "25fL1tT0LaVABsNZhEln3Y"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:01:38Z",
+        "fields": {
+            "songid": "75NnpgZNv1iB2TMdklmUd1"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:01:59Z",
+        "fields": {
+            "songid": "035czDmDakmsSlElgid5d9"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:02:58Z",
+        "fields": {
+            "songid": "3lXERsaFCXB7dOLvwchzYh"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:05:03Z",
+        "fields": {
+            "songid": "2xtnke3OyEf3fzUVeEQ8nK"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:06:53Z",
+        "fields": {
+            "songid": "7i7DXixL0LFTiT4kWyBwuQ"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:09:43Z",
+        "fields": {
+            "songid": "77I3MCqxMx4IbMwiVhiH9T"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:12:23Z",
+        "fields": {
+            "songid": "588LZ5fQ4PW4BVyILiNpFN"
+        }
+    },
+    {
+        "measurement": "test_user",
+        "time": "2019-03-12T11:15:42",
+        "fields": {
+            "songid": "7A6cA4hdbjj7OERuUWdZw4"
         }
     }
 ]
 
-cli = None
-@pytest.fixture(autouse=True, scope="module")
-def influx_setup(request):
-    app.config['TESTING'] = True
 
-    global cli
-    cli = InfluxDBClient(host=app.config['INFLUX_HOST'], port=app.config['INFLUX_PORT'],
-                         username=app.config['INFLUX_USER'], password=app.config['INFLUX_PASSWORD'])
-    cli.create_database('test_db')
-    cli.switch_database('test_db')
+class TestSongs(UseTestInfluxDB, unittest.TestCase):
+    populate_influx_with = k3_album
 
-    request.addfinalizer(influx_teardown)
+    def test_total_time_spent(self):
+        self.assertEqual(influx.total_time_spent(self.cli, 'test_user')[1], 2076000)
 
+    def test_get_genres(self):
+        self.assertEqual(influx.get_top_genres(self.cli, 'test_user', 1), ["belgian pop"])
 
-def influx_teardown():
-    cli.drop_database('test_db')
-
-
-class TestDB(unittest.TestCase):
-    def test_write(self):
-        """Test write to the server."""
-        __import__('time').sleep(10)
-        self.assertTrue(cli.write_points(dummy_point))
+    def test_get_top_songs(self):
+        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), ["De Wereld Van K3"])

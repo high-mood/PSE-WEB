@@ -1,4 +1,5 @@
 from influxdb import InfluxDBClient
+from app.utils.models import Song
 from app import app
 import requests
 
@@ -13,10 +14,11 @@ def total_time_spent(client, userid):
     result = client.query('select cumulative_sum(duration_ms) from "' + userid + '"').raw
 
     if 'series' not in result:
-        return None,  0
+        return None, 0
 
     cumsum = result['series'][0]['values']
     timestamp, listen_time = [list(x) for x in list(zip(*cumsum))]
+
     return timestamp, listen_time
 
 
@@ -80,12 +82,11 @@ def get_top_genres(client, userid, count):
     return get_top(genres, count)
 
 
-def get_songs(client, userid, token):
+def get_songs(client, userid):
     """
     Returns all songs listened to by the user specified by userid.
     :param client: InfluxDB client object.
     :param userid: User id of the user.
-    :param token: Spotify token of the user.
     :return: All songs listened to by the user.
     """
     result = client.query('select songid from "' + userid + '"').raw
@@ -94,26 +95,22 @@ def get_songs(client, userid, token):
         return 0, []
 
     timestamps, songs = [list(x) for x in list(zip(*result['series'][0]['values']))]
-    ids = ','.join(songs)
-    # TODO this is not needed here the track name should be retrieved from models.Song.get_song_name()
-    endpoint = "https://api.spotify.com/v1/tracks?ids="
-    r = requests.get(endpoint + ids, headers={"Authorization": f"Bearer {token}"}).json()
-    if 'tracks' not in r:
+
+    songs = [Song.get_song_name(song) for song in songs]
+    if all(song is None for song in songs):
         return 0, []
-    songs = [track['name'] for track in r['tracks'] if track]
 
     return timestamps, songs
 
 
-def get_top_songs(client, userid, count, token):
+def get_top_songs(client, userid, count):
     """
     Gets the top 'count' songs of user
     :param client: InfluxDB client object.
     :param userid: User id of the user.
     :param count: Number of items to be returned.
-    :param token: Spotify token of the user.
     :return: The top songs of the user.
     """
-    _, songs = get_songs(client, userid, token)
+    _, songs = get_songs(client, userid)
 
     return get_top(songs, count)

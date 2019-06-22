@@ -1,28 +1,13 @@
 import pytest
 import unittest
 
-from app import app, db
 from app.utils.models import User, Song, Artist, Songmood, SongArtist
+from app.tests.presets import UseTestSqlDB
 
 from datetime import datetime
 
 
-@pytest.fixture(autouse=True, scope="module")
-def db_setup(request):
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
-    app.config['TESTING'] = True
-
-    db.create_all()
-
-    request.addfinalizer(db_teardown)
-
-
-def db_teardown():
-    db.session.remove()
-    db.drop_all()
-
-
-class TestUsers(unittest.TestCase):
+class TestUsers(UseTestSqlDB, unittest.TestCase):
     user_info = {'id': '112',
                  'email': "such_email@email.com",
                  'display_name': "Test user",
@@ -48,7 +33,7 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(User.get_refresh_token(self.user_info['id']), self.user_info['refresh_token'])
 
 
-class TestSongs(unittest.TestCase):
+class TestSongs(UseTestSqlDB, unittest.TestCase):
     song_info = {'songid': "6obJhxyLxEFlNOiqPKVR8i",
                  'name': "Oya lélé",
                  'duration_ms': 224946,
