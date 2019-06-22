@@ -1,5 +1,3 @@
-import time
-
 from flask_restplus import Namespace, Resource, fields
 from app.utils import influx, models
 from app import app
@@ -70,10 +68,9 @@ moods = api.model('Mood over time', {
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class Mood(Resource):
-
     @api.marshal_with(moods, envelope='resource')
-    def get(self=None, userid="snipy12", start=3,  # ALL ZERO PADDED TODO DOCUMENT
-            end=24, endoftime=False):
+    # ALL ZERO PADDED TODO DOCUMENT
+    def get(self=None, userid="snipy12", start=3, end=24, endoftime=False):
         """
         Obtain moods of a user within a given time frame in hours of a day.
         """
@@ -87,7 +84,6 @@ class Mood(Resource):
         if end > 24 or end < 1:
             api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
 
-            
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         client.switch_database('moods')
         user_mood = client.query(
@@ -118,7 +114,5 @@ class Mood(Resource):
                 'sum_song_count': total_songs,
                 'moods': resultset
             }
-
-
         else:
             api.abort(404, msg=f"No moods found for '{userid}'")

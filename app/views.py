@@ -15,7 +15,6 @@ def index():
         return render_template("login.html", **locals())
     else:
 
-        # client = query.create_client('pse-ssh.diallom.com', 8086)
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         userid = session['json_info']['id']
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
@@ -35,22 +34,22 @@ def index_js():
     timestamps, duration = influx.total_time_spent(client, userid)
     top_genres = influx.get_top_genres(client, userid, 10)
 
+    # TODO these variables are not getting used.
+    songs, song_count = [], []
+    genres, genre_count = [], []
     if top_songs:
         songs, song_count = [list(x) for x in list(zip(*top_songs))]
-    else:
-        songs, song_count = [], []
+
     if top_genres:
         genres, genre_count = [list(x) for x in list(zip(*top_genres))]
-    else:
-        genres, genre_count = [], []
 
     songs = TopSongs().get(userid, 10)['resource']['songs']
     print(songs)
     song_count = 10
+
     return render_template("index.js", songs=songs, song_count=song_count,
                            genres=genres, genre_count=genre_count,
                            timestamps=timestamps, duration=duration)
-
 
 
 @app.route("/login")
@@ -90,4 +89,5 @@ def authorized():
 @app.route('/logout')
 def sign_out():
     session.pop("json_info")
+
     return redirect(url_for('index'))

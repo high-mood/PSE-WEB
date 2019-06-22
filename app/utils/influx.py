@@ -20,7 +20,6 @@ def total_time_spent(client, userid):
     return timestamp, listen_time
 
 
-
 def create_client(host, port):
     """
     Creates the connection to the influx database songs.
@@ -96,6 +95,7 @@ def get_songs(client, userid, token):
 
     timestamps, songs = [list(x) for x in list(zip(*result['series'][0]['values']))]
     ids = ','.join(songs)
+    # TODO this is not needed here the track name should be retrieved from models.Song.get_song_name()
     endpoint = "https://api.spotify.com/v1/tracks?ids="
     r = requests.get(endpoint + ids, headers={"Authorization": f"Bearer {token}"}).json()
     if 'tracks' not in r:
