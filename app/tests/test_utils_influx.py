@@ -7,13 +7,6 @@ from app.utils import influx
 k3_album = [
     {
         "measurement": "test_user",
-        "time": "2019-03-12T10:41:06",
-        "fields": {
-            "songid": "6obJhxyLxEFlNOiqPKVR8i"
-        }
-    },
-    {
-        "measurement": "test_user",
         "time": "2019-03-12T10:47:35Z",
         "fields": {
             "songid": "035czDmDakmsSlElgid5d9"
@@ -123,4 +116,4 @@ class TestSongs(UseTestInfluxDB, unittest.TestCase):
         self.assertEqual(influx.get_top_genres(self.cli, 'test_user', 1), ["belgian pop"])
 
     def test_get_top_songs(self):
-        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), [("Oya lélé", 2)])
+        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), [("De Wereld Van K3", 2)])

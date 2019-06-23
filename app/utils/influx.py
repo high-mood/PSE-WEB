@@ -1,7 +1,6 @@
 from influxdb import InfluxDBClient
 from app.utils.models import Song
 from app import app
-import requests
 
 
 def total_time_spent(client, userid):
