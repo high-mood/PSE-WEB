@@ -85,5 +85,7 @@ class TestSongs(UseTestSqlDB, unittest.TestCase):
 
     def test_update_mood(self):
         models.Songmood.update_response_mood(self.song_info['songid'], 5.0, 5.0)
-        self.assertAlmostEqual(models.Songmood.get_moods([self.mood_info['songid']])[0].response_excitedness, 9.7, delta=0.1)
-        self.assertAlmostEqual(models.Songmood.get_moods([self.mood_info['songid']])[0].response_happiness, 9.7, delta=0.1)
+        self.assertAlmostEqual(models.Songmood.get_moods([self.mood_info['songid']])[0].response_excitedness, 9.7,
+                               delta=0.1)
+        self.assertAlmostEqual(models.Songmood.get_moods([self.mood_info['songid']])[0].response_happiness, 9.7,
+                               delta=0.1)
