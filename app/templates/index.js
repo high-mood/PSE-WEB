@@ -64,7 +64,7 @@ function getTop10(divId) {
     }
 }
 
-// Mounir's amazing first demo code <3
+// Mounir's amazing first demo code <3 !
 
 //new Chart(document.getElementById("barchart"), {
 //  type: 'bar',

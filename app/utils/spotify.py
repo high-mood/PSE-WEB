@@ -64,7 +64,8 @@ def get_recommendations(access_token, recommendation_count, track_string, param_
                          selected track attribute’s value can be provided.
     :return: A response body contains a recommendations response object in JSON format.
     """
-    url = f"https://api.spotify.com/v1/recommendations?limit={recommendation_count}&seed_tracks={track_string}{param_string}"
+    url = "https://api.spotify.com/v1/recommendations?limit=" +\
+          f"{recommendation_count}&seed_tracks={track_string}{param_string}"
 
     return _get_basic_request(access_token, url)
 

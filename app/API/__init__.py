@@ -1,4 +1,3 @@
-from app.utils.exceptions import NoResultsFound, InvalidValue
 from flask_restplus import Api
 from flask import Blueprint
 from app import app
@@ -16,16 +15,3 @@ api.add_namespace(user_name_space)
 api.add_namespace(track_name_space)
 api.add_namespace(song_name_space)
 api.add_namespace(playlist_name_space)
-
-
-@api.errorhandler
-def default_error_handler(error):
-    """ Default error handler. """
-    if not app.config['DEBUG']:
-        return {'message': 'An unhandled exception occurred.'}, getattr(error, 'code', 500)
-
-
-@api.errorhandler(InvalidValue)
-@api.errorhandler(NoResultsFound)
-def error_handler(error):
-    return {'message': str(error['msg'])}, error['code']

@@ -1,10 +1,9 @@
+from app.utils.recommendations import recommend_input, recommend_metric
 from flask_restplus import Namespace, Resource, fields
-from app.utils.tasks import recommend_input, recommend_metric
 from app.utils import influx, models
 from app import app, db
 
 import dateparser
-import datetime
 
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
@@ -35,12 +34,11 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
                 happiness += songmood.happiness
                 count += 1 if count != 1 else 0
             if not return_songids:
-                song = {}
-                song['songid'] = songmood.songid
-                song['excitedness'] = songmood.excitedness
-                song['happiness'] = songmood.happiness
-                song['time'] = [song['time'] for song in recent_song_list][0]
-                song['name'] = models.Song.get_song_name(song['songid'])
+                song = {'songid': songmood.songid,
+                        'excitedness': songmood.excitedness,
+                        'happiness': songmood.happiness,
+                        'time': [song['time'] for song in recent_song_list][0],
+                        'name': models.Song.get_song_name(songmood.songid)}
                 history.append(song)
         if calc_mood:
             excitedness /= count
@@ -137,7 +135,7 @@ class Metric(Resource):
         _, _, songids = get_history(userid, song_count, return_songids=True, calc_mood=False)
 
         if songids:
-            songs = db.session.query(models.Song).filter(models.Song.songid.in_((songids)))
+            songs = db.session.query(models.Song).filter(models.Song.songid.in_(songids))
             songs_features = []
             for song in songs:
                 features = song.__dict__
@@ -177,9 +175,10 @@ class TopSongs(Resource):
             }
         recent_song_list = list(recent_songs.get_points(measurement=userid))
         songids = [song['songid'] for song in recent_song_list]
-        songdata = db.session.query(models.Song).filter(models.Song.songid.in_((songids))).all()
+        songdata = db.session.query(models.Song).filter(models.Song.songid.in_(songids)).all()
         songs = {song.songid: song.name for song in songdata}
-        counted_songs = sorted([(songs[id], id, songids.count(id)) for id in list(set(songids))], key=lambda val: val[2], reverse=True)
+        counted_songs = sorted([(songs[songid], songid, songids.count(songid)) for songid in list(set(songids))],
+                               key=lambda val: val[2], reverse=True)
         top_x = counted_songs[:int(count)]
         return_data = [{'songid': data[1], 'name': data[0], 'count':data[2]} for data in top_x]
         return {
@@ -200,7 +199,7 @@ recommendations = api.model('Song recommendations', {
 
 @api.route('/recommendation/<string:userid>/<string:songid>/<float:excitedness>/<float:happiness>')
 @api.response(404, 'No recommendations found')
-class Recommendation_song(Resource):
+class RecommendationSong(Resource):
     @api.marshal_with(recommendations, envelope='resource')
     def get(self, userid, songid, excitedness, happiness):
         """
@@ -219,7 +218,7 @@ class Recommendation_song(Resource):
 
 @api.route('/recommendation/<string:userid>/<string:metric>')
 @api.response(404, 'No recommendations found')
-class Recommendation_metric(Resource):
+class RecommendationMetric(Resource):
     @api.marshal_with(recommendations, envelope='resource')
     def get(self, userid, metric):
         """

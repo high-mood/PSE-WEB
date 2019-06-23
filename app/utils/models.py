@@ -1,4 +1,4 @@
-from app import db, app
+from app import db
 import datetime
 
 
@@ -88,6 +88,9 @@ class Song(db.Model):
     @staticmethod
     def get_song_name(songid):
         song = Song.query.filter_by(songid=songid).first()
+        if not song:
+            return None
+
         return song.name
 
 
@@ -136,10 +139,9 @@ class Songmood(db.Model):
 
     @staticmethod
     def get_moods(songids):
-        songmoods = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
+        songmoods = db.session.query(Songmood).filter(Songmood.songid.in_(songids)).all()
         return songmoods
 
-    # TODO check if this works properly
     @staticmethod
     def update_response_mood(songid, user_excitedness, user_happiness):
         songmood = Songmood.query.filter_by(songid=songid).first()
@@ -147,11 +149,12 @@ class Songmood(db.Model):
             response_excitedness = songmood.response_excitedness
             response_happiness = songmood.response_happiness
             response_count = songmood.response_count
-            songmood.response_happiness = (response_happiness * response_count + user_excitedness) / (
+            songmood.response_happiness = (response_happiness * response_count + user_happiness) / (
                     response_count + 1)
             songmood.response_excitedness = (response_excitedness * response_count + user_excitedness) / (
                     1 + response_count)
             songmood.response_count = response_count + 1
+
             db.session.commit()
 
 
@@ -163,15 +166,13 @@ class SongArtist(db.Model):
 
     __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
 
-    # TODO fix below
     @staticmethod
     def create_if_not_exist(json_info):
-        songartist = SongArtist.query(
-            f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
-        if songartist is None:
-            songartist = SongArtist(songid=json_info['songid'],
-                                    artistid=json_info['artistid'])
+        song_artist = db.session.query(SongArtist).filter(SongArtist.songid == json_info['songid'],
+                                                          SongArtist.artistid == json_info['artistid']).first()
+        if song_artist is None:
+            song_artist = SongArtist(songid=json_info['songid'],
+                                     artistid=json_info['artistid'])
 
-            db.session.add(songartist)
-
+            db.session.add(song_artist)
             db.session.commit()
