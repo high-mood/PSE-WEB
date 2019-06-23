@@ -1,4 +1,4 @@
-from app.utils.models import User, Song, Artist, Songmood
+from app.utils.models import User, Song, Artist, Songmood, SongArtist
 from moodanalysis.moodAnalysis import analyse_mood
 from app.utils import influx, spotify
 from app import app
@@ -16,15 +16,21 @@ def add_artist_genres(artist_ids, access_token):
     """
     if not artist_ids:
         return
-    artists_info = spotify.get_artists(access_token, list(artist_ids.keys()))
+    # The list of artists can be larger then 50, which is the limit of artists you can request to Spotify, so
+    # we split the artists up in chunks of maximum 50 artists.
+    n = 50
+    keys_list = list(artist_ids.keys())
+    artist_ids_chunks = [keys_list[i * n:(i + 1) * n] for i in range((len(keys_list) + n - 1) // n)]
+    for artist_ids_list in artist_ids_chunks:
+        artists_info = spotify.get_artists(access_token, artist_ids_list)
 
-    for artist_info in artists_info['artists']:
-        Artist.create_if_not_exist({
-            'artistid': artist_info['id'],
-            'name': artist_info['name'],
-            'genres': ', '.join(artist_info['genres']),
-            'popularity': artist_info['popularity']
-        })
+        for artist_info in artists_info['artists']:
+            Artist.create_if_not_exist({
+                'artistid': artist_info['id'],
+                'name': artist_info['name'],
+                'genres': ', '.join(artist_info['genres']),
+                'popularity': artist_info['popularity']
+            })
 
 
 def add_audio_features(tracks, access_token):
@@ -78,6 +84,70 @@ def add_audio_features(tracks, access_token):
     return tracks_features
 
 
+def add_song_artist_link(song_artist_links):
+    """
+    Add the link between artist and song the SQL database.
+    :param song_artist_links: List of dicts structured like [{'songid': songid, 'artistid': artistid}, ]
+    """
+    for link in song_artist_links:
+        SongArtist.create_if_not_exist(link)
+
+
+def get_latest_tracks(user_id, access_token):
+    """
+    Gets the 50 most recent tracks from that the user listened to and stores multiple aspects of them.
+    :param user_id: Spotify user id of the user.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    :return: The 50 most recent tracks for the timescale database and there audio features for mood analysis.
+    """
+    recently_played = spotify.get_recently_played(access_token)
+
+    if not recently_played['items']:
+        return None, None
+
+    tracks = {}
+    artists = {}
+    latest_tracks = []
+    track_artist_link = []
+    for track in recently_played['items']:
+        latest_tracks.append({'measurement': user_id,
+                              'time': track['played_at'],
+                              'fields': {'songid': track['track']['id']}})
+        # We add the track and artist ids to dicts to remove duplicates.
+        for artist in track['track']['artists']:
+            artists[artist['id']] = None
+            track_artist_link.append({'songid': track['track']['id'],
+                                      'artistid': artist['id']})
+        tracks[track['track']['id']] = {'name': track['track']['name']}
+
+    tracks_features = add_audio_features(tracks, access_token)
+    add_artist_genres(artists, access_token)
+    add_song_artist_link(track_artist_link)
+
+    return latest_tracks, tracks_features
+
+
+def update_user_tracks(access_token):
+    """
+    Gets the latest tracks the user listened to and updates the databases accordingly.
+    :param access_token: A valid access token from the Spotify Accounts service.
+    """
+    user_data = spotify.get_user_info(access_token)
+    tracks, tracks_features = get_latest_tracks(user_data['id'], access_token)
+
+    # If the user does not have listened to any tracks we just skip them.
+    current_time = datetime.now().strftime("%H:%M:%S")
+
+    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
+    if tracks:
+        update_songmoods(tracks_features)
+        client.write_points(tracks)
+        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
+    else:
+        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
+              file=sys.stderr)
+
+
 def get_last_n_minutes(duration, userid):
     """
     Updates the mean excitedness and happiness for the user with there songs in the last `duration`.
@@ -123,56 +193,6 @@ def get_last_n_minutes(duration, userid):
     client.write_points(data)
 
     print(f'[{current_time}] updated moods for {userid}')
-
-
-def get_latest_tracks(user_id, access_token):
-    """
-    Gets the 50 most recent tracks from that the user listened to and stores multiple aspects of them.
-    :param user_id: Spotify user id of the user.
-    :param access_token: A valid access token from the Spotify Accounts service.
-    :return: The 50 most recent tracks for the timescale database and there audio features for mood analysis.
-    """
-    recently_played = spotify.get_recently_played(access_token)
-
-    if not len(recently_played['items']) > 0:
-        return None, None
-
-    tracks = {}
-    artists = {}
-    latest_tracks = []
-    for track in recently_played['items']:
-        latest_tracks.append({'measurement': user_id,
-                              'time': track['played_at'],
-                              'fields': {'songid': track['track']['id']}})
-        # 'artistsids': ','.join([artist['songid'] for artist in track['track']['artists']])}
-        artists[track['track']['artists'][0]['id']] = None
-        tracks[track['track']['id']] = {'name': track['track']['name']}
-
-    tracks_features = add_audio_features(tracks, access_token)
-    add_artist_genres(artists, access_token)
-
-    return latest_tracks, tracks_features
-
-
-def update_user_tracks(access_token):
-    """
-    Gets the latest tracks the user listened to and updates the databases accordingly.
-    :param access_token: A valid access token from the Spotify Accounts service.
-    """
-    user_data = spotify.get_user_info(access_token)
-    tracks, tracks_features = get_latest_tracks(user_data['id'], access_token)
-
-    # If the user does not have listened to any tracks we just skip them.
-    current_time = datetime.now().strftime("%H:%M:%S")
-
-    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-    if tracks:
-        update_songmoods(tracks_features)
-        client.write_points(tracks)
-        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
-    else:
-        print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
-              file=sys.stderr)
 
 
 def update_songmoods(tracks_features):

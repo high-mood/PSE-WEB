@@ -1,9 +1,7 @@
-import pytest
 import unittest
 
-from app.utils import influx
-
 from app.tests.presets import UseTestInfluxDB
+from app.utils import influx
 
 # some dummy points
 k3_album = [
@@ -125,4 +123,4 @@ class TestSongs(UseTestInfluxDB, unittest.TestCase):
         self.assertEqual(influx.get_top_genres(self.cli, 'test_user', 1), ["belgian pop"])
 
     def test_get_top_songs(self):
-        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), ["De Wereld Van K3"])
+        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), [("Oya lélé", 2)])

@@ -3,7 +3,7 @@ function createSongRecommendationWidget(userid) {
   var request = new XMLHttpRequest()
 
   // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-  request.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/history/' + userid + '/0', true)
+  request.open('GET', '/api/tracks/history/' + userid + '/0', true)
 
   request.onload = function() {
     var alldata = JSON.parse(this.response)
@@ -78,8 +78,8 @@ function showSong(clickevent) {
 
   var request = new XMLHttpRequest()
 
-  request.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/recommendation/' + userid + '/' + songid + '/0.0/0.0', true)
-  // http://pse-ssh.diallom.com:5000/api/tracks/recommendation/snipy12/0LtOwyZoSNZKJWHqjzADpW/0.0/0.0
+  request.open('GET', '/api/tracks/recommendation/' + userid + '/' + songid + '/0.0/0.0', true)
+  // /api/tracks/recommendation/snipy12/0LtOwyZoSNZKJWHqjzADpW/0.0/0.0
   request.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource

@@ -75,6 +75,7 @@ def recommend_input(tracks, userid, target=(0.0, 0.0), n=5):
         [{'songid': actual song id, excitedness: actual excitedness, happiness: actual happiness}].
     """
     access_token = spotify.get_access_token(User.get_refresh_token(userid))
+
     return find_song_recommendations(access_token, tracks, target, n, _get_parameter_string())
 
 
@@ -136,4 +137,5 @@ def find_song_recommendations(access_token, tracks, target, n, params):
     recommendations = {song['id']: {'name': song['name']} for song in song_recommendation}
 
     moods = get_features_moods(recommendations)
+
     return order_songs(moods, target, n)

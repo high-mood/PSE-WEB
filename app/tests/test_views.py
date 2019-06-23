@@ -1,6 +1,7 @@
 import pytest
 
 from app import app
+from app.utils import models
 
 
 class ConfigException(Exception):
@@ -23,7 +24,7 @@ def test_main_page(client):
 def test_user_page(client):
     with client.session_transaction() as sess:
         sess['json_info'] = {'id': "1115081075",
-                             'refresh_token': "AQDMxiy5GuPy55xDpV60tzUpUu06GZKGLRZMKu8gIdORUoSPFPQJ1N-qwudJC_yoIeX_xLbK8iNb7rE3vy9T1DmFiAoaV_-5qLx5hzA1BmcJ0RNAW4WhgC-ROZs4CIe_15vWUA",
+                             'refresh_token': models.User.get_refresh_token('1115081075'),
                              'display_name': "Test Mood"}
     rv = client.get('/')
 

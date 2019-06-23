@@ -12,7 +12,8 @@ if __name__ == "__main__":
     all_values = [data['values'] for data in all_data]
     flattened_data = [x for sublist in all_values for x in sublist]
     data = [x[1] for x in flattened_data]
-    types = ["acousticness", "danceability", "duration_ms", "energy", "instrumentalness", "key", "liveness", "loudness", "mode", "songid", "speechiness", "tempo", "time_signature", "valence"]
+    types = ["acousticness", "danceability", "duration_ms", "energy", "instrumentalness", "key", "liveness", "loudness",
+             "mode", "songid", "speechiness", "tempo", "time_signature", "valence"]
     features = db.session.query(Song).filter(Song.songid.in_(data)).all()
     tracks = []
     for f in features:
@@ -44,7 +45,7 @@ if __name__ == "__main__":
     # new_songs = list(set(data_songids) - set(songids))
 
     for data in moods:
-            data['response_count'] = 0
-            data['response_excitedness'] = 0.0
-            data['response_happiness'] = 0.0
-            Songmood.create_if_not_exist(data)
+        data['response_count'] = 0
+        data['response_excitedness'] = 0.0
+        data['response_happiness'] = 0.0
+        Songmood.create_if_not_exist(data)

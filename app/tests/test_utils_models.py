@@ -1,7 +1,6 @@
-import pytest
 import unittest
 
-from app.utils.models import User, Song, Artist, Songmood, SongArtist
+from app.utils import models
 from app.tests.presets import UseTestSqlDB
 
 from datetime import datetime
@@ -19,18 +18,18 @@ class TestUsers(UseTestSqlDB, unittest.TestCase):
                  'user_is_active': True}
 
     def test_add_user(self):
-        User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
+        models.User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
 
-        self.assertIn(self.user_info['id'], User.get_all_users())
+        self.assertIn(self.user_info['id'], models.User.get_all_users())
 
     def test_add_user_again(self):
-        User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
+        models.User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
 
-        self.assertEqual(User.get_all_tokes(), [self.user_info['refresh_token']])
-        self.assertEqual(User.get_all_users(), [self.user_info['id']])
+        self.assertEqual(models.User.get_all_tokes(), [self.user_info['refresh_token']])
+        self.assertEqual(models.User.get_all_users(), [self.user_info['id']])
 
     def test_refresh_token(self):
-        self.assertEqual(User.get_refresh_token(self.user_info['id']), self.user_info['refresh_token'])
+        self.assertEqual(models.User.get_refresh_token(self.user_info['id']), self.user_info['refresh_token'])
 
 
 class TestSongs(UseTestSqlDB, unittest.TestCase):
@@ -70,21 +69,21 @@ class TestSongs(UseTestSqlDB, unittest.TestCase):
         return sql_dict
 
     def test_add_song(self):
-        Song.create_if_not_exist(self.song_info)
-        self.assertEqual(Song.get_song_name(self.song_info['songid']), self.song_info['name'])
+        models.Song.create_if_not_exist(self.song_info)
+        self.assertEqual(models.Song.get_song_name(self.song_info['songid']), self.song_info['name'])
 
-        Artist.create_if_not_exist(self.artist_info)
+        models.Artist.create_if_not_exist(self.artist_info)
 
-        Songmood.create_if_not_exist(self.mood_info)
+        models.Songmood.create_if_not_exist(self.mood_info)
         moods = filter(lambda row: row.songid == self.song_info['songid'],
-                       Songmood.get_moods([self.mood_info['songid']]))
+                       models.Songmood.get_moods([self.mood_info['songid']]))
         self.assertDictEqual(self._row_to_dict(next(moods)), self.mood_info)
 
         song_artist = {'songid': self.song_info['songid'],
                        'artistid': self.artist_info['artistid']}
-        SongArtist.create_if_not_exist(song_artist)
+        models.SongArtist.create_if_not_exist(song_artist)
 
     def test_update_mood(self):
-        Songmood.update_response_mood(self.song_info['songid'], 5.0, 5.0)
-        self.assertAlmostEqual(Songmood.get_moods([self.mood_info['songid']])[0].response_excitedness, 9.7, delta=0.1)
-        self.assertAlmostEqual(Songmood.get_moods([self.mood_info['songid']])[0].response_happiness, 9.7, delta=0.1)
+        models.Songmood.update_response_mood(self.song_info['songid'], 5.0, 5.0)
+        self.assertAlmostEqual(models.Songmood.get_moods([self.mood_info['songid']])[0].response_excitedness, 9.7, delta=0.1)
+        self.assertAlmostEqual(models.Songmood.get_moods([self.mood_info['songid']])[0].response_happiness, 9.7, delta=0.1)
