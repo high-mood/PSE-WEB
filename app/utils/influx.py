@@ -47,7 +47,7 @@ def get_songs(client, userid, limit=None, duration=None):
     :param duration: Limits the time frame from where the songs are returned.
     :return: All songs listened to by the user.
     """
-    if limit is 0:
+    if limit == 0:
         limit = None
 
     filters = " order by time desc"

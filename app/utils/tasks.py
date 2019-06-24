@@ -193,6 +193,10 @@ def get_last_n_minutes(duration, userid):
 
 
 def update_songmoods(tracks_features):
+    """
+    Updates songmoods.
+    :param tracks_features: List of tracks features.
+    """
     songids = [track['songid'] for track in tracks_features]
     songmoods = Songmood.get_moods(songids)
     found_ids = [songmood.songid for songmood in songmoods]
