@@ -127,5 +127,5 @@ dmypy.json
 
 /config.py
 /config_database.py
+.DS_Store
 
-run.py
