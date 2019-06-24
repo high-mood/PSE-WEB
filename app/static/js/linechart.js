@@ -168,6 +168,7 @@ function createLineGraph(data, id) {
     .style("border-radius", "10px")
     
     d3.select("#tooltip").append("text").attr("id", "tooltiptext")
+        .style("color", "#000000")
     
     for (var key in dataset) {
         drawLine(svgId, dataset[key], key);
