@@ -1,19 +1,13 @@
 // Code basis by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
-
 // Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html
+
 var xScale, yScale, yScaleTempo;
 
 function createLineGraph(data, id) {
 
 //    console.log(data);
 
-
-
-    // var datasetExcite = []
-    // var datasetHappy = []
-    // var meanExcite = []
-    // var meanHappy = []
-
+    // dataset, unused metrics are commented out
     var dataset = {
         // "energy": [],
         // "positivity": [],
@@ -31,51 +25,26 @@ function createLineGraph(data, id) {
         "valence": [],
     }
 
-    // number of data points
-    
-    // for (var i in d3.range(n)) {
-        //     dataset.push('y': data.songs[i].excitedness)
-        //     // datasetHappy.push({'y': data.songs[i].happiness})
-        //     // meanExcite.push({'y': data['mean_excitedness']})
-        //     // meanHappy.push({'y': data['mean_happiness']})
-        // }
-
+    // fill dataset with usable d3 data
     for (var key in dataset) {
         var value = dataset[key]
-
         for (var i in d3.range(data.metric_over_time.length)) {
             value.push({'y': data.metric_over_time[i][key]})
         }
     }
 
-    // console.log(dataset)
-
-    // Object.keys(dataset).forEach(function(key) {
-    //     console.log(key);
-    // });
-
-    // console.log(meanExcite)
-
-    // set the dimensions and margins of the graph
+    // dimensions and margins of graph
     var margin = {top: 20, right: 80, bottom: 30, left: 30};
     var width = 600 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
-    // 5. X scale will use the index of our data
+    // scales
     xScale = d3.scaleLinear()
-        .domain([data.metric_over_time.length - 1, 0]) // input
+        .domain([data.metric_over_time.length - 1, 0])
         .range([0, width])
-
-
-    // 6. Y scale will use the randomly generate number
     yScale = d3.scaleLinear()
-        .domain([0, 1]) // input
-        .range([height, 0]); // output
-
-
-        // console.log("d3 max: ")
-        // console.log((d3.max(dataset["tempo"])["y"]))
-
+        .domain([0, 1])
+        .range([height, 0]);
 
     // array to calculate max and min tempo for scale
     tempoArray = []
@@ -89,7 +58,7 @@ function createLineGraph(data, id) {
         .domain([tempoFloor, d3.max(tempoArray)])
         .range([height, 0]); // output
 
-
+    // make svg and g html element
     var svgId = "lineSvg"
     var svg = d3.select("#" + id).append("svg")
             .attr("width", "100%")
@@ -99,213 +68,77 @@ function createLineGraph(data, id) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("id", svgId);
 
-    // 3. Call the x axis in a group tag
+    // create axes
     xAxis = svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
         .attr("transform", "translate(0," + height + ")")
-        // .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
         .call(d3.axisBottom(xScale)
         .ticks(10))
-
-    // 4. Call the y axis in a group tag
     svg.append("g")
         .attr("class", "y axis")
-        // .attr("transform", "translate(" + width / 2 + ", 0)")
-        .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+        .call(d3.axisLeft(yScale));
 
 
-    // 4. Call the tempo y axis in a group tag
+    // call tempo y axis
     svg.append("g")
         .attr("class", "y axis tempo")
         .attr("transform", "translate(" + width + ", 0)")
-        .call(d3.axisRight(yScaleTempo) // Create an axis component with d3.axisLeft
+        .call(d3.axisRight(yScaleTempo)
         .ticks(10));
-
-    var lineExcite = d3.line()
-    .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
-    .curve(d3.curveMonotoneX) // apply smoothing to the line
-
-    var lineHappy = d3.line()
-    .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-    .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
-    .curve(d3.curveMonotoneX) // apply smoothing to the line
-
-    // svg.append("path")
-    //     .data([datasetExcite])
-    //     .attr("class", "line")
-    //     .attr("id", "exciteLine")
-    //     .attr("d", lineExcite);
-
-    // svg.append("path")
-    //     .data([datasetHappy])
-    //     .attr("class", "line")
-    //     .attr("id", "happyLine")
-    //     .attr("d", lineHappy);
-
-    // svg.append("path")
-    //     .data([meanExcite])
-    //     .attr("class", "line")
-    //     .attr("id", "exciteMean")
-    //     .attr("d", lineExcite);
-
-    // svg.append("path")
-    //     .data([meanHappy])
-    //     .attr("class", "line")
-    //     .attr("id", "happyMean")
-    //     .attr("d", lineHappy);
-
-
     
-    
-    
-    
-    // Handmade legend
-    // var legendY = 150
-    // svg.append("circle").attr("cx",width+30).attr("cy",legendY).attr("r", 6).attr("id", "exciteLegend")
-    // svg.append("circle").attr("cx",width+30).attr("cy",legendY + 30).attr("r", 6).attr("id", "happyLegend")
-    // svg.append("text").attr("x", width+50).attr("y", legendY).text("Excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    // svg.append("text").attr("x", width+50).attr("y", legendY + 30).text("Happiness").style("font-size", "15px").attr("alignment-baseline","middle")
-    // svg.append("circle").attr("cx",width+30).attr("cy",legendY + 60).attr("r", 6).attr("id", "exciteLegendMean")
-    // svg.append("circle").attr("cx",width+30).attr("cy",legendY + 90).attr("r", 6).attr("id", "happyLegendMean")
-    // svg.append("text").attr("x", width+50).attr("y", legendY + 60).text("Mean excitedness").style("font-size", "15px").attr("alignment-baseline","middle")
-    // svg.append("text").attr("x", width+50).attr("y", legendY + 90).text("Mean happiness").style("font-size", "15px").attr("alignment-baseline","middle")
-    
-    
-    
-    
-    
+    // make tooltip
     var tooltip = document.createElement("div")
-    
     tooltip.setAttribute("id", "tooltip")
-    
     document.getElementById("body").appendChild(tooltip)
     
-    
+    // set proper style for tooltip
     d3.select("#tooltip")
-    // .attr("class", "tooltip")
-    .style("width", "160px")
-    .style("height", "30px")
-    .style("position", "fixed")
-    .style("background-color", "steelblue")
-    .style("top", "0px")
-    .style("left", "0px")
-    .style("opacity", 0)
-    .style("border-radius", "10px")
+        .style("width", "160px")
+        .style("height", "30px")
+        .style("position", "fixed")
+        .style("background-color", "steelblue")
+        .style("top", "0px")
+        .style("left", "0px")
+        .style("opacity", 0)
+        .style("border-radius", "10px")
     
     d3.select("#tooltip").append("text").attr("id", "tooltiptext")
         .style("color", "#000000")
     
+    // draw all lines
     for (var key in dataset) {
         drawLine(svgId, dataset[key], key);
-        // hideLine(key)
     }
 
+    // show only startLines at page load
     var startLines = ["danceability", "energy", "liveness"]
-
     startStates(startLines)
-
-
-
-    // 12. Appends a circle for each datapoint 
-    // svg.selectAll(".excitedot")
-    // .data(datasetExcite)
-    // .enter().append("circle") // Uses the enter().append() method
-    // .attr("class", "excitedot") // Assign a class for styling
-    // .attr("cx", function(d, i) { return xScale(i) })
-    // .attr("cy", function(d) { return yScale(d.y) })
-    // .attr("r", 5)
-    // .on("mouseover", function(y, x) { 
-    //     // debugger;
-    //     var excitedness = Math.round(datasetExcite[x]['y'] * 100) / 100;
-    //     // console.log(happiness);
-    //     d3.select("#tooltip")
-    //         .transition()
-    //             .duration(200)
-    //             .style("opacity", 1)
-    //             .style("top", (event.clientY - 30) + "px")
-    //             .style("left", event.clientX + "px")
-    //             .style("background-color", "#ffab00")
-
-    //     d3.select("#tooltiptext")
-    //         .html("  excitedness: " + excitedness + "  ")
-    //     })
-    // .on("mouseout", function() {
-    //     d3.select("#tooltip")
-    //         .transition()
-    //             .duration(200)
-    //             .style("opacity", 0)
-    //     })
-
-
-    // svg.selectAll(".happydot")
-    // .data(datasetHappy)
-    // .enter().append("circle") // Uses the enter().append() method
-    // .attr("class", "happydot") // Assign a class for styling
-    // .attr("cx", function(d, i) { return xScale(i) })
-    // .attr("cy", function(d) { return yScale(d.y) })
-    // .attr("r", 5)
-    // .on("mouseover", function(y, x) { 
-    //     console.log(x)
-    //     // debugger;
-    //     var happiness = Math.round(datasetHappy[x]['y'] * 100) / 100;
-    //     // console.log(happiness);
-    //     d3.select("#tooltip")
-    //         .transition()
-    //             .duration(200)
-    //             .style("opacity", 1)
-    //             .style("top", (event.clientY - 30) + "px")
-    //             .style("left", event.clientX + "px")
-    //             .style("background-color", "steelblue")
-
-    //     d3.select("#tooltiptext")
-    //         .html("  happiness: " + happiness + "  ")
-    //     })
-    // .on("mouseout", function() {
-    //     d3.select("#tooltip")
-    //         .transition()
-    //             .duration(200)
-    //             .style("opacity", 0)
-    //     })
-
-        
-    // xAxis.selectAll(".tick")
-    // .each(function (d) {
-    //     if ( d === 0 ) {
-    //         this.remove();
-    //     }
-    // });
 }
 
 
 function drawLine(svgId, dataset, name) {
 
-    // console.log("Test")
-
+    // make correct d3 line generator
     var line;
     if (name == "tempo") {
         line = d3.line()
-            .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-            .y(function(d) { return yScaleTempo(d.y); }) // set the y values for the line generator
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleTempo(d.y); })
+            .curve(d3.curveMonotoneX)
+    }
+    else {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d.y); })
             .curve(d3.curveMonotoneX)
     }
 
-    else {
-        line = d3.line()
-            .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-            .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
-            .curve(d3.curveMonotoneX) // apply smoothing to the line
-    }
-
-
+    // give line color of corresponding button
     var svg = d3.select("#" + svgId);
-
     var color = d3.select("#" + name).style("background-color")
 
-    // console.log("color: ")
-    // console.log(color)
-
+    // draw lines
     svg.append("path")
         .data([dataset])
         .attr("class", "line")
@@ -316,7 +149,7 @@ function drawLine(svgId, dataset, name) {
         .style("stroke-width", 3)
 
 
-    // 12. Appends a circle for each datapoint 
+    // circles with mouse over functionality
     svg.selectAll("." + name + "dot")
     .data(dataset)
     .enter().append("circle")
@@ -332,9 +165,7 @@ function drawLine(svgId, dataset, name) {
     .attr("r", 3)
     .style("fill", color)
     .on("mouseover", function(y, x) { 
-        // debugger;
         var value = Math.round(dataset[x]['y'] * 100) / 100;
-        // console.log(happiness);
         d3.select("#tooltip")
             .transition()
                 .duration(200)
@@ -354,7 +185,7 @@ function drawLine(svgId, dataset, name) {
         })
 }
 
-
+// hides a given line
 function hideLine(name) {
     d3.select("#" + name + "line")
         .style("visibility", "hidden")
@@ -367,7 +198,7 @@ function hideLine(name) {
     }
 }
 
-
+// shows a given line
 function showLine(name) {
     d3.select("#" + name + "line")
         .style("visibility", "visible")
