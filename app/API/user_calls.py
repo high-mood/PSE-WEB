@@ -28,7 +28,7 @@ class User(Resource):
         """
         Obtain all of a user's account information.
         """
-        user = models.User.query.filter_by(userid=userid).first()
+        user = models.User.get_user(userid)
         if not user:
             api.abort(404, msg="userid not found")
 
@@ -85,9 +85,7 @@ class Mood(Resource):
             api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        client.switch_database('moods')
-        user_mood = client.query(
-            f'select excitedness, happiness, songcount from "{userid}"')
+        user_mood = influx.get_mood(client, userid)
 
         if user_mood:
             resultset = []
