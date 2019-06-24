@@ -5,7 +5,7 @@ var xScale, yScale, yScaleTempo;
 
 function createLineGraph(data, id) {
 
-   console.log(data);
+//    console.log(data);
 
 
 
@@ -75,9 +75,18 @@ function createLineGraph(data, id) {
 
         // console.log("d3 max: ")
         // console.log((d3.max(dataset["tempo"])["y"]))
+
+
+    // array to calculate max and min tempo for scale
+    tempoArray = []
+    for (var i in dataset["tempo"]) {
+        tempoArray.push(dataset["tempo"][i].y)
+    }
+    tempoFloor = Math.floor(d3.min(tempoArray) / 10) * 10
+
     // tempo scale
     yScaleTempo = d3.scaleLinear()
-        .domain([0, 160])
+        .domain([tempoFloor, d3.max(tempoArray)])
         .range([height, 0]); // output
 
 
