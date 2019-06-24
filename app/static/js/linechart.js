@@ -1,11 +1,11 @@
-// Code by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
+// Code basis by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
 
 // Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html
-var xScale, yScale;
+var xScale, yScale, yScaleTempo;
 
 function createLineGraph(data, id) {
 
-//    console.log(data);
+   console.log(data);
 
 
 
@@ -15,6 +15,8 @@ function createLineGraph(data, id) {
     // var meanHappy = []
 
     var dataset = {
+        // "energy": [],
+        // "positivity": [],
         "acousticness": [],
         "danceability": [],
         // "duration_ms": [],
@@ -55,7 +57,7 @@ function createLineGraph(data, id) {
     // console.log(meanExcite)
 
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 30, bottom: 30, left: 30};
+    var margin = {top: 20, right: 80, bottom: 30, left: 30};
     var width = 600 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
 
@@ -68,6 +70,14 @@ function createLineGraph(data, id) {
     // 6. Y scale will use the randomly generate number
     yScale = d3.scaleLinear()
         .domain([0, 1]) // input
+        .range([height, 0]); // output
+
+
+        // console.log("d3 max: ")
+        // console.log((d3.max(dataset["tempo"])["y"]))
+    // tempo scale
+    yScaleTempo = d3.scaleLinear()
+        .domain([0, 160])
         .range([height, 0]); // output
 
 
@@ -94,6 +104,14 @@ function createLineGraph(data, id) {
         .attr("class", "y axis")
         // .attr("transform", "translate(" + width / 2 + ", 0)")
         .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+
+    // 4. Call the tempo y axis in a group tag
+    svg.append("g")
+        .attr("class", "y axis tempo")
+        .attr("transform", "translate(" + width + ", 0)")
+        .call(d3.axisRight(yScaleTempo) // Create an axis component with d3.axisLeft
+        .ticks(10));
 
     var lineExcite = d3.line()
     .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
@@ -158,7 +176,7 @@ function createLineGraph(data, id) {
     
     d3.select("#tooltip")
     // .attr("class", "tooltip")
-    .style("width", "140px")
+    .style("width", "160px")
     .style("height", "30px")
     .style("position", "fixed")
     .style("background-color", "steelblue")
@@ -252,10 +270,20 @@ function drawLine(svgId, dataset, name) {
 
     // console.log("Test")
 
-    var line = d3.line()
-        .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-        .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
-        .curve(d3.curveMonotoneX) // apply smoothing to the line
+    var line;
+    if (name == "tempo") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+            .y(function(d) { return yScaleTempo(d.y); }) // set the y values for the line generator
+            .curve(d3.curveMonotoneX)
+    }
+
+    else {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+            .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
+            .curve(d3.curveMonotoneX) // apply smoothing to the line
+    }
 
 
     var svg = d3.select("#" + svgId);
@@ -281,7 +309,13 @@ function drawLine(svgId, dataset, name) {
     .enter().append("circle")
     .attr("class", name + "dot")
     .attr("cx", function(d, i) { return xScale(i) })
-    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("cy", function(d) {   if (name == "tempo") {
+                                    return yScaleTempo(d.y)
+                                } 
+                                else {
+                                    return yScale(d.y)
+                                }
+                            })
     .attr("r", 3)
     .style("fill", color)
     .on("mouseover", function(y, x) { 
