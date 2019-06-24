@@ -1,26 +1,3 @@
-var metrics = [];
-
-function add_metrics(id) {
-    metrics.push(document.getElementById(id).textContent);
-    return parse_metrics(id);
-}
-
-function remove_metrics(id) {
-    metrics.filter(function(ele){
-        return ele != value;
-    });
-    return parse_metrics(id);
-}
-
-function parse_metrics(id) {
-    var metricstring = "";
-    metrics.forEach(element => {
-        metricstring += element;
-    });
-
-    return metricstring;
-}
-
 function generateButtons(id) {
     metrics = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence'];
     colours = ['#ff8a80', '#ea80fc', '#8c9eff', '#80d8ff', '#a7ffeb', '#ccff90', '#ffff8d', '#ffd180', '#ff9e80'];
@@ -51,4 +28,18 @@ function press(id) {
         elem.style.opacity = 0.5;
         hideLine(id);
     }
+}
+
+function startStates(metrics, on) {
+    metrics.forEach(element => {
+        elem = document.getElementById(element);
+
+        if (on.includes(element)) {
+            elem.style.opacity = 1;
+            showLine(id);
+        } else {
+            elem.style.opacity = 0.5;
+            hideLine(id);    
+        }
+    });
 }
