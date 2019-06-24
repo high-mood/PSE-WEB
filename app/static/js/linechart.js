@@ -360,6 +360,11 @@ function hideLine(name) {
         .style("visibility", "hidden")
     d3.selectAll("." + name + "dot")
         .style("visibility", "hidden") 
+
+    if (name == "tempo") {
+        d3.select(".tempo.axis")
+            .style("visibility", "hidden")
+    }
 }
 
 
@@ -368,4 +373,9 @@ function showLine(name) {
         .style("visibility", "visible")
     d3.selectAll("." + name + "dot")
         .style("visibility", "visible")
+
+    if (name == "tempo") {
+        d3.select(".tempo.axis")
+            .style("visibility", "visible")
+    }
 }
