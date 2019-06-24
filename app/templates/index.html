@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8">
     {% if id %}
-        <title>{{ id }}'s mood</title>
+        <title>{{ text }}'s mood</title>
     {% else %}
         <title>Welcome to High Mood </title>
     {% endif %}
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+      <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/songMetric.css') }}">
@@ -78,7 +78,7 @@
     <!--Welcome for the page-->
     <div id="Welcome-User">
       {% if text %}
-        <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+          <h1 id="userwelcome" align="center">Welcome {{ text }} ({{ id }}), Here's your mood</h1>
         <p id="username" hidden>{{ id }}</p>
       {% endif %}
     </div>
@@ -150,8 +150,8 @@
       </svg>
     </div>
 
-    <div id="history">
-        <h4> Song history </h4>
+    <!-- <div id="history">
+        <h2> Song history </h2>
         <div class="scrollable">
             <ul>
                 {% for song in song_history %}
@@ -159,13 +159,13 @@
                 {% endfor %}
             </ul>
         </div>
-    </div>
+    </div> -->
 
-    <div class="divider"> <!------------------------------------------------------------------------------------------->
+    <!-- <div class="divider">
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
         <ellipse cx="50" cy="5" rx="45" ry=".1" fill="black"></ellipse>
       </svg>
-    </div>
+    </div> -->
 
     <div class="mainPage">
       <div id="Song-Recommendation">
@@ -183,7 +183,7 @@
       var request = new XMLHttpRequest()
 
       // request.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummydata.json', true)
-      request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/0', true)
+      request.open('GET', '/api/tracks/history/' + userid + '/0', true)
       request.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
@@ -198,9 +198,9 @@
           document.getElementsByClassName("radar")[0].onmouseout = resetRadarText;
 
           // Heatmap
-          createHeatmap("heatmap","A heatmap of the exitedness and happiness of your songs."
-                        ,-10,10,5,"exitedness",-10,10,5,"happiness"
-                        ,createHeatmapData(userdata, "name", "exitedness", "happiness"));
+          createHeatmap("heatmap","A heatmap of the excitedness and happiness of your songs."
+                        ,-10,10,5,"excitedness",-10,10,5,"happiness"
+                        ,createHeatmapData(userdata, "name", "excitedness", "happiness"));
           giveText(userdata, "heatmapText");
         }
         else {
@@ -214,7 +214,8 @@
       var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
       song_count = 50;
       // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-      linechartRequest.open('GET', 'http://localhost:5000/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
+      linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
+      linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + song_count, true)
       linechartRequest.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource

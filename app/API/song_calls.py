@@ -1,24 +1,18 @@
 from flask_restplus import Namespace, Resource, fields
-from app.utils.tasks import find_song_recommendations
-from app.utils import influx, models
-from app import app
+from app.utils import models
 
-import dateparser
-import datetime
-
-api = Namespace('songs', description='Information about songs', path="/songs")
+api = Namespace('songs', description='Song information', path="/songs")
 
 user_data = api.model("inserted_data", {
     "songid": fields.String,
     "excitedness": fields.Float,
     "happiness": fields.Float
-
 })
 
 
-@api.route('/feedback/')
-class Song(Resource):
-    """Add feedback for song"""
+@api.route('/mood/<string:userid>')
+class SongFeedback(Resource):
+    """ Add feedback for song. """
 
     @api.expect(user_data)
     def post(self):
