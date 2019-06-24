@@ -202,6 +202,10 @@ function createLineGraph(data, id) {
         // hideLine(key)
     }
 
+    var startLines = ["danceability", "energy", "liveness"]
+
+    startStates(startLines)
+
 
 
     // 12. Appends a circle for each datapoint 

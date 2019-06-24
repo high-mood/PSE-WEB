@@ -1,5 +1,5 @@
-metrics = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence'];
-colours = ['#ff8a80', '#ea80fc', '#8c9eff', '#80d8ff', '#a7ffeb', '#ccff90', '#ffff8d', '#ffd180', '#ff9e80'];
+var metricsList = ["acousticness", "danceability", "energy", "instrumentalness", "liveness", "loudness", "speechiness", "tempo", "valence"];
+var colours = ["#ff8a80", "#ea80fc", "#8c9eff", "#80d8ff", "#a7ffeb", "#ccff90", "#ffff8d", "#ffd180", "#ff9e80"];
 
 /** 
  * Generates a button for each metric given in the array.
@@ -7,9 +7,9 @@ colours = ['#ff8a80', '#ea80fc', '#8c9eff', '#80d8ff', '#a7ffeb', '#ccff90', '#f
  */
 function generateButtons(id) {
 
-    for (let i = 0; i < metrics.length; i++) {
-        spawnButton(metrics[i], id);
-        document.getElementById(metrics[i]).setAttribute("style", "background-color:" + colours[i]);
+    for (let i = 0; i < metricsList.length; i++) {
+        spawnButton(metricsList[i], id);
+        document.getElementById(metricsList[i]).setAttribute("style", "background-color:" + colours[i]);
     }
 }
 
@@ -46,22 +46,23 @@ function press(id) {
     }
 }
 
-/** startStates(metrics, on)
- * @param {array(string)}   on  A list of metrics of which the buttons have to be on.
+/** startStates(on)
+ * @param {array(string)}   on  A list of metricsList of which the buttons have to be on.
  * 
- * Given the list of metrics those specific buttons are "pressed",
+ * Given the list of metricsList those specific buttons are "pressed",
  * these buttons are shown in the "on"-state.
 */
 function startStates(on) {
-    metrics.forEach(element => {
-        elem = document.getElementById(element);
+   
+    for (let j = 0; j < metricsList.length; j++) {
+        elem = document.getElementById(metricsList[j]);
 
-        if (on.includes(element)) {
+        if (on.includes(metricsList[j])) {
             elem.style.opacity = 1;
-            showLine(id);
+            showLine(metricsList[j]);
         } else {
             elem.style.opacity = 0.5;
-            hideLine(id);    
+            hideLine(metricsList[j]);    
         }
-    });
+    }
 }
