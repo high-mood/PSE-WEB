@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8">
     {% if id %}
-        <title>{{ id }}'s mood</title>
+        <title>{{ text }}'s mood</title>
     {% else %}
         <title>Welcome to High Mood </title>
     {% endif %}
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+      <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/linechart.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/songMetric.css') }}">
@@ -78,7 +78,7 @@
     <!--Welcome for the page-->
     <div id="Welcome-User">
       {% if text %}
-        <h1 id="userwelcome" align="center">Welcome {{ text }}, Here's your mood</h1>
+          <h1 id="userwelcome" align="center">Welcome {{ text }} ({{ id }}), Here's your mood</h1>
         <p id="username" hidden>{{ id }}</p>
       {% endif %}
     </div>
