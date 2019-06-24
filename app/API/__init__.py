@@ -5,7 +5,7 @@ from app import app
 from .user_calls import api as user_name_space
 from .track_calls import api as track_name_space
 from .song_calls import api as song_name_space
-from .playlist import api as playlist_name_space
+from .playlist_calls import api as playlist_name_space
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
