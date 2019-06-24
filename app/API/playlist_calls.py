@@ -10,7 +10,7 @@ user_data = api.model("inserted_data", {
 
 
 @api.route('/list/')
-class Playlist(Resource):
+class PlaylistList(Resource):
     """Add feedback for song"""
 
     def get(self, userid):
