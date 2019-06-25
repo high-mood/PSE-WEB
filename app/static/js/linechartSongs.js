@@ -1,16 +1,16 @@
 // Code basis by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
 // Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html
 
-var xScale, yScale, yScaleTempo;
+var xScale, yScale, yScaleTempo, yScaleMoods;
 
 function createLineGraphSongs(data, id) {
 
-//    console.log(data);
+   console.log(data);
 
     // dataset, unused metrics are commented out
     var dataset = {
-        // "energy": [],
-        // "positivity": [],
+        "excitedness": [],
+        "happiness": [],
         "acousticness": [],
         "danceability": [],
         // "duration_ms": [],
@@ -56,6 +56,12 @@ function createLineGraphSongs(data, id) {
     // tempo scale
     yScaleTempo = d3.scaleLinear()
         .domain([tempoFloor, d3.max(tempoArray)])
+        .range([height, 0]); // output
+
+
+    // tempo scale
+    yScaleMoods = d3.scaleLinear()
+        .domain([-10, 10])
         .range([height, 0]); // output
 
     // make svg and g html element
@@ -137,6 +143,12 @@ function drawLine(svgId, dataset, name) {
             .y(function(d) { return yScaleTempo(d.y); })
             .curve(d3.curveMonotoneX)
     }
+    else if (name == "happiness" || name == "excitedness") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleMoods(d.y); })
+            .curve(d3.curveMonotoneX)
+    }
     else {
         line = d3.line()
             .x(function(d, i) { return xScale(i); })
@@ -167,7 +179,11 @@ function drawLine(svgId, dataset, name) {
     .attr("cx", function(d, i) { return xScale(i) })
     .attr("cy", function(d) {   if (name == "tempo") {
                                     return yScaleTempo(d.y)
-                                } 
+                                }
+                                else if (name == "happiness" || 
+                                         name == "excitedness") {
+                                    return yScaleMoods(d.y)
+                                }
                                 else {
                                     return yScale(d.y)
                                 }

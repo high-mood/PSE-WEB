@@ -1,5 +1,5 @@
-var metricsList = ["acousticness", "danceability", "energy", "instrumentalness", "liveness", "speechiness", "tempo", "valence"];
-var colours = ["#ff8a80", "#ea80fc", "#8c9eff", "#80d8ff", "#a7ffeb", "#ccff90", "#ffff8d", "#ffd180"];
+var metricsList = ["acousticness", "danceability", "energy", "instrumentalness", "liveness", "speechiness", "tempo", "valence", "excitedness", "happiness"];
+var colours = ["#ff8a80", "#ea80fc", "#8c9eff", "#80d8ff", "#a7ffeb", "#ccff90", "#ffff8d", "#ffd180", "#00ff00", "#0000ff"];
 
 /** 
  * Generates a button for each metric given in the array.

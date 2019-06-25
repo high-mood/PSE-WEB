@@ -1,7 +1,7 @@
 // Code basis by Gord Lea: https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
 // Legend code from https://www.d3-graph-gallery.com/graph/custom_legend.html
 
-var xScale, yScale, yScaleTempo;
+var xScale, yScale, yScaleTempo, yScaleMoods;
 
 function createLineGraphDays(data, id) {
 
@@ -10,13 +10,13 @@ function createLineGraphDays(data, id) {
     data.dates[2]["date"] = "2019-06-23"
     data.dates[3]["date"] = "2019-06-22"
     
-    // console.log(data);
+    console.log(data);
 
 
     // dataset, unused metrics are commented out
     var dataset = {
-        // "energy": [],
-        // "positivity": [],
+        "excitedness": [],
+        "happiness": [],
         "acousticness": [],
         "danceability": [],
         // "duration_ms": [],
@@ -80,6 +80,11 @@ function createLineGraphDays(data, id) {
     yScaleTempo = d3.scaleLinear()
         .domain([tempoFloor, d3.max(tempoArray)])
         .range([height, 0]); // output
+    
+        // tempo scale
+    yScaleMoods = d3.scaleLinear()
+        .domain([-10, 10])
+        .range([height, 0]); // output
 
     // make svg and g html element
     var svgId = "lineSvg"
@@ -113,6 +118,17 @@ function createLineGraphDays(data, id) {
                   "rotate(90) translate(" + height / 2 + ", -40)")
             .style("text-anchor", "middle")
             .text("tempo (BPM)")
+
+    // call moods y axis
+    svg.append("g")
+        .attr("class", "y axis moods")
+        .attr("transform", "translate(" + width + ", 0)")
+        .call(d3.axisRight(yScaleMoods).ticks(10))
+        .append("text")
+            .attr("transform",
+                  "rotate(90) translate(" + height / 2 + ", -40)")
+            .style("text-anchor", "middle")
+            .text("Moods")
     
     // make tooltip
     var tooltip = document.createElement("div")
@@ -156,6 +172,12 @@ function drawLine(svgId, dataset, name) {
             .y(function(d) { return yScaleTempo(d.y); })
             .curve(d3.curveMonotoneX)
     }
+    else if (name == "happiness" || name == "excitedness") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleMoods(d.y); })
+            .curve(d3.curveMonotoneX)
+    }
     else {
         line = d3.line()
             .x(function(d, i) { return xScale(i); })
@@ -187,6 +209,10 @@ function drawLine(svgId, dataset, name) {
     .attr("cy", function(d) {   if (name == "tempo") {
                                     return yScaleTempo(d.y)
                                 } 
+                                else if (name == "happiness" || 
+                                         name == "excitedness") {
+                                    return yScaleMoods(d.y)
+                                }
                                 else {
                                     return yScale(d.y)
                                 }
@@ -224,6 +250,9 @@ function hideLine(name) {
     if (name == "tempo") {
         d3.select(".tempo.axis")
             .style("visibility", "hidden")
+
+        d3.select(".moods.axis")
+            .style("visibility", "visible")
     }
 }
 
@@ -237,5 +266,11 @@ function showLine(name) {
     if (name == "tempo") {
         d3.select(".tempo.axis")
             .style("visibility", "visible")
+        d3.select(".moods.axis")
+            .style("visibility", "hidden")
     }
+    // if (name == "happiness" || name == "excitedness") {
+    //     d3.select(".moods.axis")
+    //         .style("visibility", "visible")
+    // }
 }
