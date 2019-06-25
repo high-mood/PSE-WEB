@@ -1,23 +1,17 @@
 language: python
 python:
     - "3.6"
-env:
-    - INFLUXDB_VER=1.7.4
 addons:
   apt:
     packages:
-    - wget
+    - influxdb
 before_install:
     - mv example_config.py config.py
 install:
     - pip install -r requirements.txt
     - pip install codecov
     - pip install pytest==3.6 pytest-cov
-    - mkdir -p "influxdb_install/${INFLUXDB_VER}"
-    - wget "https://dl.influxdata.com/influxdb/releases/influxdb_${INFLUXDB_VER}_amd64.deb"
-    - dpkg -x influxdb*.deb "influxdb_install/${INFLUXDB_VER}"
 script:
-    - export "INFLUXDB_PYTHON_INFLUXD_PATH=$(pwd)/influxdb_install/${INFLUXDB_VER}/usr/bin/influxd"
     - pytest --cov-report xml --cov=app -m "not integration_test"
 after_succes:
     - codecov
