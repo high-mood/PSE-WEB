@@ -32,12 +32,16 @@ class User(db.Model):
             db.session.commit()
 
     @staticmethod
-    def get_all_tokes():
-        return [r.refresh_token for r in db.session.query(User.refresh_token)]
+    def get_user(userid):
+        return User.query.filter_by(userid=userid).first()
 
     @staticmethod
-    def get_all_users():
+    def get_all_userids():
         return [r.userid for r in db.session.query(User.userid)]
+
+    @staticmethod
+    def get_all_tokes():
+        return [r.refresh_token for r in db.session.query(User.refresh_token)]
 
     @staticmethod
     def get_refresh_token(userid):
@@ -86,12 +90,30 @@ class Song(db.Model):
             db.session.commit()
 
     @staticmethod
-    def get_song_name(songid):
-        song = Song.query.filter_by(songid=songid).first()
-        if not song:
-            return None
+    def get_songs(songids):
+        return Song.query.filter(Song.songid.in_(songids)).all()
 
-        return song.name
+    @staticmethod
+    def get_song(songid):
+        return Song.query.filter_by(songid=songid).first()
+
+    @staticmethod
+    def get_song_name(songid):
+        return Song.get_song(songid).name
+
+    @staticmethod
+    def get_songs_with_mood(songids):
+        return db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(
+            Song.songid.in_(songids)).all()
+
+    @staticmethod
+    def get_all_songs_with_mood_if_responses():
+        return db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(
+            Songmood.response_count > 0).all()
+
+    @staticmethod
+    def get_all_songs_with_mood():
+        return db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).all()
 
 
 class Artist(db.Model):
@@ -139,8 +161,7 @@ class Songmood(db.Model):
 
     @staticmethod
     def get_moods(songids):
-        songmoods = db.session.query(Songmood).filter(Songmood.songid.in_(songids)).all()
-        return songmoods
+        return Songmood.query.filter(Songmood.songid.in_(songids)).all()
 
     @staticmethod
     def update_response_mood(songid, user_excitedness, user_happiness):
