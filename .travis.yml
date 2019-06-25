@@ -1,0 +1,14 @@
+language: python
+python:
+    - "3.6"
+install:
+    - pip install -r requirements.txt
+    - pip install codecov
+    - pip install pytest==3.6 pytest-cov
+script:
+    - pytest --cov-report xml --cov=app
+after_succes:
+    - codecov
+branches:
+  only:
+  - master
