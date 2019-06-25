@@ -50,11 +50,12 @@ def get_songs(client, userid, limit=None, duration=None):
     if limit == 0:
         limit = None
 
-    filters = " order by time desc"
-    if limit:
-        filters += f" limit {limit}"
+    filters = ""
     if duration:
         filters += f" where time > now()-{duration}"
+    filters += " order by time desc"
+    if limit:
+        filters += f" limit {limit}"
     result = client.query(f'select songid from "{userid}"{filters}')
 
     if not result:
