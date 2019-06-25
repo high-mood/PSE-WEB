@@ -10,7 +10,7 @@ function createLineGraphDays(data, id) {
     data.dates[2]["date"] = "2019-06-23"
     data.dates[3]["date"] = "2019-06-22"
     
-    console.log(data);
+    // console.log(data);
 
 
     // dataset, unused metrics are commented out
@@ -53,7 +53,7 @@ function createLineGraphDays(data, id) {
     var parsedMinDate = parseTime(minDate)
     var parsedMaxDate = parseTime(maxDate)
 
-    console.log(parsedMinDate)
+    // console.log(parsedMinDate)
 
     // scales
     xScaleTime = d3.scaleTime()
@@ -142,7 +142,7 @@ function createLineGraphDays(data, id) {
 
 function drawLine(svgId, dataset, name) {
 
-    console.log(dataset)
+    // console.log(dataset)
 
     // make correct d3 line generator
     var line;
