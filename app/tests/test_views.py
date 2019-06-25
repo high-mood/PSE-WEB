@@ -4,10 +4,6 @@ from app import app
 from app.utils import models
 
 
-class ConfigException(Exception):
-    pass
-
-
 @pytest.fixture
 def client():
     client = app.test_client()
@@ -16,11 +12,13 @@ def client():
     yield client
 
 
+@pytest.mark.integration_test
 def test_main_page(client):
     rv = client.get('/')
     assert b"Welcome to Highmood" in rv.data
 
 
+@pytest.mark.integration_test
 def test_user_page(client):
     with client.session_transaction() as sess:
         sess['json_info'] = {'id': "1115081075",
@@ -28,4 +26,4 @@ def test_user_page(client):
                              'display_name': "Test Mood"}
     rv = client.get('/')
 
-    assert b"Welcome Test Mood, Here's your mood" in rv.data
+    assert b"Welcome Test Mood (1115081075), Here's your mood" in rv.data
