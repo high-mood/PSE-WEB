@@ -142,7 +142,7 @@ def update_user_tracks(access_token):
     if tracks:
         update_songmoods(tracks_features)
         client.write_points(tracks)
-        print(f"[{current_time}] Succesfully stored the data for '{user_data['display_name']}'")
+        print(f"[{current_time}] Successfully stored the data for '{user_data['display_name']}'")
     else:
         print(f"[{current_time}] Could not find any tracks for '{user_data['display_name']}', skipping",
               file=sys.stderr)
@@ -157,18 +157,15 @@ def get_last_n_minutes(duration, userid):
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
     client.switch_database('songs')
 
-    song_history = client.query(f'select songid from \"{userid}\" where time > now()-{duration}').raw
+    song_history = influx.get_songs(client, userid, duration=duration)
 
     current_time = datetime.now().strftime("%H:%M:%S")
 
-    if 'series' not in song_history:
+    if not song_history:
         print(f'[{current_time}] no recent history found for {userid} in the last {duration}')
         return
-    else:
-        song_history = song_history['series'][0]['values']
 
-    _, songids = list(zip(*song_history))
-    moods = Songmood.get_moods(songids)
+    moods = Songmood.get_moods([song['songid'] for song in song_history])
 
     if not moods:
         print(f'[{current_time}] no moods found for {userid}')
@@ -196,8 +193,12 @@ def get_last_n_minutes(duration, userid):
 
 
 def update_songmoods(tracks_features):
+    """
+    Updates songmoods.
+    :param tracks_features: List of tracks features.
+    """
     songids = [track['songid'] for track in tracks_features]
-    songmoods = db.session.query(Songmood).filter(Songmood.songid.in_(songids)).all()
+    songmoods = Songmood.get_moods(songids)
     found_ids = [songmood.songid for songmood in songmoods]
     analysis_tracks = [track for track in tracks_features if track['songid'] not in found_ids]
 
@@ -217,7 +218,7 @@ def get_features_moods(tracks):
     :return: list of dictionaries containing features and mood per song.
     """
     update_song_features(tracks)
-    songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
+    songs = Song.get_songs(tracks.keys())
     tracks_features = []
     for song in songs:
         tracks_features.append({
@@ -246,13 +247,12 @@ def get_features_moods(tracks):
 def link_features_mood(tracks=None, get_responses=False):
     """Link features and moods for tracks or all tracks in db if tracks=none."""
     if tracks:
-        results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(
-            Song.songid.in_((tracks.keys()))).all()
+        results = Song.get_songs_with_mood(tracks.keys())
     elif get_responses:
-        results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(
-            Songmood.response_count > 0).all()
+        results = Song.get_all_songs_with_mood_if_responses()
     else:
-        results = db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid)
+        results = Song.get_all_songs_with_mood()
+
     features_moods = []
     for mood, song in results:
         features_moods.append({
@@ -276,6 +276,7 @@ def link_features_mood(tracks=None, get_responses=False):
             'valence': song.valence,
             'tempo': song.tempo
         })
+
     return features_moods
 
 
@@ -284,7 +285,7 @@ def update_song_features(tracks):
     Update the song features for the given tracks.
     :param tracks: dict of tracks formatted as: {'songid': {'name': 'actual song name'}}
     """
-    songs = db.session.query(Song).filter(Song.songid.in_((tracks.keys()))).all()
+    songs = Song.get_songs(tracks.keys())
     found_ids = [song.songid for song in songs]
     not_found_ids = [song_id for song_id in tracks.keys() if song_id not in found_ids]
     new_tracks = {}

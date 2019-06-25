@@ -109,11 +109,5 @@ k3_album = [
 class TestSongs(UseTestInfluxDB, unittest.TestCase):
     populate_influx_with = k3_album
 
-    def test_total_time_spent(self):
-        self.assertEqual(influx.total_time_spent(self.cli, 'test_user')[1], 2076000)
-
-    def test_get_genres(self):
-        self.assertEqual(influx.get_top_genres(self.cli, 'test_user', 1), ["belgian pop"])
-
     def test_get_top_songs(self):
-        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), [("De Wereld Van K3", 2)])
+        self.assertEqual(influx.get_top_songs(self.cli, 'test_user', 1), [("035czDmDakmsSlElgid5d9", 2)])

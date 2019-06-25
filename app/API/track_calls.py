@@ -10,18 +10,14 @@ api = Namespace('tracks', description='Information about tracks (over time)', pa
 
 def get_history(userid, song_count, return_songids=False, calc_mood=True):
     """Get the latest song_count tracks for userid."""
-    querycount = 3 * song_count
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
 
-    if song_count == 0:
-        recent_songs = client.query(f'select songid from "{userid}" order by time desc')
-    else:
-        recent_songs = client.query(f'select songid from "{userid}" order by time desc limit {querycount}')
+    recent_songs = influx.get_songs(client, userid, song_count)
 
     if recent_songs:
         history = []
-        recent_song_list = list(recent_songs.get_points(measurement=userid))
-        songids = list(set([song['songid'] for song in recent_song_list]))
+        # Remove duplicates songs
+        songids = list(set([song['songid'] for song in recent_songs]))
         songids = songids[:song_count] if song_count > 0 else songids
         songmoods = models.Songmood.get_moods(songids)
         excitedness = 0
@@ -33,19 +29,24 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
                 count += 1 if count != 1 else 0
+
             if not return_songids:
                 song = {'songid': songmood.songid,
                         'excitedness': songmood.excitedness,
                         'happiness': songmood.happiness,
-                        'time': [song['time'] for song in recent_song_list][0],
+                        'time': [song['time'] for song in recent_songs][0],
                         'name': models.Song.get_song_name(songmood.songid)}
                 history.append(song)
+
         if calc_mood:
             excitedness /= count
             happiness /= count
+
         if return_songids:
             return excitedness, happiness, songids
+
         return excitedness, happiness, history
+
     return None, None, None
 
 
@@ -118,7 +119,9 @@ metrics = api.model('Metric over time', {
         'mode': fields.Float,
         'speechiness': fields.Float,
         'tempo': fields.Float,
-        'valence': fields.Float
+        'valence': fields.Float,
+        'excitedness': fields.Float,
+        'happiness': fields.Float
     }))
 })
 
@@ -135,13 +138,18 @@ class Metric(Resource):
         _, _, songids = get_history(userid, song_count, return_songids=True, calc_mood=False)
 
         if songids:
-            songs = db.session.query(models.Song).filter(models.Song.songid.in_(songids))
+            songs = models.Song.get_songs_with_mood(songids)
             songs_features = []
-            for song in songs:
+
+            for song, songmood in songs:
                 features = song.__dict__
-                songs_features.append(features)
+                for key in songmood.__dict__.keys():
+                    features[key] = songmood.__dict__[key]
+                songs_features.append(song.__dict__)
+
             if song_count != 0:
                 songs_features = songs_features[:song_count]
+
             return {
                 'userid': userid,
                 'metric_over_time': songs_features
@@ -166,17 +174,16 @@ class TopSongs(Resource):
     def get(self, userid, count):
         """Get the top N genres of the user."""
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        recent_songs = client.query(f'select songid from "{userid}" order by time desc')
+
+        recent_songs = influx.get_songs(client, userid)
+
         if not recent_songs:
-            print('no history found')
-            return {
-                'userid': userid,
-                'songs': []
-            }
-        recent_song_list = list(recent_songs.get_points(measurement=userid))
-        songids = [song['songid'] for song in recent_song_list]
-        songdata = db.session.query(models.Song).filter(models.Song.songid.in_(songids)).all()
-        songs = {song.songid: song.name for song in songdata}
+            api.abort(404, message=f"No history found for '{userid}'")
+
+        songids = [song['songid'] for song in recent_songs]
+        song_data = models.Song.get_songs(songids)
+
+        songs = {song.songid: song.name for song in song_data}
         counted_songs = sorted([(songs[songid], songid, songids.count(songid)) for songid in list(set(songids))],
                                key=lambda val: val[2], reverse=True)
         top_x = counted_songs[:int(count)]
