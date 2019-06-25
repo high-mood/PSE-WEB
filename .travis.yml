@@ -1,17 +1,21 @@
 language: python
 python:
     - "3.6"
+sudo: enabled
 addons:
   apt:
     packages:
-    - influxdb
+    - wget
 before_install:
     - mv example_config.py config.py
 install:
     - pip install -r requirements.txt
     - pip install codecov
     - pip install pytest==3.6 pytest-cov
+    - wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+    - sudo apt-get update && sudo apt-get install influxdb
 script:
+    - sudo service influxdb start
     - pytest --cov-report xml --cov=app -m "not integration_test"
 after_succes:
     - codecov
