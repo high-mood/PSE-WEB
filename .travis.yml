@@ -19,7 +19,7 @@ install:
     - if [ -n "${INFLUXDB_VER}" ] ; then dpkg -x influxdb*.deb "influxdb_install/${INFLUXDB_VER}" ; fi
 script:
     - export "INFLUXDB_PYTHON_INFLUXD_PATH=$(pwd)/influxdb_install/${INFLUXDB_VER}/usr/bin/influxd"
-    - influxd
+    - ${INFLUXDB_PYTHON_INFLUXD_PATH}
     - pytest --cov-report xml --cov=app -m "not integration_test"
 after_succes:
     - codecov
