@@ -151,52 +151,6 @@ def valid_hour(time, start_hour, end_hour):
     return False
 
 
-# nEW APIS from here
-@app.route("/whatever")
-def test():
-    userid = "snipy12"
-    start = 8
-    end = 8
-
-    client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-    songs = influx.get_songs(client, userid)
-    relevantSongs = [val for val in songs if valid_hour(val['time'], start, end)]
-    resultDict = defaultdict(list)
-    for song in relevantSongs:
-        mood_time = song['time'].split(".")[0]
-        mood_time = datetime.datetime.strptime(mood_time[:-1], '%Y-%m-%dT%H:%M:%S')
-        mood_hour = mood_time.hour
-
-        if start <= mood_hour <= end:
-            resultDict[mood_hour].append(song['songid'])
-
-    results = []
-    for time,songid_list in resultDict.items():
-        songs = models.Song.get_songs_with_mood(songid_list)
-
-        tempresults = []
-        for song in songs:
-            temp1 = ((song[0].__dict__))
-            temp2 = ((song[1].__dict__))
-            combineddict = {**temp1, **temp2}
-            combineddict.pop("name")
-            combineddict.pop("_sa_instance_state")
-            combineddict.pop("songid")
-            tempresults.append(combineddict)
-
-        count = len(tempresults)
-        A = Counter(tempresults.pop(0))
-        for B in tempresults:
-            B = Counter(B)
-            A = A+B
-        for key, value in A.items():
-            A[key] = value / count
-        A['hour'] = time
-        results.append(A)
-    return results
-
-
-
 @api.route('/mood/hourly/<string:userid>/<int:start>/<int:end>')
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
@@ -230,6 +184,7 @@ VOOR DE GEHELE TIMEFRAME DIE IS OPGEGEVEN EN DAN PER UUR
             "valence": fields.Float
         }))
     })
+
     @api.marshal_with(hourly_mood, envelope='resource')
     # ALL ZERO PADDED TODO DOCUMENT
     def get(self=None, userid="snipy12", start=3, end=24, endoftime=False):
@@ -245,7 +200,6 @@ VOOR DE GEHELE TIMEFRAME DIE IS OPGEGEVEN EN DAN PER UUR
 
         if end > 24 or end < 1:
             api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
-
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         songs = influx.get_songs(client, userid)
@@ -288,7 +242,7 @@ VOOR DE GEHELE TIMEFRAME DIE IS OPGEGEVEN EN DAN PER UUR
                         A[key] = 0
                 A['hour'] = time
                 results.append(A)
-            return {"userid":userid,
+            return {"userid": userid,
                     "hours": results}
 
         else:
