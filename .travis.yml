@@ -1,6 +1,8 @@
 language: python
 python:
     - "3.6"
+before_install:
+    - mv example_config.py config.py
 install:
     - pip install -r requirements.txt
     - pip install codecov
