@@ -29,6 +29,8 @@ class PlaylistList(Resource):
     @api.marshal_with(playlists, envelope='resource')
     def get(self, userid):
         """Get playlist """
+        # TODO You should just call the spotify api!
+        api.abort(403, message=f"Just call the Spotify API")
         playlists = spotify.get_playlists(userid)
         return {
             'userid': userid,
