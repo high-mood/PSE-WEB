@@ -4,7 +4,7 @@ python:
 sudo: enabled
 before_install:
     - mv example_config.py config.py
-    - apt install influxdb
+    - sudo apt install influxdb
 install:
     - pip install -r requirements.txt
     - pip install codecov
