@@ -83,14 +83,19 @@ function createLineGraphSongs(data, id) {
     svg.append("g")
         .attr("class", "y axis")
         .call(d3.axisLeft(yScale));
+        
 
 
     // call tempo y axis
     svg.append("g")
         .attr("class", "y axis tempo")
         .attr("transform", "translate(" + width + ", 0)")
-        .call(d3.axisRight(yScaleTempo)
-        .ticks(10));
+        .call(d3.axisRight(yScaleTempo).ticks(10))
+        .append("text")
+        .attr("transform",
+              "rotate(90) translate(" + height / 2 + ", -40)")
+        .style("text-anchor", "middle")
+        .text("tempo (BPM)")
     
     // make tooltip
     var tooltip = document.createElement("div")
