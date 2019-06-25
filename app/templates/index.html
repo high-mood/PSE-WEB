@@ -28,7 +28,10 @@
     <script src="{{ url_for('static',filename='js/mainPage.js') }}"></script>
 
     <!-- lineChart-->
-    <script src="{{ url_for('static',filename='js/linechart.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/linechartSongs.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/linechartDays.js') }}"></script>
+    
+    <script src="{{ url_for('static',filename='js/api_days_dummy.json') }}"></script>
 
     <!-- Song Recommendation-->
     <script src="{{ url_for('static',filename='js/songrecommendation.js') }}"></script>
@@ -209,13 +212,37 @@
       }
       request.send()
 
+      // var linechartRequest= new XMLHttpRequest()
+
+      // var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
+      // song_count = 50;
+      // // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
+      // linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
+      // linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + song_count, true)
+      // linechartRequest.onload = function() {
+      //   var alldata = JSON.parse(this.response)
+      //   var userdata = alldata.resource
+      //   console.log(userdata)
+
+      //   if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
+      //     // lineGraph
+      //     createLineGraphSongs(userdata,"lineGraph");
+      //     giveText(userdata,"lineGraphText");
+      //   }
+      //   else {
+      //     document.getElementById("userwelcome").innerHTML = "Error retrieving data!"
+      //   }
+      // }
+      // linechartRequest.send()
+
+
       var linechartRequest= new XMLHttpRequest()
 
       var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
       song_count = 50;
-      // linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/dummysonghistory.json', true)
-      linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
-      linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + song_count, true)
+      linechartRequest.open('GET', 'https://cors-anywhere.herokuapp.com/http://randomelements.nl/highmood/data/api_days_dummy.json', true)
+      // linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + metrics + '/' + song_count, true)
+      // linechartRequest.open('GET', '/api/tracks/metrics/' + userid + '/' + song_count, true)
       linechartRequest.onload = function() {
         var alldata = JSON.parse(this.response)
         var userdata = alldata.resource
@@ -223,7 +250,7 @@
 
         if (linechartRequest.status >= 200 && linechartRequest.status < 400) {
           // lineGraph
-          createLineGraph(userdata,"lineGraph");
+          createLineGraphDays(userdata,"lineGraph");
           giveText(userdata,"lineGraphText");
         }
         else {
@@ -231,6 +258,8 @@
         }
       }
       linechartRequest.send()
+
+
 
 
       createSongRecommendationWidget(userid);

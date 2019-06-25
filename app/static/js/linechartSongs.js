@@ -3,7 +3,7 @@
 
 var xScale, yScale, yScaleTempo;
 
-function createLineGraph(data, id) {
+function createLineGraphSongs(data, id) {
 
 //    console.log(data);
 
@@ -18,7 +18,7 @@ function createLineGraph(data, id) {
         "instrumentalness": [],
         // "key": [],
         "liveness": [],
-        "loudness": [],
+        // "loudness": [],
         // "mode": [],
         "speechiness": [],
         "tempo": [],
@@ -68,12 +68,17 @@ function createLineGraph(data, id) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("id", svgId);
 
+    // simple scale to show on x axis
+    var xScaleTicks = d3.scaleOrdinal()
+        .domain(["past", "now"])
+        .range([0, width])
+
     // create axes
     xAxis = svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(xScale)
+        .call(d3.axisBottom(xScaleTicks)
         .ticks(10))
     svg.append("g")
         .attr("class", "y axis")
@@ -162,7 +167,7 @@ function drawLine(svgId, dataset, name) {
                                     return yScale(d.y)
                                 }
                             })
-    .attr("r", 3)
+    .attr("r", 4)
     .style("fill", color)
     .on("mouseover", function(y, x) { 
         var value = Math.round(dataset[x]['y'] * 100) / 100;
