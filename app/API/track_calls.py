@@ -119,7 +119,9 @@ metrics = api.model('Metric over time', {
         'mode': fields.Float,
         'speechiness': fields.Float,
         'tempo': fields.Float,
-        'valence': fields.Float
+        'valence': fields.Float,
+        'excitedness': fields.Float,
+        'happiness': fields.Float
     }))
 })
 
@@ -136,12 +138,14 @@ class Metric(Resource):
         _, _, songids = get_history(userid, song_count, return_songids=True, calc_mood=False)
 
         if songids:
-            songs = models.Song.get_songs(songids)
+            songs = models.Song.get_songs_with_mood(songids)
             songs_features = []
 
-            for song in songs:
+            for song, songmood in songs:
                 features = song.__dict__
-                songs_features.append(features)
+                for key in songmood.__dict__.keys():
+                    features[key] = songmood.__dict__[key]
+                songs_features.append(song.__dict__)
 
             if song_count != 0:
                 songs_features = songs_features[:song_count]
