@@ -19,14 +19,13 @@ class TestUsers(UseTestSqlDB, unittest.TestCase):
 
     def test_add_user(self):
         models.User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
-
-        self.assertIn(self.user_info['id'], models.User.get_all_users())
+        self.assertEqual(self.user_info['id'], models.User.get_user(self.user_info['id']).userid)
 
     def test_add_user_again(self):
         models.User.create_if_not_exist(self.user_info, self.user_info['refresh_token'])
 
-        self.assertEqual(models.User.get_all_tokes(), [self.user_info['refresh_token']])
-        self.assertEqual(models.User.get_all_users(), [self.user_info['id']])
+        self.assertIn(self.user_info['refresh_token'], models.User.get_all_tokes())
+        self.assertIn(self.user_info['id'], models.User.get_all_userids())
 
     def test_refresh_token(self):
         self.assertEqual(models.User.get_refresh_token(self.user_info['id']), self.user_info['refresh_token'])
