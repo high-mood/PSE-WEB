@@ -1,6 +1,7 @@
 from app import app, db
 
 from influxdb import InfluxDBClient
+import types
 
 
 class UseTestInfluxDB(object):
@@ -18,7 +19,12 @@ class UseTestInfluxDB(object):
         self.cli.switch_database('test_db')
 
         if hasattr(self, 'populate_influx_with'):
-            self.populate(self.populate_influx_with)
+            if isinstance(self.populate_influx_with, types.ModuleType):
+                for var in dir(self.populate_influx_with):
+                    if not var.startswith("__"):
+                        self.populate(getattr(self.populate_influx_with, var))
+            else:
+                self.populate(self.populate_influx_with)
 
     def tearDown(self):
         """Drops the influx database and closes the connection."""
@@ -44,7 +50,12 @@ class UseTestSqlDB(object):
     def setUp(self):
         """Populate the sql database if set."""
         if hasattr(self, 'populate_sql_with'):
-            self.populate(self.populate_sql_with)
+            if isinstance(self.populate_sql_with, types.ModuleType):
+                for var in dir(self.populate_sql_with):
+                    if not var.startswith("__"):
+                        self.populate(getattr(self.populate_sql_with, var))
+            else:
+                self.populate(self.populate_sql_with)
 
     @classmethod
     def tearDownClass(cls):
