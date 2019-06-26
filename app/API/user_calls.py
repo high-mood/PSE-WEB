@@ -191,7 +191,7 @@ class HourlyMood(Resource):
             api.abort(404, msg=f"No moods found for '{userid}'")
 
 
-@api.route('/mood/dayly/<string:userid>/<int:day_count>')
+@api.route('/mood/daily/<string:userid>/<int:day_count>')
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class DailyMood(Resource):
