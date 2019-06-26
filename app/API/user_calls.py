@@ -13,7 +13,9 @@ api = Namespace('user', description='Information about user (over time)', path="
 @api.route('/info/<string:userid>')
 @api.response(404, 'Userid not found')
 class User(Resource):
-    """ Return all user info from the SQL database."""
+    """
+    Return all user info from the SQL database.
+    """
 
     # Output format
     user_info = api.model('UserInfo', {
@@ -57,11 +59,11 @@ def parse_time(start, end):
 
 def valid_hour(time, start_hour, end_hour):
     """
-
-    :param time:
-    :param start_hour:
-    :param end_hour:
-    :return:
+    Check if the time if correct.
+    :param time: time in hours.
+    :param start_hour: starting time in hours.
+    :param end_hour: ending time in hours.
+    :return: boolean.
     """
 
     mood_time = time.split(".")[0]
@@ -78,7 +80,7 @@ def valid_hour(time, start_hour, end_hour):
 @api.response(404, 'No moods found')
 class HourlyMood(Resource):
     """
-    Returns the hourly mood of a user specified within a timeframe. Thus over the entire history, we take the
+    Return the hourly mood of a user specified within a timeframe. Thus over the entire history, we take the
     average for each hour within the specified hourly timeframe.
     """
 
@@ -222,7 +224,7 @@ class DailyMood(Resource):
     @api.marshal_with(daily_mood, envelope='resource')
     def get(self=None, userid="snipy12", day_count=5):
         """
-        Obtain moods of a user within a given time frame in hours of a day.
+        Obtain average moods per day of user, going back day_count days.
         """
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
