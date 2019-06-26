@@ -9,22 +9,25 @@ import datetime
 
 api = Namespace('user', description='Information about user (over time)', path="/user")
 
-user_info = api.model('UserInfo', {
-    'userid': fields.String,
-    'email': fields.String,
-    'display_name': fields.String,
-    'image_url': fields.String,
-    'birthdate': fields.DateTime,
-    'country': fields.String,
-    'is_premium': fields.Boolean,
-    'refresh_token': fields.String,
-    'user_is_active': fields.Boolean
-})
-
 
 @api.route('/info/<string:userid>')
 @api.response(404, 'Userid not found')
 class User(Resource):
+    """ Return all user info from the SQL database."""
+
+    # Output format
+    user_info = api.model('UserInfo', {
+        'userid': fields.String,
+        'email': fields.String,
+        'display_name': fields.String,
+        'image_url': fields.String,
+        'birthdate': fields.DateTime,
+        'country': fields.String,
+        'is_premium': fields.Boolean,
+        'refresh_token': fields.String,
+        'user_is_active': fields.Boolean
+    })
+
     @api.marshal_with(user_info, envelope='resource')
     def get(self, userid):
         """
@@ -52,87 +55,6 @@ def parse_time(start, end):
     return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
 
-moods = api.model('Mood over time', {
-    'userid': fields.String,
-    'mean_excitedness': fields.Float,
-    'mean_happiness': fields.Float,
-    'sum_song_count': fields.Integer,
-    'moods': fields.Nested(api.model('mood', {
-        'time': fields.String,
-        'excitedness': fields.Float,
-        'happiness': fields.Float,
-        'songcount': fields.Integer
-    }))
-})
-
-
-# It should return Should
-@api.route('/mood/<string:userid>/<int:start>/<int:end>')
-@api.response(400, 'Invalid date')
-@api.response(404, 'No moods found')
-class Mood(Resource):
-    moods = api.model('Mood over time', {
-        'userid': fields.String,
-        'mean_excitedness': fields.Float,
-        'mean_happiness': fields.Float,
-        'sum_song_count': fields.Integer,
-        'moods': fields.Nested(api.model('mood', {
-            'time': fields.String,
-            'excitedness': fields.Float,
-            'happiness': fields.Float,
-            'songcount': fields.Integer
-        }))
-    })
-
-    @api.marshal_with(moods, envelope='resource')
-    # ALL ZERO PADDED TODO DOCUMENT
-    def get(self=None, userid="snipy12", start=3, end=24, endoftime=False):
-        """
-        Obtain moods of a user within a given time frame in hours of a day.
-        """
-
-        if start > end:
-            api.abort(400, msg="Timeframe incorrect: start > end")
-
-        if start > 23 or start < 0:
-            api.abort(400, msg="Timeframe incorrect: start time not between 0 - 23")
-
-        if end > 24 or end < 1:
-            api.abort(400, msg="Timeframe incorrect: end time not between 1 - 24")
-
-        client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
-        user_mood = influx.get_mood(client, userid)
-
-        if user_mood:
-            resultset = []
-            excitedness = 0
-            happiness = 0
-            total_songs = 0
-            for record in user_mood[userid]:
-                mood_time = record['time'].split(".")[0]
-                mood_time = datetime.datetime.strptime(mood_time[:-1], '%Y-%m-%dT%H:%M:%S')
-                mood_hour = mood_time.hour
-
-                if start <= mood_hour <= end:
-                    total_songs += record['songcount']
-                    excitedness += record['excitedness'] * record['songcount']
-                    happiness += record['happiness'] * record['songcount']
-                    resultset.append(record)
-            if total_songs < 1:
-                api.abort(404, msg=f"No moods found for '{userid}'")
-
-            return {
-                'userid': userid,
-                'mean_excitedness': excitedness / total_songs,
-                'mean_happiness': happiness / total_songs,
-                'sum_song_count': total_songs,
-                'moods': resultset
-            }
-        else:
-            api.abort(404, msg=f"No moods found for '{userid}'")
-
-
-#################################################################################################################
 def valid_hour(time, start_hour, end_hour):
     """
 
@@ -156,7 +78,7 @@ def valid_hour(time, start_hour, end_hour):
 @api.response(404, 'No moods found')
 class HourlyMood(Resource):
     """
-    This API returns the hourly mood of a user specified within a timeframe. Thus over the entire history, we take the
+    Returns the hourly mood of a user specified within a timeframe. Thus over the entire history, we take the
     average for each hour within the specified hourly timeframe.
     """
 
@@ -185,7 +107,7 @@ class HourlyMood(Resource):
     @api.marshal_with(hourly_mood, envelope='resource')
     def get(self=None, userid="snipy12", start=3, end=24, endoftime=False):
         """
-        Obtain moods of a user within a given time frame in hours of a day.
+        Obtain moods of a user within a given time frame as averages per hour.
         """
 
         if start > end:
@@ -267,22 +189,16 @@ class HourlyMood(Resource):
             api.abort(404, msg=f"No moods found for '{userid}'")
 
 
-
-
-
-
-
-@api.route('/mood/hourly/<string:userid>/<int:duration>')
+@api.route('/mood/dayly/<string:userid>/<int:day_count>')
 @api.response(400, 'Invalid date')
 @api.response(404, 'No moods found')
 class DailyMood(Resource):
     """
-    This API returns the hourly mood of a user specified within a timeframe. Thus over the entire history, we take the
-    average for each hour within the specified daily timeframe.
+    Return the average metrics and mood per day for day_count number of days.
     """
 
     # Output format
-    hourly_mood = api.model('Mood over day', {
+    daily_mood = api.model('Mood over day', {
         'userid': fields.String,
         'dates': fields.Nested(api.model('metrics_mood', {
             "date": fields.String,
@@ -303,30 +219,24 @@ class DailyMood(Resource):
         }))
     })
 
-    @api.marshal_with(hourly_mood, envelope='resource')
-    def get(self=None, userid="snipy12", duration=5):
+    @api.marshal_with(daily_mood, envelope='resource')
+    def get(self=None, userid="snipy12", day_count=5):
         """
         Obtain moods of a user within a given time frame in hours of a day.
         """
-
-
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
         songs = influx.get_songs(client, userid)
 
         if songs:
-
-
             # Create a dictionary of lists to store the songid's per hour
             # Thus {"Time":[songids,....]}
             resultDict = defaultdict(list)
 
             # For each {songid,time} in the list
             for song in songs:
-                mood_time = song['time'].split(".")[0]
-                mood_time = datetime.datetime.strptime(mood_time[:-1], '%Y-%m-%dT%H:%M:%S')
-
-                resultDict[mood_time.day].append(song['songid'])
+                mood_time = song['time'].split(".")[0][:10]
+                resultDict[mood_time].append(song['songid'])
 
             results = []
             # With the list of IDs with corresponding hour and features.
@@ -379,6 +289,3 @@ class DailyMood(Resource):
 
         else:
             api.abort(404, msg=f"No moods found for '{userid}'")
-
-
-

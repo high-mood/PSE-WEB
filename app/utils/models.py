@@ -3,6 +3,9 @@ import datetime
 
 
 class User(db.Model):
+    """
+    Database model for a user of the site.
+    """
     __tablename__ = "users"
     userid = db.Column(db.String(200), primary_key=True)
     email = db.Column(db.String(200))
@@ -16,6 +19,9 @@ class User(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info, refresh_token):
+        """
+        Create a new user in the database if it does not yet exist.
+        """
         user = User.query.filter_by(userid=json_info['id']).first()
         if user is None:
             user = User(userid=json_info['id'],
@@ -33,22 +39,36 @@ class User(db.Model):
 
     @staticmethod
     def get_user(userid):
+        """
+        Get a user based on it's userid.
+        :param userid: unique identifier for a user.
+        """
         return User.query.filter_by(userid=userid).first()
 
     @staticmethod
     def get_all_userids():
+        """
+        Get a list of all userids.
+        """
         return [r.userid for r in db.session.query(User.userid)]
 
     @staticmethod
     def get_all_tokes():
+        """Get a list of all refresh tokens."""
         return [r.refresh_token for r in db.session.query(User.refresh_token)]
 
     @staticmethod
     def get_refresh_token(userid):
+        """
+        Get the refresh token for user specified by userid.
+        """
         return User.query.filter_by(userid=userid).first().refresh_token
 
 
 class Song(db.Model):
+    """
+    Database model for a song, which stores all features.
+    """
     __tablename__ = "songs"
     songid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
@@ -68,6 +88,9 @@ class Song(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info):
+        """
+        Create a new song in the database if it does not alreay exist.
+        """
         song = Song.query.filter_by(songid=json_info['songid']).first()
         if song is None:
             song = Song(songid=json_info['songid'],
@@ -91,6 +114,10 @@ class Song(db.Model):
 
     @staticmethod
     def get_songs(songids):
+        """
+        Get all songs specified by songids.
+        :param songids:
+        """
         return Song.query.filter(Song.songid.in_(songids)).all()
 
     @staticmethod

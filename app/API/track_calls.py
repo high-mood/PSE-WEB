@@ -1,9 +1,8 @@
 from app.utils.recommendations import recommend_input, recommend_metric
 from flask_restplus import Namespace, Resource, fields
 from app.utils import influx, models
-from app import app, db
+from app import app
 
-import dateparser
 
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
@@ -70,7 +69,7 @@ class History(Resource):
     @api.marshal_with(history, envelope='resource')
     def get(self, userid, song_count):
         """
-        Obtain N most recently played songs along with their mood.
+        Obtain song_count most recently played songs along with their mood.
         """
         excitedness, happiness, history = get_history(userid, song_count)
         if history:
@@ -87,21 +86,6 @@ class History(Resource):
 possible_metrics = ['acousticness', 'danceability', 'duration_ms', 'energy',
                     'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
                     'speechiness', 'tempo', 'valence']
-
-
-def parse_time(start, end):
-    if start in ('beginning of time' or 'the beginning of time'):
-        start = "0"
-
-    start_date = dateparser.parse(start)
-    if not start_date:
-        api.abort(400, message=f"could not parse '{start}' as start date")
-
-    end_date = dateparser.parse(end)
-    if not end_date:
-        api.abort(400, message=f"could not parse '{end}' as end date")
-
-    return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
 
 
 metrics = api.model('Metric over time', {
