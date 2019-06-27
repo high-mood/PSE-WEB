@@ -20,7 +20,6 @@
            "Jelle Witsen Elias"
 """
 
-
 from app.utils.tasks import get_last_n_minutes
 from app.utils.models import User
 import sys

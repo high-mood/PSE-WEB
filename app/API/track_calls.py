@@ -27,7 +27,6 @@ from flask_restplus import Namespace, Resource, fields
 from app.utils import influx, models
 from app import app
 
-
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
 
@@ -143,7 +142,6 @@ class History(Resource):
 
 @api.route('/topsongs/<string:userid>/<string:count>')
 class TopSongs(Resource):
-
     # Output format
     top_songs = api.model('Song history with mood', {
         'userid': fields.String,
@@ -208,6 +206,7 @@ class Metric(Resource):
             'happiness': fields.Float
         }))
     })
+
     @api.marshal_with(metrics, envelope='resource')
     def get(self, userid, song_count=0):
         """

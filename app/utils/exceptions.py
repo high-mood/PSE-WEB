@@ -5,6 +5,7 @@ class StatusCodeError(Exception):
     Expects body to be formatted as described in:
     https://developer.spotify.com/documentation/web-api/#response-schema
     """
+
     def __init__(self, response):
         if response.status_code == 204:
             super().__init__("204 NO CONTENT")
