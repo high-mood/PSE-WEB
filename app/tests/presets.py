@@ -62,8 +62,8 @@ class UseTestSqlDB(object):
     @classmethod
     def setUpClass(cls):
         """Create a new test sql database."""
-        app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
         app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
         # Removes old session, if there was any.
         db.session.remove()
         db.create_all()
@@ -71,10 +71,9 @@ class UseTestSqlDB(object):
         if hasattr(cls, 'populate_sql_with'):
             if isinstance(cls.populate_sql_with, types.ModuleType):
                 for var in dir(cls.populate_sql_with):
-                    if not var.startswith("__"):
-                        for item in getattr(cls.populate_sql_with, var):
-                            db.session.add(item)
-                            db.session.commit()
+                    if not var.startswith("__") and var not in ['Artist', 'Song', 'SongArtist', 'Songmood']:
+                        db.session.add(getattr(cls.populate_sql_with, var))
+                        db.session.commit()
             else:
                 for item in cls.populate_sql_with:
                     db.session.add(item)
@@ -86,3 +85,20 @@ class UseTestSqlDB(object):
         db.session.remove()
 
         app.config['SQLALCHEMY_DATABASE_URI'] = cls.default_sqlDB_uri
+
+
+class UseTestSqlAndInfluxDB(object):
+    @classmethod
+    def setUpClass(cls):
+        if hasattr(cls, 'populate_sql_with'):
+            UseTestSqlDB.populate_sql_with = cls.populate_sql_with
+        if hasattr(cls, 'populate_influx_with'):
+            UseTestInfluxDB.populate_influx_with = cls.populate_influx_with
+
+        UseTestSqlDB.setUpClass()
+        UseTestInfluxDB.setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        UseTestSqlDB.tearDownClass()
+        UseTestInfluxDB.tearDownClass()
