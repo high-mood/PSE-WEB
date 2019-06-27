@@ -1,3 +1,26 @@
+"""
+    views.py
+    ~~~~~~~~~~~~
+    This file contains the flask views that route URL's to functions. Primary functionality is the authentication of
+    users.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
 from flask import Flask, send_from_directory, jsonify, json, render_template, redirect, request, session, flash, url_for
 from app import app
 # Refactor later

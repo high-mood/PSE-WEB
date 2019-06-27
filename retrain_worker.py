@@ -1,3 +1,26 @@
+"""
+    retrain_worker.py
+    ~~~~~~~~~~~~
+    This file implements functionality to retrain the machine learning model's used in the predictions of mood.
+    These predictions are altered based upon user supplied feedback.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
 import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor as GBR
 from joblib import dump

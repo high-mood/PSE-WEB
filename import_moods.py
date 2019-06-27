@@ -1,9 +1,30 @@
+"""
+    import_moods.py
+    ~~~~~~~~~~~~
+    This file can be utilized to TODO
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
 from app import db
 from app.utils import influx
 from app import app
 from app.utils.models import Song, Songmood
 from moodanalysis.moodAnalysis import analyse_mood
-
 
 if __name__ == "__main__":
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
