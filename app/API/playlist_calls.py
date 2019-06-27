@@ -1,9 +1,8 @@
 """
     playlist_calls.py
     ~~~~~~~~~~~~
-    The functionality within this file contains the API calls...
+    This file contains the structure of the playlist API with functions to handle basic GET and POST requests.
 
-    TODO
 
     :copyright: 2019 Moodify (High-Mood)
     :authors:

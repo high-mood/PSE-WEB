@@ -1,9 +1,7 @@
 """
     track_calls.py
     ~~~~~~~~~~~~
-    The functionality within this file contains the API calls...
-
-    TODO
+    This file contains the structure of the track API with functions to handle basic GET and POST requests.
 
     :copyright: 2019 Moodify (High-Mood)
     :authors:
