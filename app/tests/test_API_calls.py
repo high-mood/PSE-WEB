@@ -191,29 +191,29 @@ class TestAPICalls(UseTestInfluxDB, UseTestSqlDB, unittest.TestCase):
 
     def test_get_daily_mood(self):
         expected_output = {
-           'resource':
-               {
-                  'userid': 'bulk',
-                  'dates': [
-                     {
-                        'date': '2019-06-20',
-                        'excitedness': 0.1321179142857143,
-                        'happiness': 0.37893217465714296,
-                        'acousticness': 0.1732328571428572,
-                        'danceability': 0.6541142857142855,
-                        'duration_ms': 195919.22857142857,
-                        'energy': 0.7373999999999999,
-                        'instrumentalness': 0.0681925857142857,
-                        'key': 5.228571428571429,
-                        'liveness': 0.17476857142857144,
-                        'loudness': 0.0,
-                        'mode': 0.5428571428571428,
-                        'speechiness': 0.09494571428571429,
-                        'tempo': 115.08668571428574,
-                        'valence': 0.5423714285714285
-                     }
-                  ]
-               }
+            'resource':
+                {
+                    'userid': 'bulk',
+                    'dates': [
+                        {
+                            'date': '2019-06-20',
+                            'excitedness': 0.1321179142857143,
+                            'happiness': 0.37893217465714296,
+                            'acousticness': 0.1732328571428572,
+                            'danceability': 0.6541142857142855,
+                            'duration_ms': 195919.22857142857,
+                            'energy': 0.7373999999999999,
+                            'instrumentalness': 0.0681925857142857,
+                            'key': 5.228571428571429,
+                            'liveness': 0.17476857142857144,
+                            'loudness': 0.0,
+                            'mode': 0.5428571428571428,
+                            'speechiness': 0.09494571428571429,
+                            'tempo': 115.08668571428574,
+                            'valence': 0.5423714285714285
+                        }
+                    ]
+                }
         }
 
         day = DailyMood(Resource)
