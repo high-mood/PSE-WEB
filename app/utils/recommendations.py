@@ -39,11 +39,15 @@ def order_songs(songs, target, n):
     :return: ascending list of n dictionaries formatted as: [{'songid': actual song id, excitedness: actual excitedness,
         happiness: actual happiness}].
     """
+    songs_with_features = []
     # Adds the Euclidean distance to the dictionaries and sorts the list in ascending order.
     for song in songs:
-        song['distance'] = distance.euclidean(target, (song['excitedness'], song['happiness']))
+        if song['excitedness']:
+            song['distance'] = distance.euclidean(target, (song['excitedness'], song['happiness']))
+            songs_with_features.append(song)
 
-    ordered_songs = sorted(songs, key=lambda k: k['distance'])
+
+    ordered_songs = sorted(songs_with_features, key=lambda k: k['distance'])
 
     # Removes the distance from the dictionaries and returns the best n tracks.
     for d in ordered_songs:
@@ -78,12 +82,12 @@ def _get_parameter_string(min_key=-1, min_mode=0,
 
 def calculate_target_mood(target, current):
     """
-    Updates the target mood, the new mood is the mean between the target and current.
+    Updates the target mood, the new mood is the weighted mean between the target and current.
     :param target: the target mood formatted as: (excitedness, happiness).
     :param current: the current mood formatted as: (excitedness, happiness).
     :return: new target formatted as: (excitedness, happiness).
     """
-    return statistics.mean([target[0], current[0]]), statistics.mean([target[1], current[1]])
+    return 0.6 *target[0] + 0.4 * current[0], 0.6 * target[1] + 0.4 * current[1]
 
 
 def recommend_input(tracks, userid, target=(0.0, 0.0), n=5):
