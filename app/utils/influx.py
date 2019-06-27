@@ -2,15 +2,16 @@ from influxdb import InfluxDBClient
 from app import app
 
 
-def create_client(host, port):
+def create_client(host, port, database='songs'):
     """
     Creates the connection to the influx database songs.
     :param host: Host ip of the InfluxDB.
     :param port: Host port of the InfluxDB.
+    :param database: database to use.
     :return: Client object from the InfluxDB.
     """
     client = InfluxDBClient(host=host, port=port, username=app.config['INFLUX_USER'],
-                            password=app.config['INFLUX_PASSWORD'], database='songs')
+                            password=app.config['INFLUX_PASSWORD'], database=database)
 
     return client
 
