@@ -1,0 +1,25 @@
+#timeframe-slider .slider-track-low, .slider-track-high{
+  background: white;
+}
+
+#timeframe-slider .slider-selection {
+  background: #1dc156;
+  border: 1px solid #1dc156;
+}
+
+#timeframe-slider .slider-handle {
+  border: 2px solid #19492a;
+  background: white;
+}
+
+#timeframe-slider{
+  width: 20%; /* sample value - set it as you like*/
+}
+
+#days-slider{
+  width: 40%; /* sample value - set it as you like*/
+}
+
+#songs-slider{
+  width: 75%; /* sample value - set it as you like*/
+}

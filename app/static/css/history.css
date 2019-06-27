@@ -1,0 +1,66 @@
+#song_history {
+    overflow-y: auto;
+    height: 400px;
+}
+
+.feedback-slider {
+    -webkit-appearance: slider-vertical;
+    user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+
+.songdiv {
+    /* border: 2px solid black; */
+    height: 80px;
+    width: 380px;
+    /* padding: 20px; */
+}
+
+.songdiv-right {
+    /* border: 2px solid black; */
+    height: 120px;
+    /* float: right; */
+    /* padding: 20px; */
+}
+
+.SongRecButton {
+    height: 80px;
+    width: 80px;
+    float: left;
+    background-color: black;
+    color: white;
+}
+
+.songinfotool {
+    height: 400px;
+}
+
+.songdiv {
+    /* border: 2px solid black; */
+    height: 80px;
+    width: 380px;
+    /* padding: 20px; */
+}
+
+.songdiv-right {
+    /* border: 2px solid black; */
+    height: 120px;
+    /* float: right; */
+    /* padding: 20px; */
+}
+
+.SongRecButton{
+    height: 80px;
+    width: 80px;
+    float: left;
+    background-color: black;
+    color: white;
+}
+
+.songinfotool{
+    height: 400px;
+}
