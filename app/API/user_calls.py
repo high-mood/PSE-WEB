@@ -63,7 +63,7 @@ def valid_hour(time, start_hour, end_hour):
     :param time: time in hours.
     :param start_hour: starting time in hours.
     :param end_hour: ending time in hours.
-    :return: boolean.
+    :return: boolean specifying if time is valid.
     """
 
     mood_time = time.split(".")[0]
@@ -73,6 +73,13 @@ def valid_hour(time, start_hour, end_hour):
     if start_hour <= mood_hour <= end_hour:
         return True
     return False
+
+
+def convert_none(dicti):
+    for key, value in dicti.items():
+        if not value:
+            dicti[key] = 0
+    return dicti
 
 
 @api.route('/mood/hourly/<string:userid>/<int:start>/<int:end>')
@@ -171,6 +178,7 @@ class HourlyMood(Resource):
                 # Now iterate over each song's metrics within the results and add the values using counter.
                 for B in tempresults:
                     B = Counter(B)
+                    B = convert_none(B)
                     A = A + B
 
                 # Convert these to averages by dividing each key if possible
@@ -267,12 +275,8 @@ class DailyMood(Resource):
                 A = Counter(tempresults.pop(0))
                 # Now iterate over each song's metrics within the results and add the values using counter.
                 for B in tempresults:
-                    # TODO DO THIS EVERYWHERE ALSO OTHER API CALL
                     B = Counter(B)
-                    for key, value in B.items():
-                        if not value:
-                            B[key] = 0
-
+                    B = convert_none(B)
                     A = A + B
 
                 # Convert these to averages by dividing each key if possible
