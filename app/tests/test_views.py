@@ -15,7 +15,7 @@ def client():
 @pytest.mark.integration_test
 def test_main_page(client):
     rv = client.get('/')
-    assert b"Welcome to Highmood" in rv.data
+    assert b"Your Spotify usage analysed and visualised" in rv.data
 
 
 @pytest.mark.integration_test
@@ -26,4 +26,4 @@ def test_user_page(client):
                              'display_name': "Test Mood"}
     rv = client.get('/')
 
-    assert b"Welcome Test Mood (1115081075), Here's your mood" in rv.data
+    assert b"1115081075" in rv.data
