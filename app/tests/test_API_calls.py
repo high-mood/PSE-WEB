@@ -8,11 +8,11 @@ from app.tests.presets import UseTestInfluxDB, UseTestSqlDB
 from flask_restplus import Resource
 
 from app.API.track_calls import History, TopSongs, Metric
-# from app.API.user_calls import
+from app.API.user_calls import HourlyMood, DailyMood
 
 
 @pytest.mark.api_calls
-class TestTracks(UseTestInfluxDB, UseTestSqlDB, unittest.TestCase):
+class TestAPICalls(UseTestInfluxDB, UseTestSqlDB, unittest.TestCase):
     populate_influx_with = multiple_users
     populate_sql_with = multiple_songs
 
@@ -119,3 +119,80 @@ class TestTracks(UseTestInfluxDB, UseTestSqlDB, unittest.TestCase):
 
         metr = Metric(Resource)
         self.assertDictEqual(metr.get('bulk', 2), expected_output)
+
+    def test_get_hourly_mood(self):
+        expected_output = {
+            'resource':
+                {
+                    'userid': 'snipper',
+                    'hours': [
+                        {
+                            'hour': '14',
+                            'excitedness': 0.04745772222222222,
+                            'happiness': 0.6015380333333336,
+                            'acousticness': 0.265185,
+                            'danceability': 0.7126111111111111,
+                            'duration_ms': 215871.38888888888,
+                            'energy': 0.5402222222222224,
+                            'instrumentalness': 0.1268772433333333,
+                            'key': 5.722222222222222,
+                            'liveness': 0.21075555555555556,
+                            'loudness': 0.0,
+                            'mode': 0.6111111111111112,
+                            'speechiness': 0.16409444444444443,
+                            'tempo': 125.36200000000001,
+                            'valence': 0.5524777777777778
+                        },
+                        {
+                            'hour': '13',
+                            'excitedness': 0.0,
+                            'happiness': 0.04739899999999999,
+                            'acousticness': 0.12324,
+                            'danceability': 0.7436,
+                            'duration_ms': 239181.46666666667,
+                            'energy': 0.6091333333333335,
+                            'instrumentalness': 0.07230773,
+                            'key': 5.733333333333333,
+                            'liveness': 0.19531333333333337,
+                            'loudness': 0.0,
+                            'mode': 0.4666666666666667,
+                            'speechiness': 0.16362666666666664,
+                            'tempo': 110.53093333333332,
+                            'valence': 0.7540666666666667
+                        }
+                    ]
+                }
+        }
+
+        hour = HourlyMood(Resource)
+        self.assertDictEqual(hour.get('snipper', start=13, end=14), expected_output)
+
+    def test_get_daily_mood(self):
+        expected_output = {
+           'resource':
+               {
+                  'userid': 'bulk',
+                  'dates': [
+                     {
+                        'date': '2019-06-20',
+                        'excitedness': 0.1321179142857143,
+                        'happiness': 0.37893217465714296,
+                        'acousticness': 0.1732328571428572,
+                        'danceability': 0.6541142857142855,
+                        'duration_ms': 195919.22857142857,
+                        'energy': 0.7373999999999999,
+                        'instrumentalness': 0.0681925857142857,
+                        'key': 5.228571428571429,
+                        'liveness': 0.17476857142857144,
+                        'loudness': 0.0,
+                        'mode': 0.5428571428571428,
+                        'speechiness': 0.09494571428571429,
+                        'tempo': 115.08668571428574,
+                        'valence': 0.5423714285714285
+                     }
+                  ]
+               }
+        }
+
+        day = DailyMood(Resource)
+        self.assertDictEqual(day.get('bulk', day_count=1), expected_output)

@@ -250,7 +250,7 @@ class DailyMood(Resource):
 
             results = []
             # With the list of IDs with corresponding hour and features.
-            for time, songid_list in resultDict.items():
+            for time, songid_list in list(resultDict.items())[:day_count]:
                 # Obtain the metrics for each song inside a list of songs.
                 songs = models.Song.get_songs_with_mood(songid_list)
 
