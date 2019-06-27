@@ -1,8 +1,11 @@
-from app import db, app
+from app import db
 import datetime
 
 
 class User(db.Model):
+    """
+    Database model for a user of the site.
+    """
     __tablename__ = "users"
     userid = db.Column(db.String(200), primary_key=True)
     email = db.Column(db.String(200))
@@ -16,6 +19,9 @@ class User(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info, refresh_token):
+        """
+        Create a new user in the database if it does not yet exist.
+        """
         user = User.query.filter_by(userid=json_info['id']).first()
         if user is None:
             user = User(userid=json_info['id'],
@@ -32,19 +38,39 @@ class User(db.Model):
             db.session.commit()
 
     @staticmethod
-    def get_all_tokes():
-        return [r.refresh_token for r in db.session.query(User.refresh_token)]
+    def get_user(userid):
+        """
+        Get a user based on it's userid.
+        :param userid: unique identifier for a user.
+        :return: user object
+        """
+        return User.query.filter_by(userid=userid).first()
 
     @staticmethod
-    def get_all_users():
+    def get_all_userids():
+        """
+        Return a list of all userids.
+        """
         return [r.userid for r in db.session.query(User.userid)]
 
     @staticmethod
+    def get_all_tokes():
+        """Get a list of all refresh tokens."""
+        return [r.refresh_token for r in db.session.query(User.refresh_token)]
+
+    @staticmethod
     def get_refresh_token(userid):
+        """
+        Get the refresh token for user specified by userid.
+        :param userid: unique identifier for a user.
+        """
         return User.query.filter_by(userid=userid).first().refresh_token
 
 
 class Song(db.Model):
+    """
+    Database model for a song, which stores all features.
+    """
     __tablename__ = "songs"
     songid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
@@ -64,6 +90,10 @@ class Song(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info):
+        """
+        Create a new song in the database if it does not already exist.
+        :param json_info: dict of all features of a song object.
+        """
         song = Song.query.filter_by(songid=json_info['songid']).first()
         if song is None:
             song = Song(songid=json_info['songid'],
@@ -86,12 +116,65 @@ class Song(db.Model):
             db.session.commit()
 
     @staticmethod
+    def get_songs(songids):
+        """
+        Get all songs specified by songids.
+        :param songids: list of unique identifier for songs.
+        :return: list of song objects with songid in songids.
+        """
+        return Song.query.filter(Song.songid.in_(songids)).all()
+
+    @staticmethod
+    def get_song(songid):
+        """
+        Get a song specified by songid.
+        :param songid: unique identifier for a song.
+        :return: song object with songid.
+        """
+        return Song.query.filter_by(songid=songid).first()
+
+    @staticmethod
     def get_song_name(songid):
-        song = Song.query.filter_by(songid=songid).first()
-        return song.name
+        """
+        Get name of a song specified by songid.
+        :param songid: unique identifier for a song.
+        :return: string name of song.
+        """
+        return Song.get_song(songid).name
+
+    @staticmethod
+    def get_songs_with_mood(songids):
+        """
+        Get the song and songmood objects specified by songids.
+        :param songids: list of unique identifier for songs.
+        :return: list of tuples(song, songmood)
+        """
+        return db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(
+            Song.songid.in_(songids)).all()
+
+    @staticmethod
+    def get_all_songs_with_mood_if_responses():
+        """
+        Get all song and songmood objects if a song has a response.
+        :return: list of tuples(song, songmood)
+        """
+        return db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).filter(
+            Songmood.response_count > 0).all()
+
+    @staticmethod
+    def get_all_songs_with_mood():
+        """
+        Get all song and songmood objects.
+        :param songids: list of unique identifier for songs.
+        :return: list of tuples(song, songmood)
+        """
+        return db.session.query(Songmood, Song).join(Song, Song.songid == Songmood.songid).all()
 
 
 class Artist(db.Model):
+    """
+    Database model for artist, stores features for an artist
+    """
     __tablename__ = "artists"
     artistid = db.Column(db.String(200), primary_key=True)
     name = db.Column(db.String(300))
@@ -100,6 +183,9 @@ class Artist(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info):
+        """
+        Create an artist if it does not exist already.
+        """
         artist = Artist.query.filter_by(artistid=json_info['artistid']).first()
         if artist is None:
             artist = Artist(artistid=json_info['artistid'],
@@ -112,6 +198,9 @@ class Artist(db.Model):
 
 
 class Songmood(db.Model):
+    """
+    Database model for songmood, stores mood for a given song.
+    """
     __tablename__ = "songmoods"
     songid = db.Column(db.String(200), db.ForeignKey("songs.songid"), primary_key=True)
     excitedness = db.Column(db.Float())
@@ -122,6 +211,9 @@ class Songmood(db.Model):
 
     @staticmethod
     def create_if_not_exist(json_info):
+        """
+        Create a songmood if it doesnt exist already.
+        """
         songmood = Songmood.query.filter_by(songid=json_info['songid']).first()
         if songmood is None:
             songmood = Songmood(songid=json_info['songid'],
@@ -136,26 +228,39 @@ class Songmood(db.Model):
 
     @staticmethod
     def get_moods(songids):
-        songmoods = db.session.query(Songmood).filter(Songmood.songid.in_((songids))).all()
-        return songmoods
+        """
+        Get the songmoods specified by songids
+        :param songids: list of unique identifier for song/songmood.
+        :return: list of songmood objects.
+        """
+        return Songmood.query.filter(Songmood.songid.in_(songids)).all()
 
-    # TODO check if this works properly
     @staticmethod
     def update_response_mood(songid, user_excitedness, user_happiness):
+        """
+        Update response mood with a user defined mood.
+        :param songid: unique identifier for song/songmood.
+        :param user_excitedness: user defined excitedness.
+        :param user_happiness: user defined happiness.
+        """
         songmood = Songmood.query.filter_by(songid=songid).first()
         if songmood:
             response_excitedness = songmood.response_excitedness
             response_happiness = songmood.response_happiness
             response_count = songmood.response_count
-            songmood.response_happiness = (response_happiness * response_count + user_excitedness) / (
-                    response_count + 1)
+            songmood.response_happiness = (response_happiness * response_count + user_happiness) / (
+                                           response_count + 1)
             songmood.response_excitedness = (response_excitedness * response_count + user_excitedness) / (
-                    1 + response_count)
+                                            1 + response_count)
             songmood.response_count = response_count + 1
+
             db.session.commit()
 
 
 class SongArtist(db.Model):
+    """
+    Database model linking songs to artists.
+    """
     __tablename__ = "songs_artists"
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     songid = db.Column(db.String(200), db.ForeignKey("songs.songid"))
@@ -163,15 +268,16 @@ class SongArtist(db.Model):
 
     __table_args__ = (db.UniqueConstraint('songid', 'artistid', name='key'),)
 
-    # TODO fix below
     @staticmethod
     def create_if_not_exist(json_info):
-        songartist = SongArtist.query(
-            f"select id from songs_artists where songid={songid} and artistid={artistid}").first()
-        if songartist is None:
-            songartist = SongArtist(songid=json_info['songid'],
-                                    artistid=json_info['artistid'])
+        """
+        Create a link between a song and artist if it does not already exists.
+        """
+        song_artist = db.session.query(SongArtist).filter(SongArtist.songid == json_info['songid'],
+                                                          SongArtist.artistid == json_info['artistid']).first()
+        if song_artist is None:
+            song_artist = SongArtist(songid=json_info['songid'],
+                                     artistid=json_info['artistid'])
 
-            db.session.add(songartist)
-
+            db.session.add(song_artist)
             db.session.commit()

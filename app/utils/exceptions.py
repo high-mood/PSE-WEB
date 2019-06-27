@@ -1,17 +1,3 @@
-class NoResultsFound(Exception):
-    """
-    API request did not find any results.
-    """
-    pass
-
-
-class InvalidValue(ValueError):
-    """
-    Given value is invalid.
-    """
-    pass
-
-
 class StatusCodeError(Exception):
     """
     There was an request that did not return an 200 status code.

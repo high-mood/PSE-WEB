@@ -7,7 +7,7 @@ def main():
     duration = sys.argv[1]
     # We Limit the traceback to keep the log files clear.
     sys.tracebacklimit = 0
-    userids = User.get_all_users()
+    userids = User.get_all_userids()
 
     for userid in userids:
         get_last_n_minutes(duration, userid)
