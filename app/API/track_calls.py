@@ -149,7 +149,6 @@ class TopSongs(Resource):
         'songs': fields.Nested(api.model('song', {
             'songid': fields.String,
             'name': fields.String,
-            'time': fields.String,
             'excitedness': fields.Float,
             'happiness': fields.Float
         }))
