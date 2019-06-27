@@ -274,7 +274,7 @@ class Songmood(db.Model):
             songmood.response_happiness = (response_happiness * response_count + user_happiness) / (
                     response_count + 1)
             songmood.response_excitedness = (response_excitedness * response_count + user_excitedness) / (
-                    1 + response_count)
+                    response_count + 1)
             songmood.response_count = response_count + 1
 
             db.session.commit()
