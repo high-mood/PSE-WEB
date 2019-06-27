@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Moodify</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}" type="text/css">
+
+    <!-- Slider CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/css/bootstrap-slider.css" integrity="sha256-jdZgwzG/YTTVCVs+8oG9il7UD/T5P1oaQ2S83BF1D8s=" crossorigin="anonymous" />
+
+    <!-- Custom Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('.static', filename='font-awesome/css/font-awesome.min.css') }}" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/animate.min.css') }}" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/main.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/history.css') }}" type="text/css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/dashboard/main.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/dashboard/heatmap.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/dashboard/slider.css') }}" type="text/css">
+
+
+<body id="page-top">
+  <!-- <div id="username">{{ id }}</div> -->
+  <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- // TODO fix logo -->
+            <a id="username" style="pointer-events: none; cursor: default;">{{ id }}</a>
+            <a class="brand-image" href="#page-top"><img class="brand-image" src="{{ url_for('.static', filename='img/cow_logo.png') }}" height="42" width="42"/></a>
+            <a class="navbar-brand page-scroll" href="#page-top">Moodify</a>
+
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="page-scroll" href="#mood">Mood</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#history">History</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#recommendation">Recommendation</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#analytics">Analytics</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+
+  <section class="background-black" id="mood">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h1 class="section-heading">Mood</h1>
+                <hr class="dark">
+                <p>Your spotify listening history is analyzed using advanced artificial intelligence,
+                    which is visualised below.</p>
+            </div>
+        </div>
+
+        <div class="row text-center">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" id="moodChartSelector" data-toggle="dropdown">
+                    Radar Chart
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dashboard-dropdown dropdown-menu-center" role="menu">
+                    <li><a onclick="toggleMoodCharts('radarChart')">Radar Chart</a></li>
+                    <li><a onclick="toggleMoodCharts('heatmap')">Heatmap</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row vertical-align" id="radarChartRow">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-lg-offset-1">
+                <div class="radarChart rounded border border-primary" id="radarChart">
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="row radarText rounded border border-primary explanation" id="radarText">
+
+                </div>
+            </div>
+        </div>
+        <div class="row vertical-align" id="heatmapRow">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="heatmap rounded border border-primary" id="heatmap">
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="heatmapText rounded border border-primary explanation" id="heatmapText">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+  <section class="bg-primary" id="about">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h2 class="section-heading">History</h2>
+                <p>Analyze your Spotify history and get new recommendations based on your favorite songs!</p>
+                <hr class="light">
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-center">
+                <div class="btn-group btn-block text-center dashboard-dropdown">
+                    <button type="button" class="btn btn-block btn-primary dropdown-toggle" data-toggle="dropdown">
+                        Choose your history <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu text-center dropdown-menu-center" role="menu">
+                        <li><a onclick="toggleHistory()">History</a></li>
+                        <li class="divider"></li>
+                        <li><a onclick="toggleHistory()">Favourites</a></li>
+                    </ul>
+                </div>
+                <div id="tracklist">
+                    <div class="scrollbar" id="song_history">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 row text-center">
+                <div id="songinfotool">
+                    <h3>Song analysis</h3>
+                    <div class="row">
+                        <div id="songname"></div>
+                        <p id="songdisplayname"></p>
+                        <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 hcenter text-center">
+                            <input id="happiness_slider" class="feedback-slider" orient="vertical" type="range" min="0" max="100" step="1" value="50">
+                        </div>
+                        <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 hcenter text-center">
+
+                            <input id="excitedness_slider" class="feedback-slider" orient="vertical" type="range" min="0" max="100" step="1" value="50">
+                        </div>
+                        <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 hcenter text-center">
+			    <p>Happiness:</p>
+                            <p id="happiness_slider_text">0%</p>
+			    <p>Excitement:</p>
+                            <p id="excitedness_slider_text">0%</p>
+
+                            <div class="btn-group-vertical" role="group">
+                                <button type="button" class="btn background-black" id="send_feedback">&emsp; Send feedback &emsp;</button>
+                            <button type=" button" class="btn background-black" id="reset_feedback">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-center">
+                <h3>More like this</h3>
+            </div>
+        </div>
+
+
+        <!-- Body for favourite display -->
+        <div id="favRow" class="row vertical-align">
+            <div class="col -xs-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="favRecWindow" id="favRecWindow"></div>
+
+            </div>
+        </div>
+
+        <!-- Body for history display -->
+        <div id="historyRow" class="row vertical-align">
+            <div class="col -xs-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="history rec window" id="historyRecWindow"></div>
+
+            </div>
+        </div>
+
+        <!-- Body for favourite display -->
+        <div id="favRow" class="row vertical-align">
+            <div class="col -xs-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="favRecWindow" id="favRecWindow"></div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+  <section class="background-white" id="recommendation">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h1 class="section-heading">Recommendations</h1>
+                <p>Song recommendations are based your personal average mood along with your desired mood and theme</p></p>
+                <hr class="light">
+            </div>
+        </div>
+
+        <!--
+            <div class="row text-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" id="lineChartSelector" data-toggle="dropdown">
+                        Days Line chart
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dashboard-dropdown dropdown-menu-center" role="menu">
+                        <li><a onclick="toggleLineCharts('lineDays')">Days Line chart</a></li>
+                        <li><a onclick="toggleLineCharts('lineSongs')">Songs Line chart</a></li>
+                    </ul>
+                </div>
+            </div>
+        -->
+
+        <div class="row">
+            <div class="btn-group col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <button type="button" class="btn btn-block btn-dark dropdown-toggle btn-padding" data-toggle="dropdown">Mood <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-padding btn-block dashboard-dropdown dropdown-menu-center" role="menu">
+                  <li><a onclick="toggleMetric('excited')">Excited</a></li>
+                  <li class="divider"></li>
+                  <li><a onclick="toggleMetric('mellow')">Mellow</a></li>
+                  <li class="divider"></li>
+                  <li><a onclick="toggleMetric('neutral')">Neutral</a></li>
+                  <li class="divider"></li>
+                  <li><a onclick="toggleMetric('sad')">Sad</a></li>
+                  <li class="divider"></li>
+                  <li><a onclick="toggleMetric('angry')">Angry</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group col-xs-12 col-sm-6 col-md-6 col-lg-6" role="group">
+                <button type="button" class="btn btn-block btn-dark dropdown-toggle btn-padding" data-toggle="dropdown">Theme <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-padding btn-block dashboard-dropdown dropdown-menu-center" role="menu">
+                  <li><a onclick="toggleMetric('dance')">Party</a></li>
+                  <li class="divider"></li>
+                  <li><a onclick="toggleMetric('karaoke')">Karaoke</a></li>
+                  <li class="divider"></li>
+                  <li><a onclick="toggleMetric('study')">Study</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="Song-Metric-Recommendation" class="row rounded-edges">
+            <div class="text-center col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <br>
+                <div id="rec0" class="row">
+                </div>
+                <div id="rec1" class="row">
+                </div>
+                <div id="rec2" class="row">
+                </div>
+                <div id="rec3" class="row">
+                </div>
+                <div id="rec4" class="row">
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- <script>
+    createSongRecommendationElement("Song-Metric-Recommendation");
+    MakeNewSongMetricRec("songMetricRecPlayer", "neutral");
+</script> -->
+  <section class="background-black" id="analytics">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h1 class="section-heading">Analytics</h1>
+                <hr class="dark">
+                <p>Analytics info</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" id="lineChartSelector" data-toggle="dropdown">
+                    Days
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dashboard-dropdown dropdown-menu-center" role="menu">
+                    <li><a onclick="toggleLineCharts('lineDays')">Days</a></li>
+                    <li><a onclick="toggleLineCharts('lineSongs')">Songs</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--
+        button colours
+            #c1b51b
+            #1dc156
+            #1cc18f
+            #1ba2c1
+            #1b5dc1
+            #1b1dc1
+            #761bc1
+            #b31bc1
+            #c11b65
+
+            #c11b1b
+            #c1521b
+        -->
+
+
+        <div class="row vertical-align">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 text-center">
+                <div class="row">
+                    <div id="timeframe-slider-div">
+                        timeframe slider <br>
+                        <input id="timeframe-slider" type="text"/> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts()">Refresh</button>
+                    </div>
+                    <div id="days-slider-div">
+                        days slider <br>
+                        <input id="days-slider" type="text"/> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts()">Refresh</button>
+                    </div>
+                    <div id="songs-slider-div">
+                        songs slider <br>
+                        <input id="songs-slider" type="text"/> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts()">Refresh</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="lineDays">
+
+                    </div>
+                    <div id="lineSongs">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-center" id="explanation">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" id="lineCharts">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="instrumentalness" style="background-color: #1dc156;">Instrumentalness</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="happiness" style="background-color: #1cc18f;">Happiness</button>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="excitedness" style="background-color: #1ba2c1;">Excitedness</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="acousticness" style="background-color: #1b5dc1;">Acousticness</button>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="danceability" style="background-color: #761bc1;">Danceability</button>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="speechiness" style="background-color: #b31bc1;">Speechiness</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="liveness" style="background-color: #c11b65;">Liveness</button>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="valence" style="background-color: #c11b1b;">Valence</button>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="energy" style="background-color: #c1521b;">Energy</button>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                        <button class="btn btn-block" onclick="toggleLine(this.id)" id="tempo" style="background-color: #c1b51b;">Tempo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+  <!-- jQuery -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/jquery.js') }}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/bootstrap.min.js') }}"></script>
+
+<!-- Plugin JavaScript -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/jquery.easing.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/jquery.fittext.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/wow.min.js') }}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/creative.js') }}"></script>
+
+
+  <!-- D3 -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<!-- Mood scripts -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/radarChart.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/chartText.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/loadRadar.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/heatmap.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/loadCharts.js') }}"></script>
+
+<!-- History scripts -->
+<!-- <script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/history/loadHistory.js') }}"></script> -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/history.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/mood/userfeedback.js') }}"></script>
+
+
+<!-- Analytics scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js" integrity="sha256-WzyQA5KtHvGY2wDq2tVFehwI8SnSjpoUahzv9QEPDCU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/userinput.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/linechartDays.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/linechartSongs.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/loadLineCharts.js') }}"></script>
+
+
+<!-- Song recommendation scripts -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/recommendation/songrecommendation.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/recommendation/songMetricRecommendation.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,9 +1,32 @@
-from app.utils.models import User
-from app.utils.tasks import get_features_moods
-from app.utils import spotify
+"""
+    recommendations.py
+    ~~~~~~~~~~~~
+    This file contains functions for getting song recommendations.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
+import statistics
 
 from scipy.spatial import distance
-import statistics
+
+from app.utils import spotify
+from app.utils.models import User
+from app.utils.tasks import get_features_moods
 
 
 def order_songs(songs, target, n):

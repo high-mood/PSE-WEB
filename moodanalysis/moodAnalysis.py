@@ -1,6 +1,30 @@
-from joblib import load
-import numpy as np
+"""
+    mood_analysis.py
+    ~~~~~~~~~~~~
+    This file conducts mood analysis. It utilizes a gradient-boosting regressor to analyze spotify parameters
+    and convert this into a mood.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
 import sys
+
+import numpy as np
+from joblib import load
 
 
 def analyse_mood(songs):

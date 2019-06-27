@@ -1,11 +1,33 @@
+"""
+    user_calls.py
+    ~~~~~~~~~~~~
+    This file contains the structure of the user API with functions to handle basic GET and POST requests.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
+import datetime
 from collections import defaultdict, Counter
 
-from flask_restplus import Namespace, Resource, fields
-from app.utils import influx, models
-from app import app
-
 import dateparser
-import datetime
+from flask_restplus import Namespace, Resource, fields
+
+from app import app
+from app.utils import influx, models
 
 api = Namespace('user', description='Information about user (over time)', path="/user")
 
@@ -250,7 +272,7 @@ class DailyMood(Resource):
 
             results = []
             # With the list of IDs with corresponding hour and features.
-            for time, songid_list in resultDict.items():
+            for time, songid_list in list(resultDict.items())[:day_count]:
                 # Obtain the metrics for each song inside a list of songs.
                 songs = models.Song.get_songs_with_mood(songid_list)
 

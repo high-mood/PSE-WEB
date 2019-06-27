@@ -1,0 +1,159 @@
+ * Serving Flask app "app" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 303-999-917
+ * Serving Flask app "app" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 303-999-917
+127.0.0.1 - - [27/Jun/2019 10:24:28] "GET /api/ HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:24:28] "GET /swaggerui/droid-sans.css HTTP/1.1" 304 -
+127.0.0.1 - - [27/Jun/2019 10:24:28] "GET /swaggerui/swagger-ui.css HTTP/1.1" 304 -
+127.0.0.1 - - [27/Jun/2019 10:24:28] "GET /swaggerui/swagger-ui-bundle.js HTTP/1.1" 304 -
+127.0.0.1 - - [27/Jun/2019 10:24:28] "GET /swaggerui/swagger-ui-standalone-preset.js HTTP/1.1" 304 -
+127.0.0.1 - - [27/Jun/2019 10:24:28] "GET /api/swagger.json HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:24:30] "GET /api/ HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:24:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:38:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:38:59] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:43:42] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:43:42] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:45:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:45:39] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:46:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:46:39] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:46:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:46:41] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:46:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:46:48] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:47:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:47:03] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:47:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:47:39] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:47:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:47:59] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:48:29] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:48:29] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:00] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:26] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:26] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:33] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:38] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:49:38] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:50:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:50:13] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:50:20] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:50:21] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:50:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:50:31] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:52:19] "GET /login HTTP/1.1" 302 -
+127.0.0.1 - - [27/Jun/2019 10:52:39] "GET /callback?code=AQDi-211rjE5kP7LDSlQDwuTBy3MVv4rrTbA0MOyz2Re3NtVChAQgt8pURzTManHrfQVDDLb2WtbUU6Fc3kIz_HXiQWS-5iWhG-enTKjxbxDztZLZwDdCgOD1G2cbW4TTnCtd_Qnk0H-ZX5NEQ5wyiyhJ7GYt_0El6sXGASar1dQ0VEypAV5zuHSkZeUHyW9ADjRz-gunbOL2sJfSg_MfmsKxn3RWMDDuwLkDmzJxpZfCKLC029bFKdS0HOKYKb-HVXRvpAg8s5pRNg3e5d7O3UQBdcOCVMOOfYfDdu1POjtJF3iRcmxwtHE5r-aOE-VOWcyYNsVlLNgUT9r-gXJGJg00tnas3AjeRpU2SNZ_6AX-e84KKnn56TJphjEKVRKaD7OeAIxkfw8jS8PNcWRjWtxwVxT0uIOAJ2FMU_gjjHGAFWMyYgDB4mWDJnoXkEchZ_t7OUwOJJTaCaQ4VDAMQ HTTP/1.1" 302 -
+127.0.0.1 - - [27/Jun/2019 10:52:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:52:41] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:52:41] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:52:42] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 10:52:43] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+ * Detected change in '/home/you/vakken/project_software_engineering/PSE-WEB/app/__init__.py', reloading
+[10:52:39] Successfully stored the data for 'snipy12'
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 303-999-917
+127.0.0.1 - - [27/Jun/2019 11:06:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:06:34] "GET /static/favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:06:34] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:06:34] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:06:35] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:06:35] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:02] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:02] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:04] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:04] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:21] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:21] "GET /static/favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:21] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:22] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:23] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:55] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:55] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:56] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:07:56] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:08:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:09:05] "GET /login HTTP/1.1" 302 -
+127.0.0.1 - - [27/Jun/2019 11:09:12] "GET /callback?code=AQCxLs1gB4NqEQnpGHEtK8lp6Ytzd1i5t0sru49UdPsT6f3G4jfASvZe0OHssiO7hW7P0RZUFaPceJSfu2H_hjMUmV-WH34dM8QP9ykkCszS_zdVbzFR4JrF5hp259zEe3n9uVmH1acTvGg0pW6Nl6A9k7tqDi_ywk_ayjUe4GcNNVCVLMUkiu9vS5LULFEix_Rt39k8MEfV8sneTBdQ9oGKEpLZlEYA79gz_RAJfKUy-LH7xlf8aN1Orj1t8Wfd_w62RyDZ0wSbkiTcdczUR-AAoe2Ds4nHC4a8wglsBxAFfgbStl9bJZeQKSz9ete9n4ltvWIu6TwbqPk51D3FgT0v_dwICygVImAeHJaBwByB17pZ1YTSWk6Hl0KzRllr9fj2nmWaq6aPCXIGXFiGe1Mzt_HaYDVVdhwPtVltmnHhzGz-oFCMbbAp8grCGPGksI9LA5lhxYOv02eVrcf-Vg HTTP/1.1" 302 -
+127.0.0.1 - - [27/Jun/2019 11:09:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:09:14] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:09:15] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:09:16] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:09:16] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:11:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:11:55] "GET /api/tracks/metrics/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:11:55] "GET /static/favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:11:55] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:11:56] "GET /api/tracks/recommendation/snipy12/neutral HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:11:56] "GET /api/tracks/history/snipy12/0 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:32:38] "GET /api/ HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:32:38] "GET /swaggerui/swagger-ui.css.map HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:32:38] "GET /swaggerui/swagger-ui-bundle.js.map HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:32:38] "GET /swaggerui/swagger-ui-standalone-preset.js.map HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:32:38] "GET /api/swagger.json HTTP/1.1" 200 -
+127.0.0.1 - - [27/Jun/2019 11:32:55] "GET /api/user/mood/daily/snipy12/10 HTTP/1.1" 200 -
+ * Detected change in '/home/you/vakken/project_software_engineering/PSE-WEB/app/API/track_calls.py', reloading
+[11:09:12] Successfully stored the data for 'snipy12'
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 303-999-917
+ * Detected change in '/home/you/vakken/project_software_engineering/PSE-WEB/app/API/user_calls.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 303-999-917
+[2019-06-27 11:39:28,932] ERROR in app: Exception on /api/user/mood/daily/snipy12/1 [GET]
+Traceback (most recent call last):
+  File "/home/you/.local/lib/python3.7/site-packages/flask/app.py", line 1832, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/you/.local/lib/python3.7/site-packages/flask/app.py", line 1818, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/you/.local/lib/python3.7/site-packages/flask_restplus/api.py", line 325, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/you/.local/lib/python3.7/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/you/.local/lib/python3.7/site-packages/flask_restplus/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/you/.local/lib/python3.7/site-packages/flask_restplus/marshalling.py", line 136, in wrapper
+    resp = f(*args, **kwargs)
+  File "/home/you/vakken/project_software_engineering/PSE-WEB/app/API/user_calls.py", line 277, in get
+    for time, songid_list in resultDict.items()[:day_count]:
+TypeError: 'dict_items' object is not subscriptable
+127.0.0.1 - - [27/Jun/2019 11:39:28] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 500 -
+[2019-06-27 11:39:48,381] ERROR in app: Exception on /api/user/mood/daily/snipy12/1 [GET]
+Traceback (most recent call last):
+  File "/home/you/.local/lib/python3.7/site-packages/flask/app.py", line 1832, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/you/.local/lib/python3.7/site-packages/flask/app.py", line 1818, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/you/.local/lib/python3.7/site-packages/flask_restplus/api.py", line 325, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/you/.local/lib/python3.7/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/you/.local/lib/python3.7/site-packages/flask_restplus/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/you/.local/lib/python3.7/site-packages/flask_restplus/marshalling.py", line 136, in wrapper
+    resp = f(*args, **kwargs)
+  File "/home/you/vakken/project_software_engineering/PSE-WEB/app/API/user_calls.py", line 277, in get
+    for time, songid_list in resultDict.items()[:day_count]:
+TypeError: 'dict_items' object is not subscriptable
+127.0.0.1 - - [27/Jun/2019 11:39:48] "GET /api/user/mood/daily/snipy12/1 HTTP/1.1" 500 -

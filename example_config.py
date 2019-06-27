@@ -1,3 +1,26 @@
+"""
+    example_config.py
+    ~~~~~~~~~~~~
+    This file is the configuration file that is necessary to run this application. Parameters need to be changed
+    and file needs to be renamed to config.py.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
 import os
 
 # General settings
