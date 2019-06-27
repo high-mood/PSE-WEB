@@ -23,14 +23,14 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
     if recent_songs:
         history = []
         # Remove duplicates songs
-        songids = list(set([song['songid'] for song in recent_songs]))
+        songids = [song['songid'] for song in recent_songs]
         songids = songids[:song_count] if song_count > 0 else songids
         songmoods = models.Songmood.get_moods(songids)
         excitedness = 0
         happiness = 0
         count = 1
 
-        for songmood in songmoods:
+        for i, songmood in enumerate(songmoods):
             if calc_mood and songmood.excitedness and songmood.happiness:
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
@@ -40,7 +40,7 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
                 song = {'songid': songmood.songid,
                         'excitedness': songmood.excitedness,
                         'happiness': songmood.happiness,
-                        'time': [song['time'] for song in recent_songs][0],
+                        'time': recent_songs[i]['time'],
                         'name': models.Song.get_song_name(songmood.songid)}
                 history.append(song)
 
@@ -126,7 +126,6 @@ class TopSongs(Resource):
         'songs': fields.Nested(api.model('song', {
             'songid': fields.String,
             'name': fields.String,
-            'time': fields.String,
             'excitedness': fields.Float,
             'happiness': fields.Float
         }))
