@@ -1,9 +1,9 @@
 import requests
 from requests.auth import HTTPBasicAuth
 
+from app.utils.exceptions import StatusCodeError
 from app.utils.models import User
 from config import SPOTIFY_CLIENT, SPOTIFY_SECRET
-from app.utils.exceptions import StatusCodeError
 
 
 def get_artists(access_token, artistids):

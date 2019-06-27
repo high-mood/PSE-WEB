@@ -1,18 +1,50 @@
-from flask import Flask, send_from_directory, jsonify, json, render_template, redirect, request, session, flash, url_for
+"""
+    views.py
+    ~~~~~~~~~~~~
+    This file contains the flask views that route URL's to functions. Primary functionality is the authentication of
+    users.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
+import os
+
+from flask import send_from_directory, render_template, redirect, request, session, flash, url_for
+
 from app import app
 # Refactor later
 from app import spotifysso
-from app.utils import influx, spotify
-from app.utils.tasks import update_user_tracks
-from app.utils.models import User, Song
 from app.API.track_calls import TopSongs
+from app.utils import influx, spotify
+from app.utils.models import User, Song
+from app.utils.tasks import update_user_tracks
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if "json_info" not in session:
-        return render_template("login.html", **locals())
+        return render_template("index.html", **locals())
     else:
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
@@ -20,8 +52,13 @@ def index():
         access_token = spotify.get_access_token(session['json_info']['refresh_token'])
         all_songs = set([Song.get_song_name(song['songid']) for song in influx.get_songs(client, userid)])
 
-        return render_template("index.html", **locals(), text=session['json_info']['display_name'],
+        return render_template("dashboard.html", **locals(), text=session['json_info']['display_name'],
                                id=session['json_info']['id'], song_history=all_songs)
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
 
 
 @app.route("/index_js")

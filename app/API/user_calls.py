@@ -1,11 +1,35 @@
+"""
+    user_calls.py
+    ~~~~~~~~~~~~
+    The functionality within this file contains the API calls...
+
+    TODO
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
+import datetime
 from collections import defaultdict, Counter
 
-from flask_restplus import Namespace, Resource, fields
-from app.utils import influx, models
-from app import app
-
 import dateparser
-import datetime
+from flask_restplus import Namespace, Resource, fields
+
+from app import app
+from app.utils import influx, models
 
 api = Namespace('user', description='Information about user (over time)', path="/user")
 

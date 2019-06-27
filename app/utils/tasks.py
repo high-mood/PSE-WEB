@@ -1,11 +1,10 @@
+import sys
+from datetime import datetime
+
+from app import app
+from app.utils import influx, spotify
 from app.utils.models import User, Song, Artist, Songmood, SongArtist
 from moodanalysis.moodAnalysis import analyse_mood
-from app.utils import influx, spotify
-from app import app
-from app import db
-
-from datetime import datetime
-import sys
 
 
 def add_artist_genres(artist_ids, access_token):

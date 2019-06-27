@@ -1,4 +1,5 @@
 from influxdb import InfluxDBClient
+
 from app import app
 
 

@@ -1,5 +1,6 @@
-from app import db
 import datetime
+
+from app import db
 
 
 class User(db.Model):
@@ -249,9 +250,9 @@ class Songmood(db.Model):
             response_happiness = songmood.response_happiness
             response_count = songmood.response_count
             songmood.response_happiness = (response_happiness * response_count + user_happiness) / (
-                                           response_count + 1)
+                    response_count + 1)
             songmood.response_excitedness = (response_excitedness * response_count + user_excitedness) / (
-                                            1 + response_count)
+                    1 + response_count)
             songmood.response_count = response_count + 1
 
             db.session.commit()

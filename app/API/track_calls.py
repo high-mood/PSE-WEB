@@ -1,8 +1,32 @@
-from app.utils.recommendations import recommend_input, recommend_metric
-from flask_restplus import Namespace, Resource, fields
-from app.utils import influx, models
-from app import app
+"""
+    track_calls.py
+    ~~~~~~~~~~~~
+    The functionality within this file contains the API calls...
 
+    TODO
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
+from flask_restplus import Namespace, Resource, fields
+
+from app import app
+from app.utils import influx, models
+from app.utils.recommendations import recommend_input, recommend_metric
 
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
@@ -119,7 +143,6 @@ class History(Resource):
 
 @api.route('/topsongs/<string:userid>/<string:count>')
 class TopSongs(Resource):
-
     # Output format
     top_songs = api.model('Song history with mood', {
         'userid': fields.String,
@@ -183,6 +206,7 @@ class Metric(Resource):
             'happiness': fields.Float
         }))
     })
+
     @api.marshal_with(metrics, envelope='resource')
     def get(self, userid, song_count=0):
         """
