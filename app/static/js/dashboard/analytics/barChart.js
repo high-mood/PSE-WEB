@@ -1,52 +1,46 @@
 // makes a barchart (call on empty divId, data is a list of songs with at least the key:value pairs: time, exitedness and happiness)
 function createBarChart(divId,start,end,data) {
+
   var height = 300
   var width = 600
-
   var barWidth = (9 * width / 10) / (2 * (end - start + 1));
-  var barHeight = (9 * height / 200);
+  var exitednessColor = "#1ba2c1";
+  var happinessColor = "#1cc18f";
+  
+  // 0. Clear the div.
 
-  var exitednessColor = "#ffffff";
-  var happinessColor = "#000000";
-
-  // clear div
-  $(divId).empty();
-
-  // Add svg
+  $(`#${divId}`).empty();
+  
+  // 1. Add svg to target div.
   var svg = d3.select("#" + divId).append("svg")
-              .attr('width', "100%")
-              .attr('height', "100%")
-              .attr("viewBox","0 0 " + width + " " + height)
-              .attr("preserveAspectRatio","xMidYMid meet");
-
-  // todo Calculate data
+  .attr('width', "100%")
+  .attr('height', "100%")
+  .attr("viewBox","0 0 " + width + " " + height)
+  .attr("preserveAspectRatio","xMidYMid meet");
+  
+  // 2. Calculate data for bins
   dataSet = []
-  for (var i = start; i <= end; i++) {
-    // todo get avarages
-    var conformingData = data.filter(function (data) {
-      return data.time >= i && data.time < (i + 1);
-    })
-    if (conformingData.length > 0) {
-      var avarageE = d3.mean(conformingData,function(d) { return d.exitedness});
-      var avarageH = d3.mean(conformingData,function(d) { return d.happiness});
-      dataSet.push({x:i,y:avarageE});
-      dataSet.push({x:(.5 + i),y:avarageH});
-    } else {
-      dataSet.push({x:i,y:0});
-      dataSet.push({x:(.5 + i),y:0});
+  for (var i = 0; i < data.length; i++) {
+    hourData = data[i];
+    if(hourData.hour >= start && hourData.hour <= end) {
+      dataSet.push({x:hourData.hour,y:hourData.excitedness});
+      dataSet.push({x:(hourData.hour + ".5"),y:hourData.happiness});
     }
-
   }
+  
+  var yMax = d3.max(dataSet.map(function(dataSet) { return Math.abs(dataSet.y); }));
+  var barHeight = (9 * height / 20) / yMax;
+  
 
-  // make scales
+  // 3. Make the scales.
   var xScale = d3.scaleLinear()
                  .domain([start,end + 1])
                  .range([0,(9 * width / 10)]);
   var yScale = d3.scaleLinear()
-                 .domain([-10,10])
+                 .domain([-yMax,yMax])
                  .range([(9 * height / 10),0]);
 
-  // make labels
+  // 4. Make the labels.
   svg.append("g")
     .attr("text-anchor", "middle")
     .attr("fill","#ffffff")
@@ -60,11 +54,11 @@ function createBarChart(divId,start,end,data) {
     .append("text")
     .text("time");
 
-  // make bars
+  // 5. Make the bars od the data.
   svg.selectAll('rect').data(dataSet)
     .enter().append('rect')
     .attr('fill', function (data) {
-      if (Number.isInteger(data.x)) {
+      if ((data.x).indexOf('.') == -1) {
         return exitednessColor;
       } else {
         return happinessColor;
@@ -85,7 +79,7 @@ function createBarChart(divId,start,end,data) {
       }
     })
 
-  // make axes
+  // 6. Make the axes.
   var xAxis = d3.axisBottom()
     .scale(xScale)
     .ticks((end - start + 1));
@@ -100,5 +94,4 @@ function createBarChart(divId,start,end,data) {
     .call(yAxis)
       .attr("class","heatmapAxis")
       .attr("transform","translate(" + width / 20 + "," + height / 20 + ")");
-
 }

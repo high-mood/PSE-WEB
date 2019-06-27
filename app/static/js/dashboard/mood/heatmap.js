@@ -15,12 +15,9 @@ function createHeatmapData(userData, xMin, xMax, yMin, yMax, xSamples, ySamples,
       var dataPoint = {x:x,y:y,size:0};
       var yMeanReach = (y + 0.5) * yDomainSize / ySamples + yMin;
       // Find all conforming data for this dataPoint.
-      // var conformingDataNames = songData.filter(function (songData) {
-      //   return (songData.data0 - xMeanReach) ** 2 + (songData.data1 - yMeanReach) ** 2 < 9;
-      // }).map(function(songData) { return songData.name; });
-      // dataPoint.size = conformingDataNames.length;
+
       for( var i = 0; i < songData.length; i++) {
-        dataPoint.size += 1 / (1 + (((songData[i].data0 - xMeanReach) ** 2 + (songData[i].data1 - yMeanReach) ** 2)) ** 0.5)
+        dataPoint.size += 1 / (((songData[i].data0 - xMeanReach) ** 2 + (songData[i].data1 - yMeanReach) ** 2) ** 0.5)
       }
 
 
@@ -50,8 +47,8 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
   var dataSet = createHeatmapData(userData, xMin, xMax, yMin, yMax, xSamples, ySamples, xDomainSize, yDomainSize);
 
   // 3. Set colorScale for the data.
-  var maxSize = d3.max(dataSet.map(function(data) { return data.size; })) + 1;
-  var minSize = d3.min(dataSet.map(function(data) { return data.size; }));
+  var maxSize = d3.max(dataSet.map(function(data) { return data.size; })) * 0.92;
+  var minSize = d3.min(dataSet.map(function(data) { return data.size; })) * 1.7;
   var colorScale = d3.scaleLinear().domain([minSize, maxSize]).range([lowDataColor, highDataColor]);
 
   // 4. Set scales for x and y direction
@@ -85,31 +82,22 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
     .attr('y', function (data) {
       return data.y * ySampleWidth + height / 10 + ySampleWidth / 20;
     })
-    .on("mouseover", function () {
-      d3.select(this)
-        .attr('stroke-width', 2);
-    })
-    .on("mouseout", function () {
-      d3.select(this)
-        .attr('stroke-width', 0);
-    });
 
-
-  // 5.2.1 Add in axes.
-  var xAxis = d3.axisBottom()
-    .scale(xScale)
-    .ticks(d3.min([xSamples,20]));
-  svg.append("g")
-    .attr("class","heatmapAxis")
-    .call(xAxis)
-      .attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")");
-  var yAxis = d3.axisLeft()
-    .scale(yScale)
-    .ticks(d3.min([ySamples,20]));
-  svg.append("g")
-    .attr("class","heatmapAxis")
-    .call(yAxis)
-      .attr("transform","translate(" + width / 15 + "," + height / 10 + ")");
+      // 5.2.1 Add in axes.
+    var xAxis = d3.axisBottom()
+	.scale(xScale)
+	.ticks(d3.min([xSamples, 5]));
+    svg.append("g")
+	.attr("class","heatmapAxis")
+	.call(xAxis)
+	.attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")");
+    var yAxis = d3.axisLeft()
+	.scale(yScale)
+	.ticks(d3.min([ySamples, 5]));
+    svg.append("g")
+	.attr("class","heatmapAxis")
+	.call(yAxis)
+	.attr("transform","translate(" + width / 15 + "," + height / 10 + ")");
 
   // 5.2.2 Add labels on the axes.
   svg.append("g")

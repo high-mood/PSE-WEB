@@ -1,14 +1,12 @@
 import os
 
 from flask import Flask
-from flask_cors import CORS
 from flask_oauthlib.client import OAuth
 from flask_sqlalchemy import SQLAlchemy
 
 import config
 
 app = Flask(__name__)
-CORS(app)
 app.config.from_object('config')
 app.secret_key = os.environ.get("APP_SECRET", config.SECRET)
 db = SQLAlchemy(app)
