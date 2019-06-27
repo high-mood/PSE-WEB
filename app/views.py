@@ -21,15 +21,17 @@
            "Jelle Witsen Elias"
 """
 
-from flask import Flask, send_from_directory, jsonify, json, render_template, redirect, request, session, flash, url_for
+import os
+
+from flask import send_from_directory, render_template, redirect, request, session, flash, url_for
+
 from app import app
 # Refactor later
 from app import spotifysso
-from app.utils import influx, spotify
-from app.utils.tasks import update_user_tracks
-from app.utils.models import User, Song
 from app.API.track_calls import TopSongs
-import os
+from app.utils import influx, spotify
+from app.utils.models import User, Song
+from app.utils.tasks import update_user_tracks
 
 
 @app.route('/favicon.ico')

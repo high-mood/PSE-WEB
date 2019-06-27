@@ -20,9 +20,9 @@
            "Jelle Witsen Elias"
 """
 
+from app import app
 from app import db
 from app.utils import influx
-from app import app
 from app.utils.models import Song, Songmood
 from moodanalysis.moodAnalysis import analyse_mood
 

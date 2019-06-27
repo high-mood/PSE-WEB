@@ -22,14 +22,14 @@
            "Jelle Witsen Elias"
 """
 
+import datetime
 from collections import defaultdict, Counter
 
-from flask_restplus import Namespace, Resource, fields
-from app.utils import influx, models
-from app import app
-
 import dateparser
-import datetime
+from flask_restplus import Namespace, Resource, fields
+
+from app import app
+from app.utils import influx, models
 
 api = Namespace('user', description='Information about user (over time)', path="/user")
 

@@ -1,9 +1,10 @@
-from app.utils.models import User
-from app.utils.tasks import get_features_moods
-from app.utils import spotify
+import statistics
 
 from scipy.spatial import distance
-import statistics
+
+from app.utils import spotify
+from app.utils.models import User
+from app.utils.tasks import get_features_moods
 
 
 def order_songs(songs, target, n):

@@ -22,8 +22,9 @@
 """
 
 import numpy as np
-from sklearn.ensemble import GradientBoostingRegressor as GBR
 from joblib import dump
+from sklearn.ensemble import GradientBoostingRegressor as GBR
+
 from app.utils.tasks import link_features_mood
 
 

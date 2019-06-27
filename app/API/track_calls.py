@@ -22,10 +22,11 @@
            "Jelle Witsen Elias"
 """
 
-from app.utils.recommendations import recommend_input, recommend_metric
 from flask_restplus import Namespace, Resource, fields
-from app.utils import influx, models
+
 from app import app
+from app.utils import influx, models
+from app.utils.recommendations import recommend_input, recommend_metric
 
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 

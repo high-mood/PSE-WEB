@@ -23,6 +23,7 @@
 """
 
 from flask_restplus import Namespace, Resource, fields
+
 from app.utils import spotify
 
 api = Namespace('playlist', description='playlist', path="/playlist")

@@ -21,9 +21,10 @@
            "Jelle Witsen Elias"
 """
 
-from joblib import load
-import numpy as np
 import sys
+
+import numpy as np
+from joblib import load
 
 
 def analyse_mood(songs):

@@ -21,13 +21,13 @@
            "Jelle Witsen Elias"
 """
 
-from flask_restplus import Api
 from flask import Blueprint
-from app import app
+from flask_restplus import Api
 
-from .user_calls import api as user_name_space
-from .track_calls import api as track_name_space
+from app import app
 from .playlist_calls import api as playlist_name_space
+from .track_calls import api as track_name_space
+from .user_calls import api as user_name_space
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint)
