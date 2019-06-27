@@ -65,7 +65,6 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	}//if
 
 	//If the supplied maxValue is smaller than the actual one, replace by the max in the data
-	// var maxValue = max(cfg.maxValue, d3.max(data, function(i){return d3.max(i.map(function(o){return o.value;}))}));
 	let maxValue = 0;
 	for (let j=0; j < data.length; j++) {
 		for (let i = 0; i < data[j].axes.length; i++) {

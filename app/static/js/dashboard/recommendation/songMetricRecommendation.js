@@ -1,8 +1,20 @@
 function toggleMetric(metricName) {
-  // var userId = document.getElementById("username").textContent;
-  // TODO: remove hardcode
-
-  var request = new XMLHttpRequest
+    if (metricName == 'dance') {metricName = 'party'};
+    var themes = ['party', 'karaoke', 'study'];
+    var formattedstring = metricName.charAt(0).toUpperCase() + metricName.slice(1) + " ";
+    if (themes.includes(metricName)) {
+	document.getElementById("moodbutton").innerHTML =
+	    "Mood " + "<span class=\"caret\"></span>";
+	document.getElementById("themebutton").innerHTML =
+	    formattedstring + "<span class=\"caret\"></span>";
+    } else {
+	document.getElementById("moodbutton").innerHTML =
+	    formattedstring + "<span class=\"caret\"></span>";
+	document.getElementById("themebutton").innerHTML =
+	    "Theme " + "<span class=\"caret\"></span>";
+    }
+    
+  var request = new XMLHttpRequest;
   request.open('GET', 'http://localhost:5000/api/tracks/recommendation/' + userid + '/' + metricName, true)
   request.onload = function() {
     var alldata = JSON.parse(this.response);

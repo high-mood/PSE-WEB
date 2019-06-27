@@ -12,7 +12,6 @@
     <title>Moodify</title>
 
     <!-- Bootstrap Core CSS -->
-    <!-- {{ url_for('.static', filename='css/main.css') }} -->
     <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}" type="text/css">
 
     <!-- Slider CSS -->
@@ -52,9 +51,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <!-- // TODO fix logo -->
-            <!-- <li><a class="brand-image"><img class="brand-image" src="../img/logo_v2.png" height="42" width="42"/></a></li> -->
-            <a class="navbar-brand page-scroll" href="#page-top">Moodify</a>
+            <!-- Navbar logo -->
+            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-5">
+                <a class="brand-image page-scroll" href="#page-top"><img class="brand-image" src="{{ url_for('.static', filename='img/navbar_moodify_logo.png') }}" height="50" /></a>
+            </div>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -76,16 +76,17 @@
   <header>
     <div class="header-content">
         <div class="header-content-inner">
+            <br>
             <h1>Your Spotify usage analysed and visualised</h1>
             <hr>
-            <p> Start by securely login into Spotify and giving us some permission to analyze Spotify's data about you, using artificial intelligence.
-                This will result in a completely personalised webpage featuring interesting statistics about you and services tailered to you like never seen before.
+            <p>Start by securely logging in to Spotify and giving us some permission to analyze Spotify's data about you.
+               Using artificial intelligence, this will result in a completely personalised webpage featuring interesting statistics about you and services tailored to your needs.
             </p>
             <div class="row">
-                <div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2 col-sm-4 col-sm-offset-2 col-xs-6 text-center">
+                <div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2 col-sm-4 col-sm-offset-2 col-xs-4 col-xs-offset-2 text-center">
                     <a href="/login" class="btn btn-primary btn-xl">Get Started!</a>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 text-center">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center">
                     <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
                 </div>
             </div>
@@ -100,7 +101,11 @@
                 <h2 class="section-heading">Take a closer look at yourself</h2>
                 <hr class="light">
                 <p class="text-faded">
-                    Moodify is a brand new innovative application which takes you on a journey through your Spotify history. At the start of this journey, advanced artificial intelligence is employed to analyse your personal spotify usage. Moodify then displays interesting insights into your behaviour and mood through intuitive and completely customizable interfaces. In these interfaces, you can evaluate mood patterns over time and view statistics about the songs you listen to. On top of this Moodify features tailor-made song recommendations based on your current or desired mood. To strengthen the connection between you and Moodify, the application allows you to optimize their personal mood analyses by using a feedback interface that specifies how a given song makes them feel.
+                    Moodify is a brand new innovative application which takes you on a journey through your Spotify history. 
+                    At the start of this journey, advanced artificial intelligence is employed to analyse your personal Spotify usage. 
+                    Moodify then displays interesting insights of your behaviour and mood through intuitive and completely customizable interfaces. 
+                    In these interfaces, you can evaluate mood patterns over time and view statistics about the songs you listen to. On top of this, Moodify features tailor-made song recommendations based on your current or desired mood. 
+                    To strengthen the connection between you and Moodify, the application allows you to optimize their personal mood analyses by using a feedback interface that specifies how a given song makes them feel.
                 </p>
                 <a href="/login" class="btn btn-default btn-xl">Get Started!</a>
             </div>
@@ -119,7 +124,7 @@
 
         <div class="col-lg-2 col-lg-offset-3 col-xs-3 col-xs-offset-2 col-sm-2 col-sm-offset-3 col-md-2 col-md-offset-3 text-center img img-fluid" max-height=auto max-width=20px>
             <a href="mailto:moodify@diallom.com">
-                <img class="img wow bounceIn" data-wow-delay=".1s"src="{{ url_for('.static', filename='img/envelope.png') }}" height=50% width=50%>
+                <img class="img wow bounceIn" data-wow-delay=".1s"src="{{ url_for('.static', filename='img/envelope.svg') }}" height=50% width=50%>
             </a>
         </div>
         <div class="col-lg-2 col-lg-offset-2 col-xs-3 col-xs-offset-2 col-sm-2 col-sm-offset-2 col-md-2 col-md-offset-2 text-center img img-fluid">
