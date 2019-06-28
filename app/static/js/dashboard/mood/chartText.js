@@ -1,6 +1,6 @@
 var mean_excitedness, mean_happiness;
 const graphTexts = ["\
-<b>Excited:</b> <br><br>\
+<b>Excited:</b><br><br>\
 <i>\"Choose thoughts that give you the emotions of being alive and excited about life.\"</i> <br>\
 Bryant McGill, Simple Reminders: Inspiration for Living Your Best Life <br><br>\
 Like this quote you choose to listen to music that makes you feel alive and excited about life. <br><br>\
@@ -10,7 +10,7 @@ They are happy, upbeat and energetic, the beat is faster and the song has a high
 People generally describe this kind of music as happy, cheerful and amazed. <br>\
 You seem to be a very cheerful and upbeat person.",
 "\
-<b>Angry:</b> <br><br>\
+<b>Angry:</b><br><br>\
 <i>\"Anybody can become angry - that is easy, but to be angry with the right person <br>\
 and to the right degree and at the right time and for the right purpose, <br>\
 and in the right way - that is not within everybody's power and is not easy.\"</i> <br>\
@@ -23,7 +23,7 @@ They are upbeat, pumped, empowering and angry, the beat might be faster and the 
 People generally describe this kind of music as empowering, angry, upbeat and pumped. <br>\
 You seem like someone that loves to feel empowered by music, or perhaps you're a little frustrated.",
 "\
-<b>Mellow:</b> <br><br>\
+<b>Mellow:</b><br><br>\
 <i>\"You know, I'm a pretty mellow guy. I'm pretty easy-going. I see everyone's perspective.\"</i> <br>\
 Paul Walker <br><br>\
 Like this quote you're a person who likes to listen to easy-going music. <br><br>\
@@ -33,7 +33,7 @@ They are nostalgic and peaceful, the beat is a bit slower and the song has a low
 People generally describe this kind of music as pretty relaxed but with a happy vibe. <br>\
 You seem like a very relaxed and mellow person.",
 "\
-<b>Sad:</b> <br><br>\
+<b>Sad:</b><br><br>\
 <i>\"There is a sacredness in tears. They are not the mark of weakness, but of power. <br>\
 They speak more eloquently than ten thousand tongues. They are the messengers of <br>\
 overwhelming grief, of deep contrition, and of unspeakable love.\"</i> <br>\
