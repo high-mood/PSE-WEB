@@ -2,10 +2,8 @@
  *
  * This file contains javascript code to properly render the 'Review' section.
  *
- *
- * This file defines JQuery UI slider objects used in the section 'Analytics'.
- *
- *     This file contains the structure of the playlist API with functions to handle basic GET and POST requests.
+ * To do so, it defines JQuery UI slider objects used in the section 'Analytics'.
+ * It contains the structure of the playlist API with functions to handle basic GET and POST requests.
  *
  *
  *     :copyright: 2019 Moodify (High-Mood)
