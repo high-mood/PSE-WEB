@@ -13,7 +13,7 @@
     <!-- {{ url_for('.static', filename='css/bootstrap.min.css') }} -->
 
     <!-- Bootstrap Core CSS -->
-    
+
     <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}" type="text/css">
 
     <!-- Slider CSS -->
@@ -61,7 +61,7 @@
             <div class="col-lg-7 col-md-7 col-sm-7 col-xs-5" style="padding: 0;" id="logo">
                 <a class="page-scroll" href="#page-top"><img src="{{ url_for('.static', filename='img/navbar_moodify_logo.png') }}" height="50" /></a>
             </div>
-            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 text-faded" id="username">{{ id }}</div>       
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 text-faded" id="username">{{ id }}</div>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -83,7 +83,7 @@
         </div>
     </div>
 </nav>
- 
+
   <section class="background-black" id="mood">
     <div class="container-fluid">
         <div class="row">
@@ -179,16 +179,16 @@
                         <p id="songdisplayname"></p>
                         <div>
                             <!-- <input id="happiness_slider" class="feedback-slider" type="range" min="0" max="100" step="1" value="50"> -->
-                            <div class="row top-buffer">
+                            <div class="row col-xs-12 top-buffer no-padding">
                                 <p id="happiness_slider_text" class="text-center hcenter">Happiness: 50%</p>
                                 <input id="happiness_slider" class="hcenter" type="range">
                                 <!-- <br> <br> -->
                             </div>
-                            <div class="row top-buffer">
+                            <div class="row col-xs-12 top-buffer">
                                 <p id="excitedness_slider_text" class="text-center hcenter">Excitedness: 50%</p>
                                 <input id="excitedness_slider" class="hcenter" type="range">
                             </div>
-                            <div class="row top-buffer">
+                            <div class="row col-xs-12 top-buffer">
                                 <br>
                                 <br>
                                 <div class="btn-group-vertical" role="group">
@@ -243,7 +243,7 @@
                 <button type="button" id="themebutton" class="btn btn-block btn-dark dropdown-toggle btn-padding dropdown-menu-center" style="width: 50%;" data-toggle="dropdown">Theme <span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-padding dashboard-dropdown dropdown-menu-center" role="menu">
                   <li><a onclick="toggleMetric('dance')">Party</a></li>
-                  <li class="divider"></li> 
+                  <li class="divider"></li>
                   <li><a onclick="toggleMetric('karaoke')">Karaoke</a></li>
                   <li class="divider"></li>
                   <li><a onclick="toggleMetric('study')">Study</a></li>
@@ -299,7 +299,7 @@
         -->
 
         <div class="row">
-            
+
             <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12" id="linechart-buttons" style="padding: 0;">
                <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 text-center" id="lineCharts">
                     <div class="row">
@@ -352,7 +352,7 @@
 
                     </div>
                     <div id="barChart">
-                        
+
                     </div>
                 </div>
                 <div id="analyticsDescription" class="col-lg-2 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1 text-padding">
@@ -364,23 +364,23 @@
                     <div id="timeframe-slider-div">
                         <br>
                         <input id="timeframe-slider" type="text"/><br> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
-                        <br> Select the timeframe to examine 
+                        <br> Select the timeframe to examine
                     </div>
                     <div id="days-slider-div">
                         <br>
                         <input id="days-slider" type="text"/> <br> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
-                        <br> Select the number of days you want to examine 
+                        <br> Select the number of days you want to examine
                     </div>
                     <div id="songs-slider-div">
                         <br>
                         <input id="songs-slider" type="text"/> <br> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
-                        <br> Select the number of songs you want to examine 
+                        <br> Select the number of songs you want to examine
                     </div>
                 </div>
             </div>
 
         </div>
-        
+
     </div>
 </section>
 
