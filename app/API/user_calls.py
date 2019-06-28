@@ -197,6 +197,7 @@ class HourlyMood(Resource):
                 count = len(tempresults)
                 # Remove the first element, which will be used for addition
                 A = Counter(tempresults.pop(0))
+                A = convert_none(A)
                 # Now iterate over each song's metrics within the results and add the values using counter.
                 for B in tempresults:
                     B = Counter(B)
@@ -298,6 +299,7 @@ class DailyMood(Resource):
                 count = len(tempresults)
                 # Remove the first element, which will be used for addition
                 A = Counter(tempresults.pop(0))
+                A = convert_none(A)
                 # Now iterate over each song's metrics within the results and add the values using counter.
                 for B in tempresults:
                     B = Counter(B)
