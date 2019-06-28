@@ -107,19 +107,20 @@ function fillScrollWindow() {
     containerDiv = document.getElementById('scroll_window');
     containerDiv.innerHTML = '';
 
+    // Loop to the amount of songs returned for current user
     for (var index = 0; index < data.length; index++) {
-        var songdiv = document.createElement('COLUMN');
-        songdiv.classList.add('songdiv');
 
+        // Create main div for song and set style
+        var songdiv = document.createElement('COLUMN');
         var songid = data[index].songid;
+        songdiv.classList.add('songdiv');
         songdiv.id = songid;
         songdiv.width = "100%";
         songdiv.style.backgroundColor = "black";
 
+        // Create select button for song and set style
         var btn = document.createElement("BUTTON");
         btn.innerHTML = "Select";
-
-        // Style is added here to ensure proper rendering.
         btn.style.margin = "0px 0px 5px 0px";
         btn.style.border = "none";
         btn.style.width = "20%";
@@ -131,8 +132,7 @@ function fillScrollWindow() {
         btn.classList.add('SongRecButton');
         btn.classList.add("btn-default");
 
-        songdiv.appendChild(btn);
-
+        // Create Spotify play widget for song
         var ifrm = document.createElement("iframe");
         ifrm.setAttribute("src", "https://open.spotify.com/embed/track/" + data[index].songid);
         ifrm.setAttribute("align", "right");
@@ -140,13 +140,14 @@ function fillScrollWindow() {
         ifrm.setAttribute("allowtransparency", "true");
         ifrm.setAttribute("allow", "encrypted-media");
 
-        // Style is added here to ensure proper rendering.
+        // Spotify widget style is added here to ensure proper rendering.
         ifrm.style.margin = "0px 0px 5px 0px";
         ifrm.style.border = "none";
         ifrm.style.width = "80%";
-
         ifrm.style.height = "80px";
 
+        // Append widget and select button to songdiv, append songdiv to container
+        songdiv.appendChild(btn);
         songdiv.appendChild(ifrm);
         containerDiv.appendChild(songdiv);
     }
@@ -168,10 +169,12 @@ function adjustSlider(song_index) {
     var songname = document.getElementById('songdisplayname');
     songname.innerHTML = window.curData[song_index].name;
 
+    // Set happiness slider to song happiness
     var happiness_slider_text = $("#happiness_slider_text");
     var happiness_percentage = (happiness + 10) * 5;
     happiness_slider_text.html(`Happiness: (${Math.trunc(happiness_percentage)}%)`);
 
+    // Set exitedness slider to song exitedness
     var excitedness_slider_text = $("#excitedness_slider_text");
     var excitedness_percentage = (excitedness + 10) * 5;
     excitedness_slider_text.html(`Excitedness: (${Math.trunc(excitedness_percentage)}%)`);
