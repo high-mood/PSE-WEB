@@ -1,3 +1,17 @@
+    /**
+     * Summary. (use period)
+     *
+     * Description. (use period)
+     *
+     * @param {type}   var           Description.
+     * @param {type}   [var]         Description of optional variable.
+     * @param {type}   [var=default] Description of optional variable with default variable.
+     * @param {Object} objectVar     Description.
+     * @param {type}   objectVar.key Description of a key in the objectVar parameter.
+     * 
+     * @return {type} Description.
+     */
+
 $('#lineSongs').hide()
 $('#barChart').hide()
 analyticsDescription("days")
@@ -8,7 +22,7 @@ function requestLineCharts(retriggered) {
   var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
   song_count = songsSliderObj.slider('getValue');
 
-  linechartRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/metrics/' + userid + '/' + song_count, true)
+  linechartRequest.open('GET', 'http://localhost:5000/api/tracks/metrics/' + userid + '/' + song_count, true)
   linechartRequest.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
@@ -27,7 +41,7 @@ function requestLineCharts(retriggered) {
   var linechartDaysRequest = new XMLHttpRequest()
 
   days = daysSliderObj.slider('getValue');
-  linechartDaysRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/user/mood/daily/' + userid + '/' + days, true)
+  linechartDaysRequest.open('GET', 'http://localhost:5000/api/user/mood/daily/' + userid + '/' + days, true)
   linechartDaysRequest.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
@@ -49,7 +63,7 @@ function requestLineCharts(retriggered) {
   var start, end;
   [start, end] = timeframeSliderObj.slider('getValue');
 
-  barchartRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/user/mood/hourly/' + userid + '/' + start + '/' + end, true)
+  barchartRequest.open('GET', 'http://localhost:5000/api/user/mood/hourly/' + userid + '/' + start + '/' + end, true)
   barchartRequest.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource

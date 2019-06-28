@@ -1,9 +1,28 @@
-/////////////////////////////////////////////////////////
-/////////////// The Radar Chart Function ////////////////
-/// mthh - 2017 /////////////////////////////////////////
-// Inspired by the code of alangrafu and Nadieh Bremer //
-// (VisualCinnamon.com) and modified for d3 v4 //////////
-/////////////////////////////////////////////////////////
+/**
+ * Creates the RadarChart with D3
+ * 
+ * /////////////////////////////////////////////////////////
+ * /////////////// The Radar Chart Function ////////////////
+ * /// mthh - 2017 /////////////////////////////////////////
+ * // Inspired by the code of alangrafu and Nadieh Bremer //
+ * // (VisualCinnamon.com) and modified for d3 v4 //////////
+ * /////////////////////////////////////////////////////////
+ * 
+ * @copyright 2019 Moodify (High-Mood)
+ * @author Stan van den Broek
+ * @author Mitchell van den Bulk
+ * @author Mo Diallo
+ * @author Arthur van Eeden
+ * @author Elijah Erven
+ * @author Henok Ghebrenigus
+ * @author Jonas van der Ham
+ * @author Mounir El Kirafi
+ * @author Esmeralda Knaap
+ * @author Youri Reijne
+ * @author Siwa Sardjoemissier
+ * @author Barry de Vries
+ * @author Jelle Witsen Elias
+ */
 
 const max = Math.max;
 const sin = Math.sin;

@@ -1,24 +1,63 @@
-/*
- * Shows a line chart with information of song history of specific user.
- * Code basis by Gord Lea: 
- * https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
+/**
+ * Shows a line chart with information of song metric history.
+ *
+ * This file generates two different line charts displaying a user's song metric history.
+ * As such it is structured in two parts:
+ * 
+ * The line chart for "songs" takes the last *n* songs of a user and displays them to
+ * show a user their song metric history over time.
+ * 
+ * The second way of displaying this data is using the "days" line chart. Here the user
+ * selects a number of days, where for each day the average of every metric is calculated
+ * and that average is displayed per metric per day
+ * 
+ * @see {@link https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89} for the code base by Gord Lea
+ * @author Stan van den Broek
+ * @author Mitchell van den Bulk
+ * @author Mo Diallo
+ * @author Arthur van Eeden
+ * @author Elijah Erven
+ * @author Henok Ghebrenigus
+ * @author Jonas van der Ham
+ * @author Mounir El Kirafi
+ * @author Esmeralda Knaap
+ * @author Youri Reijne
+ * @author Siwa Sardjoemissier
+ * @author Barry de Vries
+ * @author Jelle Witsen Elias
  */
 
-var xScale, yScale, yScaleTempo, yScaleMoods, data;
-
 // fills dataset
-function fillDataset(dataset, data) {
-    for (var key in dataset) {
-        var value = dataset[key];
-        for (var i in d3.range(data.metric_over_time.length)) {
-            value.push({'y': data.metric_over_time[i][key]});
+function fillDataset(dataset, data, chartType) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
+    var dataKey;
+    if (chartType == "songs") {
+        dataKey = "metric_over_time";
+    }
+    else if (chartType == "days") {
+        dataKey = "dates";
+    }
+
+    for (var metric in dataset) {
+        var value = dataset[metric];
+        for (var i in d3.range(data[dataKey].length)) {
+            value.push({'y': data[dataKey][i][metric]});
         }
     }
     return dataset;
 }
 
 // gets all scales for linechart
-function getScales(data, dataset, height, width) {
+function getScalesSongs(data, dataset, height, width) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
     // scales
     xScale = d3.scaleLinear()
         .domain([data.metric_over_time.length - 1, 0])
@@ -50,11 +89,16 @@ function getScales(data, dataset, height, width) {
         .domain(["past", "now"])
         .range([0, width]);
 
-    return [dataset, xScale, yScale, yScaleTempo, yScaleMoods, xScaleTicks];
+    return [xScale, yScale, yScaleTempo, yScaleMoods, xScaleTicks];
 }
 
 // create tooltip for song history chart
 function createSongsTooltip() {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
     // make tooltip
     var tooltip = document.createElement("div");
     tooltip.setAttribute("id", "tooltipSongs");
@@ -69,13 +113,19 @@ function createSongsTooltip() {
         .style("top", "0px")
         .style("left", "0px")
         .style("opacity", 0)
-        .style("border-radius", "10px");
+        .style("border-radius", "10px")
+        .style("text-align", "center");
     
     d3.select("#tooltipSongs").append("text").attr("id", "tooltiptextSongs")
         .style("color", "#000000");
 }
 
 function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
     // create axes
     xAxis = svg.append("g")
         .attr("class", "x axis")
@@ -114,88 +164,13 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
     return [svg, xAxis];
 }
 
-function createLineGraphSongs(data, id, retriggered) {
-
-    // clear div before proceeding
-    $(`#${id}`).empty();
-
-    // dataset for d3
-    var dataset = {
-        "excitedness": [],
-        "happiness": [],
-        "acousticness": [],
-        "danceability": [],
-        "energy": [],
-        "instrumentalness": [],
-        "liveness": [],
-        "speechiness": [],
-        "tempo": [],
-        "valence": [],
-    };
-
-    data = dropNullData(data);
-
-    // fill dataset with usable d3 data
-    dataset = fillDataset(dataset, data);
-
-    // dimensions and margins of graph
-    var margin = {top: 20, right: 80, bottom: 30, left: 30};
-    var width = 600 - margin.left - margin.right;
-    var height = 300 - margin.top - margin.bottom;
-
-    [dataset, xScale, yScale, yScaleTempo, yScaleMoods, xScaleTicks] = getScales(data, dataset, height, width);
-
-    // make svg and g html element
-    var svgId = "songsSvg";
-    var svg = d3.select("#" + id).append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("viewBox", "-20 -20 600 320")
-        .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .attr("id", svgId);
-    
-    svg, xAxis = createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width);
-    createSongsTooltip();
-    
-    drawLines("songs", svgId, dataset, retriggered, data);
-}
-
-// draws all lines in chart
-function drawLines(charttype, svgId, dataset, retriggered, data) {
-    // draw all lines, show wanted ones
-    for (var key in dataset) {
-        if (!retriggered && charttype != "days") {
-            if (charttype == "songs") {
-                drawLineSongs(svgId, dataset[key], key, data);
-            }
-            else {
-                drawLineDays(svgId, dataset[key], key);
-            }
-            showLine(key);
-            if (key != "happiness" && key != "excitedness") {      
-                $("#" + key).trigger("click");
-            }
-        }
-        else {
-            if (charttype == "songs") {
-                drawLineSongs(svgId, dataset[key], key, data);
-            }
-            else {
-                drawLineDays(svgId, dataset[key], key);
-            }
-            if ($(`#${key}`).css("opacity") == "1") {
-                showLine(key);
-            }
-            else {
-                hideLine(key);
-            }
-        } 
-    }
-}
-
 // draws line for song history linechart
 function drawLineSongs(svgId, dataset, name, data) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
 
     // make correct d3 line generator
     var line;
@@ -284,6 +259,11 @@ function drawLineSongs(svgId, dataset, name, data) {
 
 // trims song name for tooltip
 function trimSongName(name) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
     if (name.length > 20) {
         return name.slice(0, 17).concat("...");
     }
@@ -294,6 +274,227 @@ function trimSongName(name) {
 
 // drops datapoints with no information from data
 function dropNullData(data) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
+    for (var i in data["metric_over_time"]) {
+        for (var key in data["metric_over_time"][i]) {
+            if (data["metric_over_time"][i][key] == null) {
+                data["metric_over_time"].splice(i, 1);
+                break;
+            }
+        }
+    }
+    return data;
+}
+
+function createLineGraphSongs(data, id, retriggered) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
+
+    // clear div before proceeding
+    $(`#${id}`).empty();
+
+    // dataset for d3
+    var dataset = {
+        "excitedness": [],
+        "happiness": [],
+        "acousticness": [],
+        "danceability": [],
+        "energy": [],
+        "instrumentalness": [],
+        "liveness": [],
+        "speechiness": [],
+        "tempo": [],
+        "valence": [],
+    };
+
+    data = dropNullData(data);
+
+    // fill dataset with usable d3 data
+    dataset = fillDataset(dataset, data, "songs");
+
+    // dimensions and margins of graph
+    var margin = {top: 20, right: 80, bottom: 30, left: 30};
+    var width = 600 - margin.left - margin.right;
+    var height = 300 - margin.top - margin.bottom;
+
+    [xScale, yScale, yScaleTempo, yScaleMoods, xScaleTicks] = getScalesSongs(data, dataset, height, width);
+
+    // make svg and g html element
+    var svgId = "songsSvg";
+    var svg = d3.select("#" + id).append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", "-20 -20 600 320")
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("id", svgId);
+    
+    svg, xAxis = createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width);
+    createSongsTooltip();
+    
+    drawLines("songs", svgId, dataset, retriggered, data);
+}
+
+// draws all lines in chart
+function drawLines(charttype, svgId, dataset, retriggered, data) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
+    // draw all lines, show wanted ones
+    for (var key in dataset) {
+        if (!retriggered && charttype != "days") {
+            if (charttype == "songs") {
+                drawLineSongs(svgId, dataset[key], key, data);
+            }
+            else {
+                drawLineDays(svgId, dataset[key], key);
+            }
+            showLine(key);
+            if (key != "happiness" && key != "excitedness") {      
+                $("#" + key).trigger("click");
+            }
+        }
+        else {
+            if (charttype == "songs") {
+                drawLineSongs(svgId, dataset[key], key, data);
+            }
+            else {
+                drawLineDays(svgId, dataset[key], key);
+            }
+            if ($(`#${key}`).css("opacity") == "1") {
+                showLine(key);
+            }
+            else {
+                hideLine(key);
+            }
+        } 
+    }
+}
+
+// draws line for song history linechart
+function drawLineSongs(svgId, dataset, name, data) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
+
+    // make correct d3 line generator
+    var line;
+    if (name == "tempo") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleTempo(d.y); })
+            .curve(d3.curveMonotoneX);
+    }
+    else if (name == "happiness" || name == "excitedness") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleMoods(d.y); })
+            .curve(d3.curveMonotoneX);
+    }
+    else {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d.y); })
+            .curve(d3.curveMonotoneX);
+    }
+
+    // give line color of corresponding button
+    var svg = d3.select("#" + svgId);
+    var color = d3.select("#" + name).style("background-color");
+
+    // draw lines
+    svg.append("path")
+        .data([dataset])
+        .attr("class", "line")
+        .attr("id", name + "line")
+        .attr("d", line)
+        .style("visibility", "hidden")
+        .style("fill", "none")
+        .style("stroke", color)
+        .style("stroke-width", 3);
+
+
+    // circles with mouse over functionality
+    svg.selectAll("." + name + "songdot")
+    .data(dataset)
+    .enter().append("circle")
+    .attr("class", name + "songdot")
+    .attr("cx", function(d, i) { return xScale(i); })
+    .attr("cy", function(d) {   if (name == "tempo") {
+                                    return yScaleTempo(d.y);
+                                }
+                                else if (name == "happiness" || 
+                                         name == "excitedness") {
+                                    return yScaleMoods(d.y);
+                                }
+                                else {
+                                    return yScale(d.y);
+                                }
+                            })
+    .attr("r", 4)
+    .style("fill", color)
+    .on("mouseover", function(y, x) { 
+        var value = Math.round(dataset[x]['y'] * 100) / 100;
+        d3.select("#tooltipSongs")
+            .transition()
+                .duration(200)
+                .style("opacity", 1)
+                .style("top", (event.clientY - 40) + "px")
+                .style("left", event.clientX + "px")
+                .style("background-color", color)
+                .style("width", "160px")
+                .style("height", "40px");
+
+        d3.select("#tooltiptextSongs")
+            .html(name + ": " + value + "<br>" + 
+                  trimSongName(data["metric_over_time"][x]["name"]));
+        })
+    .on("mouseout", function() {
+        d3.select("#tooltipSongs")
+            .transition()
+                .duration(200)
+                .style("opacity", 0)
+                .style("width", "0")
+                .style("height", "0");
+
+        d3.select("#tooltiptextSongs")
+            .html("");
+    })
+}
+
+// trims song name for tooltip
+function trimSongName(name) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
+    if (name.length > 20) {
+        return name.slice(0, 17).concat("...");
+    }
+    else {
+        return name;
+    }
+}
+
+// drops datapoints with no information from data
+function dropNullData(data) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
     for (var i in data["metric_over_time"]) {
         for (var key in data["metric_over_time"][i]) {
             if (data["metric_over_time"][i][key] == null) {

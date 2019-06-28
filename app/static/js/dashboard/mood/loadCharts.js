@@ -5,7 +5,7 @@ var request = new XMLHttpRequest();
 var created = 'False'; // todo this seems not to be used, remove if not needed?
 
 // Send request for the data needed in the mood charts.
-request.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/history/' + userid + '/0', true)
+request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/0', true)
 request.onload = function() {
     var alldata = JSON.parse(this.response)
     userdata = alldata.resource
@@ -20,7 +20,10 @@ request.onload = function() {
 }
 request.send()
 
-// Function to toggle the chart that is shown.
+/** Function to toggle the chart that is shown.
+ * 
+ * @param {String} chartname The name of the chart.
+ */
 function toggleMoodCharts(chartname) {
     if (chartname === 'radarChart') {
         $('#moodChartSelector').text("Radar Chart ")

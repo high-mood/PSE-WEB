@@ -1,5 +1,7 @@
 /**
- * Discription.
+ * This file contains the javascript code to create a radarchart using the
+ * D3 graphics tools. Data is entered as a dictionary containing user info
+ * and song history and processed with the createRadarChart function.
  *
  * @copyright 2019 Moodify (High-Mood)
  * @author Stan van den Broek
