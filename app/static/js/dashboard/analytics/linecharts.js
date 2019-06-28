@@ -125,7 +125,7 @@ function createSongsTooltip() {
 }
 
 /**
- * @summary 
+ * @summary Create the axes of the linechart
  *
  * @param {Object} svg
  * @param {function} xScaleTicks

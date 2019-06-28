@@ -1,28 +1,38 @@
-    /**
-     * Summary. (use period)
-     *
-     * Description. (use period)
-     *
-     * @param {type}   var           Description.
-     * @param {type}   [var]         Description of optional variable.
-     * @param {type}   [var=default] Description of optional variable with default variable.
-     * @param {Object} objectVar     Description.
-     * @param {type}   objectVar.key Description of a key in the objectVar parameter.
-     * 
-     * @return {type} Description.
-     */
+/**
+ * Loads the line charts for the analytics section.
+ * 
+ * @copyright 2019 Moodify (High-Mood)
+ * @author Stan van den Broek
+ * @author Mitchell van den Bulk
+ * @author Mo Diallo
+ * @author Arthur van Eeden
+ * @author Elijah Erven
+ * @author Henok Ghebrenigus
+ * @author Jonas van der Ham
+ * @author Mounir El Kirafi
+ * @author Esmeralda Knaap
+ * @author Youri Reijne
+ * @author Siwa Sardjoemissier
+ * @author Barry de Vries
+ * @author Jelle Witsen Elias
+ */
 
 $('#lineSongs').hide()
 $('#barChart').hide()
 analyticsDescription("days")
 
+/**
+ * @summary Sends a request to the API to get the data for the line charts.
+ *
+ * @param {Boolean} retriggered
+ */
 function requestLineCharts(retriggered) {
   var linechartRequest= new XMLHttpRequest()
 
   var metrics = "acousticness, danceability, duration_ms, energy, instrumentalness, key, liveness, loudness, mode, speechiness, tempo, valence";
   song_count = songsSliderObj.slider('getValue');
 
-  linechartRequest.open('GET', 'http://localhost:5000/api/tracks/metrics/' + userid + '/' + song_count, true)
+  linechartRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/metrics/' + userid + '/' + song_count, true)
   linechartRequest.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
@@ -41,7 +51,7 @@ function requestLineCharts(retriggered) {
   var linechartDaysRequest = new XMLHttpRequest()
 
   days = daysSliderObj.slider('getValue');
-  linechartDaysRequest.open('GET', 'http://localhost:5000/api/user/mood/daily/' + userid + '/' + days, true)
+  linechartDaysRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/user/mood/daily/' + userid + '/' + days, true)
   linechartDaysRequest.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
@@ -63,7 +73,7 @@ function requestLineCharts(retriggered) {
   var start, end;
   [start, end] = timeframeSliderObj.slider('getValue');
 
-  barchartRequest.open('GET', 'http://localhost:5000/api/user/mood/hourly/' + userid + '/' + start + '/' + end, true)
+  barchartRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/user/mood/hourly/' + userid + '/' + start + '/' + end, true)
   barchartRequest.onload = function() {
     var alldata = JSON.parse(this.response)
     var userdata = alldata.resource
@@ -81,6 +91,11 @@ function requestLineCharts(retriggered) {
 
 requestLineCharts(false)
 
+/**
+ * @summary Toggles the charts based on the chartname to switch to.
+ *
+ * @param {String} chartname
+ */
 function toggleLineCharts(chartname) {
     if (chartname === 'lineDays') {
       $('#lineChartSelector').text("Days ")
@@ -123,6 +138,10 @@ function toggleLineCharts(chartname) {
 }
 
 
+/**
+ * @summary Hides the buttons for the timeframe chart except for happiness and excitedness.
+ *
+ */
 function hideButtonsTimeframe() {
   var buttonNames = ["excitedness", "happiness", "acousticness", "danceability", 
   "energy", "instrumentalness", "liveness", "speechiness", 
@@ -140,6 +159,7 @@ function hideButtonsTimeframe() {
   }
 }
 
+/** @summary Build and show the buttons for metric selection   */
 function showButtonsTimeframe() {
   var buttonNames = ["excitedness", "happiness", "acousticness", "danceability", 
   "energy", "instrumentalness", "liveness", "speechiness", 
