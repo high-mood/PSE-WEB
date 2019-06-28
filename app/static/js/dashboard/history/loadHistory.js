@@ -6,21 +6,20 @@
  * It contains the structure of the playlist API with functions to handle basic GET and POST requests.
  *
  *
- *     :copyright: 2019 Moodify (High-Mood)
- *     :authors:
- *            "Stan van den Broek",
- *            "Mitchell van den Bulk",
- *            "Mo Diallo",
- *            "Arthur van Eeden",
- *            "Elijah Erven",
- *            "Henok Ghebrenigus",
- *            "Jonas van der Ham",
- *            "Mounir El Kirafi",
- *            "Esmeralda Knaap",
- *            "Youri Reijne",
- *            "Siwa Sardjoemissier",
- *            "Barry de Vries",
- *            "Jelle Witsen Elias"
+ *     @copyright 2019 Moodify (High-Mood)
+ *     @author "Stan van den Broek",
+ *     @author "Mitchell van den Bulk",
+ *     @author "Mo Diallo",
+ *     @author "Arthur van Eeden",
+ *     @author "Elijah Erven",
+ *     @author "Henok Ghebrenigus",
+ *     @author "Jonas van der Ham",
+ *     @author "Mounir El Kirafi",
+ *     @author "Esmeralda Knaap",
+ *     @author "Youri Reijne",
+ *     @author "Siwa Sardjoemissier",
+ *     @author "Barry de Vries",
+ *     @author "Jelle Witsen Elias"
  */
 
 function toggleHistory(listName) {
@@ -45,7 +44,7 @@ function fillTopData() {
     /* Request a users top ten songs and render the iframes to display them. */
     var topRequest = new XMLHttpRequest();
 
-    topRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/topsongs/' + userid + '/10', true);
+    topRequest.open('GET', 'http://localhost:5000/api/tracks/topsongs/' + userid + '/10', true);
     topRequest.onload = function() {
         var allTopData = JSON.parse(this.response);
         userTopData = allTopData.resource.songs;
@@ -63,7 +62,7 @@ function fillTopData() {
 function histSelect(clickEvent) {
     /** Generate similar songs based on a selected track.
 
-    :param clickEvent: The onclick event from a selected song. **/
+    @param clickEvent: The onclick event from a selected song. **/
 
     song_index = clickEvent.target.id;
     displaySimilarSongs(song_index);
@@ -72,14 +71,14 @@ function histSelect(clickEvent) {
 function displaySimilarSongs(song_index) {
     /** Displays the list of songs under 'More like this'.
 
-	:param song_index: Index of the in History/Favourites list **/
+	@param song_index: Index of the in History/Favourites list **/
 
     songId = window.curData[parseInt(song_index)].songid;
     window.song_index = song_index;
     adjustSlider(song_index);
 
     var recRequest = new XMLHttpRequest();
-    recRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/recommendation/' + userid + '/' + songId + '/0.0/0.0', true);
+    recRequest.open('GET', 'http://localhost:5000/api/tracks/recommendation/' + userid + '/' + songId + '/0.0/0.0', true);
     recRequest.onload = function() {
         var data = JSON.parse(this.response);
         var recommendations = data.resource.recommendations;
@@ -155,7 +154,7 @@ function fillScrollWindow() {
 
 function adjustSlider(song_index) {
     /** Changes the mood slider positions after a song is selected
-	:param song_index: Index of the song in the history/favourites list **/
+	@param song_index: Index of the song in the history/favourites list **/
     if (song_index == null) {
         excitednessSlider.slider("setValue", 50);
         happinessSlider.slider("setValue", 50);
@@ -197,8 +196,7 @@ function sendFeedback() {
     var request = new XMLHttpRequest();
     request.open("POST", uri, true);
     request.setRequestHeader("Content-Type", 'application/json');
-    request.setRequestHeader("Access-Control-Allow-Origin", 'pse-ssh.diallom.com:4000');
-    console.log(data)
+    request.setRequestHeader("Access-Control-Allow-Origin", 'localhost:4000');
     request.send(JSON.stringify(data));
 }
 

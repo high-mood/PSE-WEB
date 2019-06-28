@@ -3,31 +3,30 @@
  * This file defines functions to create the barcharts used in the 'Analytics'
  * section.
  *
- *     :copyright: 2019 Moodify (High-Mood)
- *     :authors:
- *            "Stan van den Broek",
- *            "Mitchell van den Bulk",
- *            "Mo Diallo",
- *            "Arthur van Eeden",
- *            "Elijah Erven",
- *            "Henok Ghebrenigus",
- *            "Jonas van der Ham",
- *            "Mounir El Kirafi",
- *            "Esmeralda Knaap",
- *            "Youri Reijne",
- *            "Siwa Sardjoemissier",
- *            "Barry de Vries",
- *            "Jelle Witsen Elias"
+ *     @copyright: 2019 Moodify (High-Mood)
+ *     @author "Stan van den Broek",
+ *     @author "Mitchell van den Bulk",
+ *     @author "Mo Diallo",
+ *     @author "Arthur van Eeden",
+ *     @author "Elijah Erven",
+ *     @author "Henok Ghebrenigus",
+ *     @author "Jonas van der Ham",
+ *     @author "Mounir El Kirafi",
+ *     @author "Esmeralda Knaap",
+ *     @author "Youri Reijne",
+ *     @author "Siwa Sardjoemissier",
+ *     @author "Barry de Vries",
+ *     @author "Jelle Witsen Elias"
  */
 
 // makes a barchart (call on empty divId, data is a list of songs with at least the key:value pairs: time, exitedness and happiness)
 function createBarChart(divId, start, end, data) {
     /* Create a barchart.
 
-    :param divId: div in which the chart is rendered.
-    :param start: Starting point for the barCHart (x-axis)
-    :param end: End point for the barCHart (x-axis)
-    :param data: list of songs with key, value pairs excitedness, happiness
+    @param divId: div in which the chart is rendered.
+    @param start: Starting point for the barCHart (x-axis)
+    @param end: End point for the barCHart (x-axis)
+    @param data: list of songs with key, value pairs excitedness, happiness
     */
     var height = 300
     var width = 600
