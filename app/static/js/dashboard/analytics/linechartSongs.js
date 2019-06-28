@@ -126,6 +126,76 @@ function createSongsTooltip() {
         .style("color", "#000000");
 }
 
+function getScalesDays(data, dataset, height, width) {
+    var parseTime = d3.timeParse("%Y-%m-%d");
+    
+    // for ordinal date scale
+    var dates = [];
+    for (val in data["dates"]) {
+        dates.push(parseTime(data["dates"][val]["date"]));
+    }
+    dates = dates.reverse();
+
+    // basic scales
+    xScaleTime = d3.scalePoint()
+        .domain(dates)
+        .range([0, width]);
+    yScale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([height, 0]);
+    xScale = d3.scaleLinear()
+        .domain([data.dates.length - 1, 0])
+        .range([0, width]);
+    
+    
+    // array to calculate max and min tempo for scale
+    tempoArray = [];
+    for (var i in dataset["tempo"]) {
+        tempoArray.push(dataset["tempo"][i].y);
+    }
+    tempoFloor = Math.floor(d3.min(tempoArray) / 10) * 10;
+
+    // tempo scale
+    yScaleTempo = d3.scaleLinear()
+        .domain([tempoFloor, d3.max(tempoArray)])
+        .range([height, 0]);
+    
+    // mood scale
+    yScaleMoods = d3.scaleLinear()
+        .domain([-10, 10])
+        .range([height, 0]);
+
+        return [dates, xScale, yScale, yScaleTempo, yScaleMoods];
+}
+
+function createDaysTooltip() {
+    // make tooltip
+    var tooltip = document.createElement("div");
+    
+    tooltip.setAttribute("id", "tooltipDays");
+    document.getElementById("lineDays").appendChild(tooltip);
+
+    d3.select("#tooltipDays").append("span")
+        .attr("id", "tooltipDaysSpan");
+    
+    // set proper style for tooltip
+    d3.select("#tooltipDays")
+        .style("width", "160px")
+        .style("height", "30px")
+        .style("position", "fixed")
+        .style("background-color", "steelblue")
+        .style("top", "0px")
+        .style("left", "0px")
+        .style("opacity", 0)
+        .style("border-radius", "10px")
+        .style("text-align", "center")
+    
+    // append text to tooltip
+    d3.select("#tooltipDaysSpan").append("text")
+        .attr("id", "tooltiptextDays")
+        .style("color", "#000000");
+}
+
 /**
  *
  *
@@ -277,6 +347,92 @@ function drawLineSongs(svgId, dataset, name, data) {
     })
 }
 
+// Draws line for days chart in specified svg
+function drawLineDays(svgId, dataset, name) {
+    // make correct d3 line generator
+    var line;
+    if (name == "tempo") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleTempo(d.y); })
+            .curve(d3.curveMonotoneX);
+    }
+    else if (name == "happiness" || name == "excitedness") {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScaleMoods(d.y); })
+            .curve(d3.curveMonotoneX);
+    }
+    else {
+        line = d3.line()
+            .x(function(d, i) { return xScale(i); })
+            .y(function(d) { return yScale(d.y); })
+            .curve(d3.curveMonotoneX);
+    }
+
+    // give line color of corresponding button
+    var svg = d3.select("#" + svgId);
+    var color = d3.select("#" + name).style("background-color");
+
+    // draw lines
+    svg.append("path")
+        .data([dataset])
+        .attr("class", "line")
+        .attr("id", name + "line")
+        .attr("d", line)
+        .style("fill", "none")
+        .style("stroke", color)
+        .style("stroke-width", 3);
+
+
+    // circles with mouse over functionality
+    svg.selectAll("." + name + "daysdot")
+    .data(dataset)
+    .enter().append("circle")
+    .attr("class", name + "daysdot")
+    .attr("cx", function(d, i) { return xScale(i) })
+    .attr("cy", function(d) {   if (name == "tempo") {
+                                    return yScaleTempo(d.y);
+                                } 
+                                else if (name == "happiness" || 
+                                         name == "excitedness") {
+                                    return yScaleMoods(d.y);
+                                }
+                                else {
+                                    return yScale(d.y);
+                                }
+                            })
+    .attr("r", 3)
+    .style("fill", color)
+    .on("mouseover", function(y, x) { 
+        var value = Math.round(dataset[x]['y'] * 100) / 100;
+        d3.select("#tooltipDays")
+            .transition()
+                .duration(200)
+                .style("opacity", 1)
+                .style("top", (event.clientY - 40) + "px")
+                .style("left", event.clientX + "px")
+                .style("background-color", color)
+                .style("width", "160px")
+                .style("height", "30px");
+
+        d3.select("#tooltiptextDays")
+            .html(name + ": " + value);
+        })
+    .on("mouseout", function() {
+        d3.select("#tooltipDays")
+            .transition()
+                .duration(200)
+                .style("opacity", 0)
+                .style("width", 0)
+                .style("height", 0);
+        d3.select("#tooltiptextDays")
+            .html("");
+        })
+}
+
+
+
 /**
  * @summary Trims song name for tooltip.
  *
@@ -369,6 +525,52 @@ function createLineGraphSongs(data, id, retriggered) {
     drawLines("songs", svgId, dataset, retriggered, data);
 }
 
+function createLineGraphDays(data, id, retriggered) {
+    $(`#${id}`).empty();
+    
+    // dataset for d3
+    var dataset = {
+        "excitedness": [],
+        "happiness": [],
+        "acousticness": [],
+        "danceability": [],
+        "energy": [],
+        "instrumentalness": [],
+        "liveness": [],
+        "speechiness": [],
+        "tempo": [],
+        "valence": [],
+    };
+    
+    // fill dataset with usable d3 data
+    dataset = fillDataset(dataset, data, "days")
+
+    // dimensions and margins of graph
+    var margin = {top: 20, right: 80, bottom: 30, left: 30};
+    var width = 600 - margin.left - margin.right;
+    var height = 300 - margin.top - margin.bottom;
+
+    [dates, xScale, yScale, yScaleTempo, yScaleMoods] = getScalesDays(data, dataset, height, width);
+
+    // make svg and g html element
+    var svgId = "daysSvg";
+    var svg = d3.select("#" + id).append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", "-20 -20 600 320")
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("id", svgId);
+
+
+    svg = createAxes(svg, xScale, yScale, yScaleTempo, yScaleMoods, height, width);
+
+    createDaysTooltip();
+
+    // draw proper lines
+    drawLines('days', svgId, dataset, retriggered, null);
+}
+
 // 
 /**
  * @summary Draws all lines in chart.
@@ -409,100 +611,6 @@ function drawLines(charttype, svgId, dataset, retriggered, data) {
             }
         } 
     }
-}
-
-/**
- * @summary Draws line for song history linechart.
- *
- * @param {*} svgId
- * @param {Object} dataset
- * @param {*} name
- * @param {Object} data
- */
-function drawLineSongs(svgId, dataset, name, data) {
-    // make correct d3 line generator
-    var line;
-    if (name == "tempo") {
-        line = d3.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScaleTempo(d.y); })
-            .curve(d3.curveMonotoneX);
-    }
-    else if (name == "happiness" || name == "excitedness") {
-        line = d3.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScaleMoods(d.y); })
-            .curve(d3.curveMonotoneX);
-    }
-    else {
-        line = d3.line()
-            .x(function(d, i) { return xScale(i); })
-            .y(function(d) { return yScale(d.y); })
-            .curve(d3.curveMonotoneX);
-    }
-
-    // give line color of corresponding button
-    var svg = d3.select("#" + svgId);
-    var color = d3.select("#" + name).style("background-color");
-
-    // draw lines
-    svg.append("path")
-        .data([dataset])
-        .attr("class", "line")
-        .attr("id", name + "line")
-        .attr("d", line)
-        .style("visibility", "hidden")
-        .style("fill", "none")
-        .style("stroke", color)
-        .style("stroke-width", 3);
-
-
-    // circles with mouse over functionality
-    svg.selectAll("." + name + "songdot")
-    .data(dataset)
-    .enter().append("circle")
-    .attr("class", name + "songdot")
-    .attr("cx", function(d, i) { return xScale(i); })
-    .attr("cy", function(d) {   if (name == "tempo") {
-                                    return yScaleTempo(d.y);
-                                }
-                                else if (name == "happiness" || 
-                                         name == "excitedness") {
-                                    return yScaleMoods(d.y);
-                                }
-                                else {
-                                    return yScale(d.y);
-                                }
-                            })
-    .attr("r", 4)
-    .style("fill", color)
-    .on("mouseover", function(y, x) { 
-        var value = Math.round(dataset[x]['y'] * 100) / 100;
-        d3.select("#tooltipSongs")
-            .transition()
-                .duration(200)
-                .style("opacity", 1)
-                .style("top", (event.clientY - 40) + "px")
-                .style("left", event.clientX + "px")
-                .style("background-color", color)
-                .style("width", "160px")
-                .style("height", "40px");
-
-        d3.select("#tooltiptextSongs")
-            .html(name + ": " + value + "<br>" + 
-                  trimSongName(data["metric_over_time"][x]["name"]));
-        })
-    .on("mouseout", function() {
-        d3.select("#tooltipSongs")
-            .transition()
-                .duration(200)
-                .style("opacity", 0)
-                .style("width", "0")
-                .style("height", "0");
-
-        d3.select("#tooltiptextSongs")
-            .html("");
-    })
 }
 
 /**
