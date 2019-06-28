@@ -34,7 +34,7 @@ function toggleHistory(chartName) {
 
         window.curData = window.histData;
         fillScrollWindow();
-    } else if (listName === 'favourites') {
+    } else if (chartName === 'favourites') {
         $('#historySelector').text("Favourite songs");
         $('#historySelector').append("<span class=\"caret\"></span>");
 
