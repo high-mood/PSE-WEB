@@ -19,15 +19,16 @@
  *     @author "Jelle Witsen Elias"
  */
 
-// makes a barchart (call on empty divId, data is a list of songs with at least the key:value pairs: time, exitedness and happiness)
-function createBarChart(divId, start, end, data) {
-    /* Create a barchart.
 
-    @param divId: div in which the chart is rendered.
-    @param start: Starting point for the barCHart (x-axis)
-    @param end: End point for the barCHart (x-axis)
-    @param data: list of songs with key, value pairs excitedness, happiness
-    */
+/*
+ * @description Create a barchart.
+ *
+ * @param divId    div in which the chart is rendered.
+ * @param start    Starting point for the barCHart (x-axis)
+ * @param end       End point for the barCHart (x-axis)
+ * @param data      list of songs with key, value pairs excitedness, happiness
+ */
+function createBarChart(divId, start, end, data) {
     var height = 300
     var width = 600
     var barWidth = (9 * width / 10) / (2 * (end - start + 1));
