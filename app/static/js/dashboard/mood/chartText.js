@@ -1,3 +1,22 @@
+/**
+ * This files contains the functions to give elements in the webpage text:
+ * 
+ * @copyright 2019 Moodify (High-Mood)
+ * @author Stan van den Broek
+ * @author Mitchell van den Bulk
+ * @author Mo Diallo
+ * @author Arthur van Eeden
+ * @author Elijah Erven
+ * @author Henok Ghebrenigus
+ * @author Jonas van der Ham
+ * @author Mounir El Kirafi
+ * @author Esmeralda Knaap
+ * @author Youri Reijne
+ * @author Siwa Sardjoemissier
+ * @author Barry de Vries
+ * @author Jelle Witsen Elias
+ */
+
 var mean_excitedness, mean_happiness;
 const graphTexts = ["\
 <b>Excited:</b> <br><br>\
@@ -55,7 +74,7 @@ The more songs are in that area the brighter red that spot will be.";
 /** GiveText(data, id)
  * Gives a div corresponding to a given id description of the user's mood.
  * 
- * @param {*} data Contains all data of a user, given back by an API call
+ * @param {Dict} data Contains all data of a user, given back by an API call
  * @param {String} id The id of the element to be filled
  */
 function giveText(data, id) {
