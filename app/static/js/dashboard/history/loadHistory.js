@@ -9,7 +9,7 @@ excitednessSlider.on('change', function(event) {
 
 // Show history data when websites is opened.
 var request = new XMLHttpRequest();
-request.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/history/' + userid + '/20', true);
+request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/20', true);
 
 request.onload = function() {
     var allData = JSON.parse(this.response);
@@ -44,7 +44,7 @@ function toggleHistory(chartName) {
 function fillTopData() {
     var topRequest = new XMLHttpRequest();
 
-    topRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/topsongs/' + userid + '/10', true);
+    topRequest.open('GET', 'http://localhost:5000/api/tracks/topsongs/' + userid + '/10', true);
     topRequest.onload = function() {
         var allTopData = JSON.parse(this.response);
         userTopData = allTopData.resource.songs;
@@ -75,7 +75,7 @@ function displaySimilarSongs(song_index) {
     adjustSlider(song_index);
 
     var recRequest = new XMLHttpRequest();
-    recRequest.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/recommendation/' + userid + '/' + songId + '/0.0/0.0', true);
+    recRequest.open('GET', 'http://localhost:5000/api/tracks/recommendation/' + userid + '/' + songId + '/0.0/0.0', true);
     recRequest.onload = function() {
         var data = JSON.parse(this.response);
         var recommendations = data.resource.recommendations;
@@ -181,7 +181,7 @@ function sendFeedback() {
 	:param song_index: Index of the currently selected track **/
     var happiness = document.getElementById("happiness_slider").value;
     var excitedness = document.getElementById("excitedness_slider").value;
-    var uri = "http://pse-ssh.diallom.com:5000/api/tracks/mood";
+    var uri = "http://localhost:5000/api/tracks/mood";
     var songid = window.curData[window.song_index].songid;
 
     var data = {
@@ -192,7 +192,7 @@ function sendFeedback() {
     var request = new XMLHttpRequest();
     request.open("POST", uri, true);
     request.setRequestHeader("Content-Type", 'application/json');
-    request.setRequestHeader("Access-Control-Allow-Origin", 'pse-ssh.diallom.com:4000');
+    request.setRequestHeader("Access-Control-Allow-Origin", 'localhost:4000');
     request.send(JSON.stringify(data));
 }
 
