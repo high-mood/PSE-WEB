@@ -201,7 +201,10 @@ class HourlyMood(Resource):
                 for B in tempresults:
                     B = Counter(B)
                     B = convert_none(B)
-                    A = A + B
+                    try:
+                        A = A + B
+                    except TypeError:
+                        count-=1
 
                 # Convert these to averages by dividing each key if possible
                 for key, value in A.items():
@@ -299,7 +302,10 @@ class DailyMood(Resource):
                 for B in tempresults:
                     B = Counter(B)
                     B = convert_none(B)
-                    A = A + B
+                    try:
+                        A = A + B
+                    except TypeError:
+                        count -= 1
 
                 # Convert these to averages by dividing each key if possible
                 for key, value in A.items():
