@@ -47,11 +47,7 @@ function toggleMetric(metricName) {
 
   // Request the recommendations from API
   var request = new XMLHttpRequest;
-<<<<<<< HEAD
   request.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/recommendation/' + userid + '/' + metricName, true);
-=======
-  request.open('GET', 'http://localhost:5000/api/tracks/recommendation/' + userid + '/' + metricName, true)
->>>>>>> cf86ab68cc319b665f29ff764d136d6c9ce74a65
   request.onload = function() {
     var alldata = JSON.parse(this.response);
     if (request.status >= 200 && request.status < 400) {
