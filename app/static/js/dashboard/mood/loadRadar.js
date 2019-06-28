@@ -1,25 +1,27 @@
-// Function to create the radarchart from the userdata.
+// Function to create a radarchart based off userdata
 function createRadarChart(userdata) {
 
-  /* Radar chart design created by Nadieh Bremer - VisualCinnamon.com */
+  // Set chart margin
   var margin = {top: 100, right: 100, bottom: 100, left: 100},
     width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
     height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 
-  var color = d3.scaleOrdinal().range(["#EDC951","#EDC951"])
-
   var finalData = [];
   var song;
   var highestval = 0
+
+  // Loop over user songs
   for (i = 0; i < userdata.songs.length; i++) {
+
+    // Get highest absolute score, to be used to scale the chart
     if (Math.abs(userdata.songs[i].excitedness) > highestval) {
       highestval = Math.abs(userdata.songs[i].excitedness);
     }
-
     if (Math.abs(userdata.songs[i].happiness) > highestval) {
       highestval = Math.abs(userdata.songs[i].happiness);
     }
 
+    // Create and push entry for current song to chart
     song = {
       name : 'Song',
       axes : [
@@ -32,6 +34,7 @@ function createRadarChart(userdata) {
     finalData.push(song);
   }
 
+  // Set radarchart styling options
   var radarChartOptions = {
     w: 500,
     h: 500,
@@ -42,9 +45,10 @@ function createRadarChart(userdata) {
     opacityArea: 0.1,
     axisLine: true,
     roundStrokes: true,
-    color: color,
+    color: "#EDC951",
     labelFactor: 1.2
   };
 
+  // Create radarchart
   let svg_radar1 = RadarChart(".radarChart", finalData, radarChartOptions);
 }
