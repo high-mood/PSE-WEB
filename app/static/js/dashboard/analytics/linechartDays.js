@@ -4,48 +4,17 @@
  * https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
  */
 
-var xScale, yScale, yScaleTempo, yScaleMoods;
-
 var lineNames = ["excitedness", "happiness", "acousticness", "danceability", 
                  "energy", "instrumentalness", "liveness", "speechiness", 
                  "tempo", "valence"];
 
-function createLineGraphDays(data, id, retriggered) {
-    $(`#${id}`).empty();
-    
-    // dataset for d3
-    var dataset = {
-        "excitedness": [],
-        "happiness": [],
-        "acousticness": [],
-        "danceability": [],
-        "energy": [],
-        "instrumentalness": [],
-        "liveness": [],
-        "speechiness": [],
-        "tempo": [],
-        "valence": [],
-    };
-    
-    // fill dataset with usable d3 data
-    for (var key in dataset) {
-        var value = dataset[key];
-        for (var i in d3.range(data.dates.length)) {
-            value.push({'y': data.dates[i][key]});
-        }
-    }
-
-    // dimensions and margins of graph
-    var margin = {top: 20, right: 80, bottom: 30, left: 30};
-    var width = 600 - margin.left - margin.right;
-    var height = 300 - margin.top - margin.bottom;
-
+function getScalesDays(data, dataset, height, width) {
     var parseTime = d3.timeParse("%Y-%m-%d");
     
     // for ordinal date scale
     var dates = [];
-    for (val in data.dates) {
-        dates.push(parseTime(data.dates[val]["date"]));
+    for (val in data["dates"]) {
+        dates.push(parseTime(data["dates"][val]["date"]));
     }
     dates = dates.reverse();
 
@@ -78,6 +47,36 @@ function createLineGraphDays(data, id, retriggered) {
         .domain([-10, 10])
         .range([height, 0]);
 
+        return [dates, xScale, yScale, yScaleTempo, yScaleMoods];
+}
+
+function createLineGraphDays(data, id, retriggered) {
+    $(`#${id}`).empty();
+    
+    // dataset for d3
+    var dataset = {
+        "excitedness": [],
+        "happiness": [],
+        "acousticness": [],
+        "danceability": [],
+        "energy": [],
+        "instrumentalness": [],
+        "liveness": [],
+        "speechiness": [],
+        "tempo": [],
+        "valence": [],
+    };
+    
+    // fill dataset with usable d3 data
+    dataset = fillDataset(dataset, data, "days")
+
+    // dimensions and margins of graph
+    var margin = {top: 20, right: 80, bottom: 30, left: 30};
+    var width = 600 - margin.left - margin.right;
+    var height = 300 - margin.top - margin.bottom;
+
+    [dates, xScale, yScale, yScaleTempo, yScaleMoods] = getScalesDays(data, dataset, height, width);
+
     // make svg and g html element
     var svgId = "daysSvg";
     var svg = d3.select("#" + id).append("svg")
@@ -88,40 +87,8 @@ function createLineGraphDays(data, id, retriggered) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("id", svgId);
 
-    // create axes
-    xAxis = svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height / 2 + ")")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(xScaleTime)
-            .tickValues(dates)
-            .tickFormat(d3.timeFormat("%Y-%m-%d")));
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(d3.axisLeft(yScale));
 
-
-    // call tempo y axis
-    svg.append("g")
-        .attr("class", "y axis tempo")
-        .attr("transform", "translate(" + width + ", 0)")
-        .call(d3.axisRight(yScaleTempo).ticks(10))
-        .append("text")
-            .attr("transform",
-                  "rotate(90) translate(" + height / 2 + ", -40)")
-            .style("text-anchor", "middle")
-            .text("tempo (BPM)");
-
-    // call moods y axis
-    svg.append("g")
-        .attr("class", "y axis moods")
-        .attr("transform", "translate(" + width + ", 0)")
-        .call(d3.axisRight(yScaleMoods).ticks(10))
-        .append("text")
-            .attr("transform",
-                  "rotate(90) translate(" + height / 2 + ", -40)")
-            .style("text-anchor", "middle")
-            .text("Moods");
+    svg, xAxis = createAxes(svg, xScale, yScale, yScaleTempo, yScaleMoods, height, width);
     
     // make tooltip
     var tooltip = document.createElement("div");
@@ -141,7 +108,8 @@ function createLineGraphDays(data, id, retriggered) {
         .style("top", "0px")
         .style("left", "0px")
         .style("opacity", 0)
-        .style("border-radius", "10px");
+        .style("border-radius", "10px")
+        .style("text-align", "center")
     
     // append text to tooltip
     d3.select("#tooltipDaysSpan").append("text")

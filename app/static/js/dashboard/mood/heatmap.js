@@ -1,4 +1,37 @@
-// Transform data so heatmap can use it.
+/**
+* Code to create heatmap in given div with given data.
+*
+* @copyright 2019 Moodify (High-Mood)
+* @author Stan van den Broek
+* @author Mitchell van den Bulk
+* @author Mo Diallo
+* @author Arthur van Eeden
+* @author Elijah Erven
+* @author Henok Ghebrenigus
+* @author Jonas van der Ham
+* @author Mounir El Kirafi
+* @author Esmeralda Knaap
+* @author Youri Reijne
+* @author Siwa Sardjoemissier
+* @author Barry de Vries
+* @author Jelle Witsen Elias
+*/
+
+/**
+ * Obtain and parse data to create heatmap.
+ * 
+ * @param {Dict} userData Data used to make heatmap
+ * @param {Int} xMin Min value for x axis
+ * @param {Int} xMax Max value for x axis
+ * @param {Int} yMin Min value of y axis
+ * @param {Int} yMax Max value of y axis
+ * @param {Int} xSamples Number of bins on x axis
+ * @param {Int} ySamples Number of bins on y axis
+ * @param {Int} xDomainSize Total length of x axis
+ * @param {Int} yDomainSize Total length of y axis
+ * 
+ * @return {List} List of datapoints
+ */
 function createHeatmapData(userData, xMin, xMax, yMin, yMax, xSamples, ySamples, xDomainSize, yDomainSize) {
   // 0. Get all data needed from the songs.
   songData = []
@@ -20,7 +53,6 @@ function createHeatmapData(userData, xMin, xMax, yMin, yMax, xSamples, ySamples,
         dataPoint.size += 1 / (((songData[i].data0 - xMeanReach) ** 2 + (songData[i].data1 - yMeanReach) ** 2) ** 0.5)
       }
 
-
       dataSet.push(dataPoint);
     }
   }
@@ -28,7 +60,21 @@ function createHeatmapData(userData, xMin, xMax, yMin, yMax, xSamples, ySamples,
   return dataSet
 }
 
-// Makes a heatmap svg element.
+/**
+ * Create a heatmap and displays it in the targeted div.
+ * 
+ * @param {String} divID Name of div element to display the heatmap in
+ * @param {String} title Title of the chart
+ * @param {Int} xMin Min value for x axis
+ * @param {Int} xMax Max value for x axis
+ * @param {Int} xSamples Number of bins on x axis
+ * @param {String} xLabel Label of x axis
+ * @param {Int} yMin Min value of y axis
+ * @param {Int} yMax Max value of y axis
+ * @param {Int} ySamples Number of bins on y axis
+ * @param {String} yLabel Label of y axis
+ * @param {Dict} userData Data used to make heatmap
+ */
 function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, ySamples, yLabel, userData) {
 
   // 0. Set colors for the colorScale
@@ -83,21 +129,21 @@ function createHeatmap(divID, title, xMin, xMax, xSamples, xLabel, yMin, yMax, y
       return data.y * ySampleWidth + height / 10 + ySampleWidth / 20;
     })
 
-      // 5.2.1 Add in axes.
-    var xAxis = d3.axisBottom()
-	.scale(xScale)
-	.ticks(d3.min([xSamples, 5]));
-    svg.append("g")
-	.attr("class","heatmapAxis")
-	.call(xAxis)
-	.attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")");
-    var yAxis = d3.axisLeft()
-	.scale(yScale)
-	.ticks(d3.min([ySamples, 5]));
-    svg.append("g")
-	.attr("class","heatmapAxis")
-	.call(yAxis)
-	.attr("transform","translate(" + width / 15 + "," + height / 10 + ")");
+    // 5.2.1 Add in axes.
+  var xAxis = d3.axisBottom()
+	  .scale(xScale)
+	  .ticks(d3.min([xSamples, 5]));
+  svg.append("g")
+	  .attr("class","heatmapAxis")
+	  .call(xAxis)
+	  .attr("transform","translate(" + width / 10 + "," + 18.75 * height / 20 + ")");
+  var yAxis = d3.axisLeft()
+	  .scale(yScale)
+	  .ticks(d3.min([ySamples, 5]));
+  svg.append("g")
+	  .attr("class","heatmapAxis")
+	  .call(yAxis)
+	  .attr("transform","translate(" + width / 15 + "," + height / 10 + ")");
 
   // 5.2.2 Add labels on the axes.
   svg.append("g")
