@@ -1,24 +1,29 @@
+/* userinput.js
+ *
+ * This file defines JQuery UI slider objects used in the section 'Analytics'.
+ *
+ */
 var timeframeSliderObj = $("#timeframe-slider").slider({
-	id: "timeframe-slider", 
-	orientation: 'horizontal', 
-	min: 1, 
-	max: 24, 
-	range: true, 
+	id: "timeframe-slider",
+	orientation: 'horizontal',
+	min: 1,
+	max: 24,
+	range: true,
 	value: [8, 16]
 });
 
 var daysSliderObj = $("#days-slider").slider({
-	id: "days-slider", 
-	orientation: 'horizontal', 
-	min: 2, 
+	id: "days-slider",
+	orientation: 'horizontal',
+	min: 2,
 	max: 50,
 	value: 10
 });
 
 var songsSliderObj = $("#songs-slider").slider({
-	id: "songs-slider", 
-	orientation: 'horizontal', 
-	min: 2, 
+	id: "songs-slider",
+	orientation: 'horizontal',
+	min: 2,
 	max: 200,
 	value: 10
 });
