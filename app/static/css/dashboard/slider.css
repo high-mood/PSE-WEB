@@ -1,13 +1,17 @@
-#timeframe-slider .slider-track-low, .slider-track-high{
+.slider-track-low, .slider-track-high{
   background: white;
 }
 
-#timeframe-slider .slider-selection {
+.slider-selection {
   background: #1dc156;
   border: 1px solid #1dc156;
 }
 
-#timeframe-slider .slider-handle {
+#happiness_slider .slider-selection, #excitedness_slider .slider-selection {
+    background: white;
+}
+
+.slider-handle {
   border: 2px solid #19492a;
   background: white;
 }
@@ -22,8 +26,4 @@
 
 #songs-slider{
   width: 80%; /* sample value - set it as you like*/
-}
-
-.slider-handle {
-    background-color: #1dc156;
 }
