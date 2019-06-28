@@ -58,7 +58,7 @@
                 <span class="icon-bar"></span>
             </button>
             <!-- Navbar logo -->
-            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-5" id="logo">
+            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-5" style="padding: 0;" id="logo">
                 <a class="page-scroll" href="#page-top"><img src="{{ url_for('.static', filename='img/navbar_moodify_logo.png') }}" height="50" /></a>
             </div>
             <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 text-faded" id="username">{{ id }}</div>       
@@ -169,7 +169,7 @@
                 </div>
             </div>
 	    <!-- The song review column. -->
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 row text-center">
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-center">
                 <div id="songinfotool">
                     <h3>Song analysis</h3>
                     <hr class="full">
@@ -180,12 +180,12 @@
                         <div>
                             <!-- <input id="happiness_slider" class="feedback-slider" type="range" min="0" max="100" step="1" value="50"> -->
                             <div class="row top-buffer">
-                                <p id="happiness_slider_text" class="text-center hcenter">Happiness (50%):</p>
+                                <p id="happiness_slider_text" class="text-center hcenter">Happiness: 50%</p>
                                 <input id="happiness_slider" class="hcenter" type="range">
                                 <!-- <br> <br> -->
                             </div>
                             <div class="row top-buffer">
-                                <p id="excitedness_slider_text" class="text-center hcenter">Excitement (50%):</p>
+                                <p id="excitedness_slider_text" class="text-center hcenter">Excitedness: 50%</p>
                                 <input id="excitedness_slider" class="hcenter" type="range">
                             </div>
                             <div class="row top-buffer">
@@ -226,7 +226,7 @@
         <div class="row">
             <div class="btn-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <button type="button" id="moodbutton" class="btn btn-block btn-dark dropdown-toggle btn-padding dropdown-menu-center" style="width: 50%" data-toggle="dropdown">Mood <span class="caret"></span></button>
-                <ul class="dropdown-menu dropdown-padding btn-block dashboard-dropdown dropdown-menu-center" role="menu">
+                <ul class="dropdown-menu dropdown-padding dashboard-dropdown dropdown-menu-center" role="menu">
                   <li><a onclick="toggleMetric('excited')">Excited</a></li>
                   <li class="divider"></li>
                   <li><a onclick="toggleMetric('mellow')">Mellow</a></li>
@@ -241,7 +241,7 @@
 
             <div class="btn-group col-xs-12 col-sm-12 col-md-12 col-lg-12" role="group">
                 <button type="button" id="themebutton" class="btn btn-block btn-dark dropdown-toggle btn-padding dropdown-menu-center" style="width: 50%;" data-toggle="dropdown">Theme <span class="caret"></span></button>
-                <ul class="dropdown-menu dropdown-padding btn-block dashboard-dropdown dropdown-menu-center" role="menu">
+                <ul class="dropdown-menu dropdown-padding dashboard-dropdown dropdown-menu-center" role="menu">
                   <li><a onclick="toggleMetric('dance')">Party</a></li>
                   <li class="divider"></li> 
                   <li><a onclick="toggleMetric('karaoke')">Karaoke</a></li>
@@ -252,7 +252,7 @@
         </div>
 
         <div id="Song-Metric-Recommendation" class="row rounded-edges">
-            <div class="text-center col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="text-center col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
                 <br>
                 <div id="rec0" class="row">
                 </div>
@@ -276,7 +276,7 @@
             <div class="col-lg-8 col-lg-offset-2 text-center">
                 <h1 class="section-heading">Analytics</h1>
                 <hr class="dark">
-                <p>Use the tool below for a personal analysis of your Spotify use!</p>
+                <p>Use the tool below to customise your personal analytics, giving insight into your usage of Spotify, mood patterns and song themes!</p>
             </div>
         </div>
         <div class="row text-center">
@@ -300,8 +300,8 @@
 
         <div class="row">
             
-            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12" id="linechart-buttons">
-                <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 text-center" id="lineCharts">
+            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12" id="linechart-buttons" style="padding: 0;">
+               <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 text-center" id="lineCharts">
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <button class="btn btn-block" onclick="toggleLine(this.id)" id="instrumentalness" style="background-color: #1dc156;">Instrumentalness</button>
@@ -343,8 +343,8 @@
                 </div>
             </div>
 
-            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="col-lg-6 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0;">
+                <div class="col-lg-6 col-lg-offset-1 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1">
                     <div id="lineDays">
 
                     </div>
@@ -355,22 +355,25 @@
                         
                     </div>
                 </div>
-                <div id="analyticsDescription" class="col-lg-2 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 text-padding">
+                <div id="analyticsDescription" class="col-lg-2 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1 text-padding">
                 </div>
             </div>
 
-            <div class="row text-center col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <div class="row text-center col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0;">
+                <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-11 col-xs-offset-1">
                     <div id="timeframe-slider-div">
-                        <input id="timeframe-slider" type="text"/> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
+                        <br>
+                        <input id="timeframe-slider" type="text"/><br> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
                         <br> Select the timeframe to examine 
                     </div>
                     <div id="days-slider-div">
-                        <input id="days-slider" type="text"/> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
+                        <br>
+                        <input id="days-slider" type="text"/> <br> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
                         <br> Select the number of days you want to examine 
                     </div>
                     <div id="songs-slider-div">
-                        <input id="songs-slider" type="text"/> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
+                        <br>
+                        <input id="songs-slider" type="text"/> <br> <button class="btn btn-default dropdown-toggle" onclick="requestLineCharts(true)">Refresh</button>
                         <br> Select the number of songs you want to examine 
                     </div>
                 </div>

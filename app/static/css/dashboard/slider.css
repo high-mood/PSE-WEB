@@ -23,3 +23,7 @@
 #songs-slider{
   width: 80%; /* sample value - set it as you like*/
 }
+
+.slider-handle {
+    background-color: #1dc156;
+}
