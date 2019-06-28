@@ -2,21 +2,20 @@
  *
  * This file defines JQuery UI slider objects used in the section 'Analytics'.
 
- *     :copyright: 2019 Moodify (High-Mood)
- *     :authors:
- *            "Stan van den Broek",
- *            "Mitchell van den Bulk",
- *            "Mo Diallo",
- *            "Arthur van Eeden",
- *            "Elijah Erven",
- *            "Henok Ghebrenigus",
- *            "Jonas van der Ham",
- *            "Mounir El Kirafi",
- *            "Esmeralda Knaap",
- *            "Youri Reijne",
- *            "Siwa Sardjoemissier",
- *            "Barry de Vries",
- *            "Jelle Witsen Elias"
+ *     @copyright: 2019 Moodify (High-Mood)
+ *     @author "Stan van den Broek",
+ *     @author "Mitchell van den Bulk",
+ *     @author "Mo Diallo",
+ *     @author "Arthur van Eeden",
+ *     @author "Elijah Erven",
+ *     @author "Henok Ghebrenigus",
+ *     @author "Jonas van der Ham",
+ *     @author "Mounir El Kirafi",
+ *     @author "Esmeralda Knaap",
+ *     @author "Youri Reijne",
+ *     @author "Siwa Sardjoemissier",
+ *     @author "Barry de Vries",
+ *     @author "Jelle Witsen Elias"
  */
 var timeframeSliderObj = $("#timeframe-slider").slider({
     id: "timeframe-slider",
