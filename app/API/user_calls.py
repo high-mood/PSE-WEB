@@ -155,7 +155,6 @@ class HourlyMood(Resource):
                 mood_time = datetime.datetime.strptime(mood_time[:-1], '%Y-%m-%dT%H:%M:%S')
                 mood_hour = mood_time.hour
 
-                # TODO: This is always true so duplicate code
                 if start <= mood_hour <= end:
                     # Add the songid to the dictionary
                     resultDict[mood_hour].append(song['songid'])
