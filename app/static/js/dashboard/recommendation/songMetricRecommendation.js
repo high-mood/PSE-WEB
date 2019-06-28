@@ -1,7 +1,11 @@
 function toggleMetric(metricName) {
-    if (metricName == 'dance') {metricName = 'party'};
-    var themes = ['party', 'karaoke', 'study'];
-    var formattedstring = metricName.charAt(0).toUpperCase() + metricName.slice(1) + " ";
+    var themes = ['dance', 'karaoke', 'study'];
+    var formattedstring = ""
+    if (metricName != 'dance') {
+      formattedstring = metricName.charAt(0).toUpperCase() + metricName.slice(1) + " ";
+    } else {
+      formattedstring = "Party ";
+    }
     if (themes.includes(metricName)) {
 	document.getElementById("moodbutton").innerHTML =
 	    "Mood " + "<span class=\"caret\"></span>";
