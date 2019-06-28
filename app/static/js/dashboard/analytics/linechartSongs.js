@@ -27,13 +27,16 @@
  * @author Jelle Witsen Elias
  */
 
-// fills dataset
+
+/**
+ * @summary Fills dataset with usable data for d3.
+ *
+ * @param {Object} dataset
+ * @param {Object} data
+ * @param {String} chartType
+ * @returns
+ */
 function fillDataset(dataset, data, chartType) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     var dataKey;
     if (chartType == "songs") {
         dataKey = "metric_over_time";
@@ -52,12 +55,16 @@ function fillDataset(dataset, data, chartType) {
 }
 
 // gets all scales for linechart
+/**
+ *
+ *
+ * @param {*} data
+ * @param {*} dataset
+ * @param {*} height
+ * @param {*} width
+ * @returns
+ */
 function getScalesSongs(data, dataset, height, width) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     // scales
     xScale = d3.scaleLinear()
         .domain([data.metric_over_time.length - 1, 0])
@@ -93,12 +100,11 @@ function getScalesSongs(data, dataset, height, width) {
 }
 
 // create tooltip for song history chart
+/**
+ *
+ *
+ */
 function createSongsTooltip() {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     // make tooltip
     var tooltip = document.createElement("div");
     tooltip.setAttribute("id", "tooltipSongs");
@@ -120,12 +126,19 @@ function createSongsTooltip() {
         .style("color", "#000000");
 }
 
+/**
+ *
+ *
+ * @param {*} svg
+ * @param {*} xScaleTicks
+ * @param {*} yScale
+ * @param {*} yScaleTempo
+ * @param {*} yScaleMoods
+ * @param {*} height
+ * @param {*} width
+ * @returns
+ */
 function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     // create axes
     xAxis = svg.append("g")
         .attr("class", "x axis")
@@ -165,6 +178,13 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
 }
 
 // draws line for song history linechart
+/**
+ * 
+ * @param {*} svgId 
+ * @param {*} dataset 
+ * @param {*} name 
+ * @param {*} data 
+ */
 function drawLineSongs(svgId, dataset, name, data) {
     /**
      * Switches analytics chart description based on currently show chart.
@@ -257,7 +277,12 @@ function drawLineSongs(svgId, dataset, name, data) {
     })
 }
 
-// trims song name for tooltip
+/**
+ * @summary Trims song name for tooltip.
+ *
+ * @param {*} name
+ * @returns
+ */
 function trimSongName(name) {
     /**
      * Switches analytics chart description based on currently show chart.
@@ -273,12 +298,13 @@ function trimSongName(name) {
 }
 
 // drops datapoints with no information from data
+/**
+ *
+ *
+ * @param {*} data
+ * @returns
+ */
 function dropNullData(data) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     for (var i in data["metric_over_time"]) {
         for (var key in data["metric_over_time"][i]) {
             if (data["metric_over_time"][i][key] == null) {
@@ -290,13 +316,14 @@ function dropNullData(data) {
     return data;
 }
 
+/**
+ *
+ *
+ * @param {*} data
+ * @param {*} id
+ * @param {*} retriggered
+ */
 function createLineGraphSongs(data, id, retriggered) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
-
     // clear div before proceeding
     $(`#${id}`).empty();
 
@@ -342,13 +369,17 @@ function createLineGraphSongs(data, id, retriggered) {
     drawLines("songs", svgId, dataset, retriggered, data);
 }
 
-// draws all lines in chart
+// 
+/**
+ * @summary Draws all lines in chart.
+ *
+ * @param {*} charttype
+ * @param {*} svgId
+ * @param {*} dataset
+ * @param {*} retriggered
+ * @param {*} data
+ */
 function drawLines(charttype, svgId, dataset, retriggered, data) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     // draw all lines, show wanted ones
     for (var key in dataset) {
         if (!retriggered && charttype != "days") {
@@ -380,14 +411,15 @@ function drawLines(charttype, svgId, dataset, retriggered, data) {
     }
 }
 
-// draws line for song history linechart
+/**
+ * @summary Draws line for song history linechart.
+ *
+ * @param {*} svgId
+ * @param {*} dataset
+ * @param {*} name
+ * @param {*} data
+ */
 function drawLineSongs(svgId, dataset, name, data) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
-
     // make correct d3 line generator
     var line;
     if (name == "tempo") {
@@ -473,7 +505,12 @@ function drawLineSongs(svgId, dataset, name, data) {
     })
 }
 
-// trims song name for tooltip
+/**
+ * @summary Trims song name for tooltip.
+ *
+ * @param {*} name
+ * @returns
+ */
 function trimSongName(name) {
     /**
      * Switches analytics chart description based on currently show chart.
@@ -488,13 +525,14 @@ function trimSongName(name) {
     }
 }
 
-// drops datapoints with no information from data
+// 
+/**
+ * @summary Drops datapoints with no information from data.
+ *
+ * @param {*} data
+ * @returns
+ */
 function dropNullData(data) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
     for (var i in data["metric_over_time"]) {
         for (var key in data["metric_over_time"][i]) {
             if (data["metric_over_time"][i][key] == null) {

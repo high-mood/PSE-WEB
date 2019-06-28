@@ -1,23 +1,3 @@
-<<<<<<< HEAD
-// Initiate slicers and set to default values.
-happinessSlider.on('change', function(event) {
-    $('#happiness_slider_text').html(`Happiness: ${event.value['newValue']}%`)
-})
-
-excitednessSlider.on('change', function(event) {
-    $('#excitedness_slider_text').html(`Excitedness: ${event.value['newValue']}%`)
-})
-
-// Show history data when websites is opened.
-var request = new XMLHttpRequest();
-request.open('GET', 'http://localhost:5000/api/tracks/history/' + userid + '/20', true);
-
-request.onload = function() {
-    var allData = JSON.parse(this.response);
-    userData = allData.resource.songs;
-    window.histData = userData;
-    window.curData = window.histData;
-=======
 /* loadHistory.js
  *
  * This file contains javascript code to properly render the 'Review' section.
@@ -42,7 +22,6 @@ request.onload = function() {
  *            "Barry de Vries",
  *            "Jelle Witsen Elias"
  */
->>>>>>> 3188242b1cd8df7ecf33d96d243936d39cff0f12
 
 function toggleHistory(chartName) {
     /* Onclick handles for toggle. */
@@ -208,12 +187,8 @@ function sendFeedback() {
     /**  Allows user to send their feedback on songs mood-analysis **/
     var happiness = document.getElementById("happiness_slider").value;
     var excitedness = document.getElementById("excitedness_slider").value;
-<<<<<<< HEAD
-    var uri = "http://localhost:5000/api/tracks/mood";
-=======
 
     var uri = "http://pse-ssh.diallom.com:5000/api/tracks/mood";
->>>>>>> 3188242b1cd8df7ecf33d96d243936d39cff0f12
     var songid = window.curData[window.song_index].songid;
 
     var data = {
