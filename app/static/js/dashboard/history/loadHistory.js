@@ -25,7 +25,7 @@ request.send();
 
 // Onclick handles for toggle.
 function toggleHistory(chartName) {
-    if (chartName === 'history') {
+    if (chartName === 'Full history') {
         $('#historySelector').text("History ");
         $('#historySelector').append("<span class=\"caret\"></span>");
         document.getElementById("headerName").innerHTML = "Full history";
@@ -36,7 +36,7 @@ function toggleHistory(chartName) {
         $('#historySelector').text("Favourite songs");
         $('#historySelector').append("<span class=\"caret\"></span>");
 
-        document.getElementById("headerName").innerHTML = "Favourite Songs";
+        document.getElementById("headerName").innerHTML = "Favourite Songs ";
         fillTopData();
     }
 }
