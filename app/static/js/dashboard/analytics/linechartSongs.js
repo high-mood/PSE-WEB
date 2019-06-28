@@ -140,7 +140,7 @@ function createSongsTooltip() {
  */
 function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width) {
     // create axes
-    xAxis = svg.append("g")
+    svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
         .attr("transform", "translate(0," + height + ")")
@@ -174,7 +174,7 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
                   "rotate(90) translate(" + height / 2 + ", -40)")
             .style("text-anchor", "middle")
             .text("Moods");
-    return [svg, xAxis];
+    return svg;
 }
 
 // draws line for song history linechart
@@ -363,7 +363,7 @@ function createLineGraphSongs(data, id, retriggered) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("id", svgId);
     
-    svg, xAxis = createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width);
+    svg = createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width);
     createSongsTooltip();
     
     drawLines("songs", svgId, dataset, retriggered, data);
