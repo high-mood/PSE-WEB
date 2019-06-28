@@ -6,21 +6,20 @@
  * It contains the structure of the playlist API with functions to handle basic GET and POST requests.
  *
  *
- *     :copyright: 2019 Moodify (High-Mood)
- *     :authors:
- *            "Stan van den Broek",
- *            "Mitchell van den Bulk",
- *            "Mo Diallo",
- *            "Arthur van Eeden",
- *            "Elijah Erven",
- *            "Henok Ghebrenigus",
- *            "Jonas van der Ham",
- *            "Mounir El Kirafi",
- *            "Esmeralda Knaap",
- *            "Youri Reijne",
- *            "Siwa Sardjoemissier",
- *            "Barry de Vries",
- *            "Jelle Witsen Elias"
+ *     @copyright 2019 Moodify (High-Mood)
+ *     @author "Stan van den Broek",
+ *     @author "Mitchell van den Bulk",
+ *     @author "Mo Diallo",
+ *     @author "Arthur van Eeden",
+ *     @author "Elijah Erven",
+ *     @author "Henok Ghebrenigus",
+ *     @author "Jonas van der Ham",
+ *     @author "Mounir El Kirafi",
+ *     @author "Esmeralda Knaap",
+ *     @author "Youri Reijne",
+ *     @author "Siwa Sardjoemissier",
+ *     @author "Barry de Vries",
+ *     @author "Jelle Witsen Elias"
  */
 
 function toggleHistory(chartName) {
@@ -63,7 +62,7 @@ function fillTopData() {
 function histSelect(clickEvent) {
     /** Generate similar songs based on a selected track.
 
-    :param clickEvent: The onclick event from a selected song. **/
+    @param clickEvent: The onclick event from a selected song. **/
 
     song_index = clickEvent.target.id;
     displaySimilarSongs(song_index);
@@ -72,7 +71,7 @@ function histSelect(clickEvent) {
 function displaySimilarSongs(song_index) {
     /** Displays the list of songs under 'More like this'.
 
-	:param song_index: Index of the in History/Favourites list **/
+	@param song_index: Index of the in History/Favourites list **/
 
     songId = window.curData[parseInt(song_index)].songid;
     window.song_index = song_index;
@@ -155,7 +154,7 @@ function fillScrollWindow() {
 
 function adjustSlider(song_index) {
     /** Changes the mood slider positions after a song is selected
-	:param song_index: Index of the song in the history/favourites list **/
+	@param song_index: Index of the song in the history/favourites list **/
     if (song_index == null) {
         excitednessSlider.slider("setValue", 50);
         happinessSlider.slider("setValue", 50);
@@ -187,7 +186,6 @@ function sendFeedback() {
     /**  Allows user to send their feedback on songs mood-analysis **/
     var happiness = document.getElementById("happiness_slider").value;
     var excitedness = document.getElementById("excitedness_slider").value;
-
     var uri = "http://pse-ssh.diallom.com:5000/api/tracks/mood";
     var songid = window.curData[window.song_index].songid;
 
