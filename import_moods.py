@@ -1,7 +1,8 @@
 """
     import_moods.py
     ~~~~~~~~~~~~
-    This file can be utilized to TODO
+    This file can be utilized to query the Influx database to get
+    songs and their Spotify parameters.
 
     :copyright: 2019 Moodify (High-Mood)
     :authors:
@@ -55,15 +56,7 @@ if __name__ == "__main__":
             'tempo': f.tempo
         })
 
-    # for t in tracks:
-    #         if t['songid'] == '69QGRreL8XpWLoa0WMYOvm':
-    #                 print('found')
-    #         Song.create_if_not_exist(t)
     moods = analyse_mood(tracks)
-    # data_songids = [mood['songid'] for mood in moods]
-    # songs = db.session.query(Songmood).filter(Songmood.songid.in_((data_songids))).all()
-    # songids = [s.songid for s in songs]
-    # new_songs = list(set(data_songids) - set(songids))
 
     for data in moods:
         data['response_count'] = 0

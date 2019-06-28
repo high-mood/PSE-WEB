@@ -88,7 +88,7 @@ function createLineGraphDays(data, id, retriggered) {
             .attr("id", svgId);
 
 
-    svg = createAxes(svg, xScale, yScale, yScaleTempo, yScaleMoods, height, width);
+    svg, xAxis = createAxes(svg, xScale, yScale, yScaleTempo, yScaleMoods, height, width);
     
     // make tooltip
     var tooltip = document.createElement("div");

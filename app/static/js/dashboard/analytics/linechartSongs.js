@@ -127,7 +127,7 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
      * @param {String}   chartName           Name of the chart to display a description for.
      */
     // create axes
-    svg.append("g")
+    xAxis = svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height / 2 + ")")
         .attr("transform", "translate(0," + height + ")")
@@ -161,7 +161,7 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
                   "rotate(90) translate(" + height / 2 + ", -40)")
             .style("text-anchor", "middle")
             .text("Moods");
-    return [svg];
+    return [svg, xAxis];
 }
 
 // draws line for song history linechart
@@ -336,7 +336,7 @@ function createLineGraphSongs(data, id, retriggered) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("id", svgId);
     
-    svg = createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width);
+    svg, xAxis = createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, width);
     createSongsTooltip();
     
     drawLines("songs", svgId, dataset, retriggered, data);
