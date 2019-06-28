@@ -1,6 +1,6 @@
 /**
  * Discription.
- * 
+ *
  * @copyright 2019 Moodify (High-Mood)
  * @author Stan van den Broek
  * @author Mitchell van den Bulk
@@ -18,8 +18,8 @@
  */
 
 /** Function to create a radarchart based off userdata
- * 
- * @param {*} userdata 
+ *
+ * @param {*} userdata, array containing user song history
  */
 function createRadarChart(userdata) {
 
