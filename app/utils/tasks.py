@@ -314,7 +314,6 @@ def update_song_features(tracks):
     for song_id in not_found_ids:
         new_tracks[song_id] = tracks[song_id]
 
-    # TODO don't hardcode 'snipy12'
     refresh_token = User.get_refresh_token('snipy12')
     access_token = spotify.get_access_token(refresh_token)
     add_audio_features(new_tracks, access_token)

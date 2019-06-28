@@ -1,4 +1,9 @@
 function analyticsDescription(chartName) {
+    /**
+     * Switches analytics chart description based on currently show chart.
+     *
+     * @param {String}   chartName           Name of the chart to display a description for.
+     */
     var description = $("#analyticsDescription");
 
     description.empty();
@@ -14,6 +19,7 @@ function analyticsDescription(chartName) {
     }
 }
 
+// Descriptions of the different analytics charts.
 var daysText = "The graph currently displays average statistics of the past days on which you have listened to music on Spotify. \
 By hovering over the datapoints you can see the exact values for a given day. \
 You can click one of the buttons below to show or hide the corresponding parameter in the graph. \

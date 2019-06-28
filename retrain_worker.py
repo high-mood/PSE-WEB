@@ -1,8 +1,9 @@
 """
     retrain_worker.py
     ~~~~~~~~~~~~
-    This file implements functionality to retrain the machine learning model's used in the predictions of mood.
-    These predictions are altered based upon user supplied feedback.
+    This file implements functionality to take all the songs from the database 
+    with user-responses. Retrains the GBR model with this data and exports 
+    .joblib files which are used for future predictions in mood/moodAnalysis.py
 
     :copyright: 2019 Moodify (High-Mood)
     :authors:
@@ -29,9 +30,11 @@ from app.utils.tasks import link_features_mood
 
 
 def main():
-    """Retrain the ML model on new data in the database, generated through user-feedback"""
-    features = ["response_excitedness", "response_happiness", "mode", "time_signature", "acousticness",
-                "danceability", "energy", "instrumentalness", "liveness", "loudness", "speechiness", "valence", "tempo"]
+    features = ["response_excitedness", "response_happiness", "mode",
+                "time_signature", "acousticness", "danceability",
+                "energy", "instrumentalness", "liveness", "loudness",
+                "speechiness", "valence", "tempo"]
+    
     data = link_features_mood(get_responses=True)
 
     train_set = []
@@ -39,7 +42,6 @@ def main():
         print(data)
         row = [song[feature] for feature in features]
         train_set.append(row)
-
     train_set = np.array(train_set).astype(float)
 
     energy = [elem[1] for elem in train_set]
