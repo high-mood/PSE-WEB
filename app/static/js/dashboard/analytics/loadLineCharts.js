@@ -1,7 +1,31 @@
+/**
+ * Loads the line charts for the analytics section.
+ * 
+ * @copyright 2019 Moodify (High-Mood)
+ * @author Stan van den Broek
+ * @author Mitchell van den Bulk
+ * @author Mo Diallo
+ * @author Arthur van Eeden
+ * @author Elijah Erven
+ * @author Henok Ghebrenigus
+ * @author Jonas van der Ham
+ * @author Mounir El Kirafi
+ * @author Esmeralda Knaap
+ * @author Youri Reijne
+ * @author Siwa Sardjoemissier
+ * @author Barry de Vries
+ * @author Jelle Witsen Elias
+ */
+
 $('#lineSongs').hide()
 $('#barChart').hide()
 analyticsDescription("days")
 
+/**
+ * @summary Sends a request to the API to get the data for the line charts.
+ *
+ * @param {Boolean} retriggered
+ */
 function requestLineCharts(retriggered) {
   var linechartRequest= new XMLHttpRequest()
 
@@ -67,6 +91,11 @@ function requestLineCharts(retriggered) {
 
 requestLineCharts(false)
 
+/**
+ * @summary Toggles the charts based on the chartname to switch to.
+ *
+ * @param {String} chartname
+ */
 function toggleLineCharts(chartname) {
     if (chartname === 'lineDays') {
       $('#lineChartSelector').text("Days ")
@@ -109,6 +138,10 @@ function toggleLineCharts(chartname) {
 }
 
 
+/**
+ * @summary Hides the buttons for the timeframe chart except for happiness and excitedness.
+ *
+ */
 function hideButtonsTimeframe() {
   var buttonNames = ["excitedness", "happiness", "acousticness", "danceability", 
   "energy", "instrumentalness", "liveness", "speechiness", 
@@ -126,6 +159,7 @@ function hideButtonsTimeframe() {
   }
 }
 
+/** @summary Build and show the buttons for metric selection   */
 function showButtonsTimeframe() {
   var buttonNames = ["excitedness", "happiness", "acousticness", "danceability", 
   "energy", "instrumentalness", "liveness", "speechiness", 

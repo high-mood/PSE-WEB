@@ -32,11 +32,11 @@ api = Namespace('tracks', description='Information about tracks (over time)', pa
 def get_history(userid, song_count, return_songids=False, calc_mood=True):
     """
     Get the latest song_count tracks for userid.
-    :param userid: unique identifier for a user.
-    :param song_count: how many songs should be returned.
-    :return_songids: return list of songids instead of history with features.
-    :param calc_mood: calculate the average excitedness and happiness.
-    :return
+    :param userid: Unique identifier for a user.
+    :param song_count: How many songs should be returned.
+    :return_songids: Return list of songids instead of history with features.
+    :param calc_mood: Calculate the average excitedness and happiness.
+    :return: Average of happiness and happiness, list of dictionary containing songs.
     """
     client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
 
@@ -106,6 +106,8 @@ class SongFeedback(Resource):
 class History(Resource):
     """
     Return the last song_count songs of the user.
+    :param userid: Unique identifier for a user.
+    :param song_count: Specifies how many songs of the history to return.
     """
 
     # Output format
@@ -139,8 +141,13 @@ class History(Resource):
             api.abort(404, message=f"No history not found for '{userid}'")
 
 
-@api.route('/topsongs/<string:userid>/<string:count>')
+@api.route('/topsongs/<string:userid>/<string:song_count>')
 class TopSongs(Resource):
+    """
+    Return the top songs of a user by counting the number of listens.
+    :param userid: Unique identifier for a user
+    :param song_count: Specifies how many songs of the history to return
+    """
     # Output format
     top_songs = api.model('Song history with mood', {
         'userid': fields.String,
@@ -153,7 +160,7 @@ class TopSongs(Resource):
     })
 
     @api.marshal_with(top_songs, envelope='resource')
-    def get(self, userid, count):
+    def get(self, userid, song_count):
         """Get the top N genres of the user."""
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
 
@@ -166,7 +173,7 @@ class TopSongs(Resource):
         result = models.Song.get_songs_with_mood(songids)
         counted_songs = sorted([((song, songmood), songids.count(song.songid)) for song, songmood in result],
                                key=lambda val: val[1], reverse=True)
-        top_x = counted_songs[:int(count)]
+        top_x = counted_songs[:int(song_count)]
 
         return {
             'userid': userid,
@@ -180,6 +187,8 @@ class TopSongs(Resource):
 class Metric(Resource):
     """
     Return a historical list of songs for a user with features and moods.
+    :param userid: Unique identifier for a user.
+    :param song_count: Specifies how many songs of the history to return.
     """
 
     # Output format
@@ -251,6 +260,10 @@ class RecommendationSong(Resource):
     def get(self, userid, songid, excitedness, happiness):
         """
         Obtain recommendations based on a song along with its excitedness and happiness.
+        :param userid: Unique identifier for a user.
+        :param songid: Unique identifier for a song.
+        :param excitedness: Excitedness of the song specified by songid.
+        :param happiness: happiness of the song specified by songid.
         """
         recs = recommend_input([songid], userid, target=(float(excitedness), float(happiness)))
 
