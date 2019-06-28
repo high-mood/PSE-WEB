@@ -18,34 +18,20 @@
 */
 
 /**
- * Onclick handler that changes the page when a different metic is selected. 
- * 
+ * Onclick handler that changes the page when a different metic is selected.
+ *
  * @param {string} metricName The selected metric
  */
 function toggleMetric(metricName) {
-  // Display name of metric.
-  var themes = ['dance', 'karaoke', 'study'];
-  var formattedstring = ""
-  if (metricName != 'dance') {
-    formattedstring = metricName.charAt(0).toUpperCase() + metricName.slice(1) + " ";
-  } else {
-    formattedstring = "Party ";
-  }
+    var formattedstring = ""
+    if (metricName != 'dance') {
+      formattedstring = metricName.charAt(0).toUpperCase() + metricName.slice(1) + " ";
+    } else {
+      formattedstring = "Party ";
+    }
+	document.getElementById("moodbutton").innerHTML =
+	    formattedstring + "<span class=\"caret\"></span>";
 
-  // Update button texts.
-  if (themes.includes(metricName)) {
-    document.getElementById("moodbutton").innerHTML =
-      "Mood " + "<span class=\"caret\"></span>";
-    document.getElementById("themebutton").innerHTML =
-      formattedstring + "<span class=\"caret\"></span>";
-  } else {
-    document.getElementById("moodbutton").innerHTML =
-      formattedstring + "<span class=\"caret\"></span>";
-    document.getElementById("themebutton").innerHTML =
-      "Theme " + "<span class=\"caret\"></span>";
-  }
-
-  // Request the recommendations from API
   var request = new XMLHttpRequest;
   request.open('GET', 'http://pse-ssh.diallom.com:5000/api/tracks/recommendation/' + userid + '/' + metricName, true);
   request.onload = function() {
@@ -67,7 +53,7 @@ function toggleMetric(metricName) {
 
 /**
  * Fill the recomandations div's with recommandations.
- * 
+ *
  * @param {list} userData Contains dicts with recommended songs
  */
 function fillRecommendations(userData) {
@@ -83,5 +69,5 @@ function fillRecommendations(userData) {
   }
 }
 
-// Ensures that default 
+// Ensures that default
 toggleMetric('neutral');
