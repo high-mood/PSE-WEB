@@ -2,6 +2,7 @@
     playlist_calls.py
     ~~~~~~~~~~~~
     This file contains the structure of the playlist API with functions to handle basic GET and POST requests.
+    In the current version of the website this api is not featured, however the functionality is easily included.
 
 
     :copyright: 2019 Moodify (High-Mood)
@@ -28,9 +29,12 @@ from app.utils import spotify
 api = Namespace('playlist', description='playlist', path="/playlist")
 
 
-@api.route('/<string:userid>/list/')
+@api.route('list/<string:userid>')
 class PlaylistList(Resource):
-    """Obtain a list of the user's playlist"""
+    """
+    Obtain a list of the user's playlist
+    :param userid: Unique identifier for a user.
+    """
 
     # Output format
     playlists = api.model('Playlist details', {
@@ -48,9 +52,7 @@ class PlaylistList(Resource):
 
     @api.marshal_with(playlists, envelope='resource')
     def get(self, userid):
-        """Get playlist """
-        # TODO You should just call the spotify api!
-        api.abort(403, message=f"Just call the Spotify API")
+        """Get a list playlists"""
         playlists = spotify.get_playlists(userid)
         return {
             'userid': userid,

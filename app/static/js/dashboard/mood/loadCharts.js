@@ -20,7 +20,10 @@ request.onload = function() {
 }
 request.send()
 
-// Function to toggle the chart that is shown.
+/** Function to toggle the chart that is shown.
+ * 
+ * @param {String} chartname The name of the chart.
+ */
 function toggleMoodCharts(chartname) {
     if (chartname === 'radarChart') {
         $('#moodChartSelector').text("Radar Chart ")

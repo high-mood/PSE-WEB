@@ -23,7 +23,6 @@
 import datetime
 from collections import defaultdict, Counter
 
-import dateparser
 from flask_restplus import Namespace, Resource, fields
 
 from app import app
@@ -37,6 +36,7 @@ api = Namespace('user', description='Information about user (over time)', path="
 class User(Resource):
     """
     Return all user info from the SQL database.
+    :param userid: Unique identifier for a user.
     """
 
     # Output format
@@ -55,7 +55,7 @@ class User(Resource):
     @api.marshal_with(user_info, envelope='resource')
     def get(self, userid):
         """
-        Obtain all of a user's account information.
+        Obtain all profile information of the user specified by userid.
         """
         user = models.User.get_user(userid)
         if not user:
@@ -64,28 +64,13 @@ class User(Resource):
         return user
 
 
-def parse_time(start, end):
-    if start in ('beginning of time' or 'the beginning of time'):
-        start = "0"
-
-    start_date = dateparser.parse(start)
-    if not start_date:
-        api.abort(400, msg=f"could not parse '{start}' as start date")
-
-    end_date = dateparser.parse(end)
-    if not end_date:
-        api.abort(400, msg=f"could not parse '{end}' as end date")
-
-    return f"'{start_date.isoformat()}Z'", f"'{end_date.isoformat()}Z'"
-
-
 def valid_hour(time, start_hour, end_hour):
     """
     Check if the time if correct.
-    :param time: time in hours.
-    :param start_hour: starting time in hours.
-    :param end_hour: ending time in hours.
-    :return: boolean specifying if time is valid.
+    :param time: Time in hours as string.
+    :param start_hour: Starting time in hours as int.
+    :param end_hour: Ending time in hours as int.
+    :return: Boolean specifying if time is valid.
     """
 
     mood_time = time.split(".")[0]
@@ -111,6 +96,9 @@ class HourlyMood(Resource):
     """
     Return the hourly mood of a user specified within a timeframe. Thus over the entire history, we take the
     average for each hour within the specified hourly timeframe.
+    :param userid: Unique identifier for a user.
+    :param start: Lower bound of the timeframe in 24-hour format.
+    :param end: Upper bound of the timeframe in 24-hour format.
     """
 
     # Output format
@@ -205,7 +193,7 @@ class HourlyMood(Resource):
                     try:
                         A = A + B
                     except TypeError:
-                        count-=1
+                        count -= 1
 
                 # Convert these to averages by dividing each key if possible
                 for key, value in A.items():
@@ -231,6 +219,8 @@ class HourlyMood(Resource):
 class DailyMood(Resource):
     """
     Return the average metrics and mood per day for day_count number of days.
+    :param userid: Unique identifier for a user.
+    :param day_count: Specify the amount of days to return.
     """
 
     # Output format
@@ -258,7 +248,7 @@ class DailyMood(Resource):
     @api.marshal_with(daily_mood, envelope='resource')
     def get(self=None, userid="snipy12", day_count=5):
         """
-        Obtain average moods per day of user, going back day_count days.
+        Obtain average metrics and mood per day of user, going back day_count days.
         """
 
         client = influx.create_client(app.config['INFLUX_HOST'], app.config['INFLUX_PORT'])
