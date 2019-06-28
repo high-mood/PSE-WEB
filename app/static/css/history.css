@@ -1,0 +1,39 @@
+#scroll_window {
+    overflow-y: auto;
+    height: 425px;
+}
+
+.top-buffer {
+    margin-top: 30px;
+}
+
+.review {
+    height: 500px;
+}
+
+.songdiv {
+    height: 80px;
+    width: 380px;
+}
+
+.songdiv-right {
+    height: 120px;
+}
+
+.SongRecButton {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 40px;
+    width: 80px;
+    float: left;
+    background-color: black;
+    color: white;
+    font-weight: 700;
+    font-family: Gotham;
+    text-transform: capitalize;
+    border: none;
+}
+
+.songinfotool {
+    height: 400px;
+}

@@ -1,8 +1,30 @@
-from app.utils.recommendations import recommend_input, recommend_metric
-from flask_restplus import Namespace, Resource, fields
-from app.utils import influx, models
-from app import app
+"""
+    track_calls.py
+    ~~~~~~~~~~~~
+    This file contains the structure of the track API with functions to handle basic GET and POST requests.
 
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
+from flask_restplus import Namespace, Resource, fields
+
+from app import app
+from app.utils import influx, models
+from app.utils.recommendations import recommend_input, recommend_metric
 
 api = Namespace('tracks', description='Information about tracks (over time)', path="/tracks")
 
@@ -23,14 +45,14 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
     if recent_songs:
         history = []
         # Remove duplicates songs
-        songids = list(set([song['songid'] for song in recent_songs]))
+        songids = [song['songid'] for song in recent_songs]
         songids = songids[:song_count] if song_count > 0 else songids
         songmoods = models.Songmood.get_moods(songids)
         excitedness = 0
         happiness = 0
         count = 1
 
-        for songmood in songmoods:
+        for i, songmood in enumerate(songmoods):
             if calc_mood and songmood.excitedness and songmood.happiness:
                 excitedness += songmood.excitedness
                 happiness += songmood.happiness
@@ -40,7 +62,7 @@ def get_history(userid, song_count, return_songids=False, calc_mood=True):
                 song = {'songid': songmood.songid,
                         'excitedness': songmood.excitedness,
                         'happiness': songmood.happiness,
-                        'time': [song['time'] for song in recent_songs][0],
+                        'time': recent_songs[i]['time'],
                         'name': models.Song.get_song_name(songmood.songid)}
                 history.append(song)
 
@@ -119,14 +141,12 @@ class History(Resource):
 
 @api.route('/topsongs/<string:userid>/<string:count>')
 class TopSongs(Resource):
-
     # Output format
     top_songs = api.model('Song history with mood', {
         'userid': fields.String,
         'songs': fields.Nested(api.model('song', {
             'songid': fields.String,
             'name': fields.String,
-            'time': fields.String,
             'excitedness': fields.Float,
             'happiness': fields.Float
         }))
@@ -184,6 +204,7 @@ class Metric(Resource):
             'happiness': fields.Float
         }))
     })
+
     @api.marshal_with(metrics, envelope='resource')
     def get(self, userid, song_count=0):
         """

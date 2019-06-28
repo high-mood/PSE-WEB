@@ -1,0 +1,11 @@
+.heatmapAxis line{
+  stroke: white;
+}
+
+.heatmapAxis path{
+  stroke: white;
+}
+
+.heatmapAxis text{
+  fill: white;
+}

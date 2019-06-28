@@ -1,3 +1,25 @@
+"""
+    test_views.py
+    ~~~~~~~~~~~~
+    This file contains test for loading the web page.
+
+    :copyright: 2019 Moodify (High-Mood)
+    :authors:
+           "Stan van den Broek",
+           "Mitchell van den Bulk",
+           "Mo Diallo",
+           "Arthur van Eeden",
+           "Elijah Erven",
+           "Henok Ghebrenigus",
+           "Jonas van der Ham",
+           "Mounir El Kirafi",
+           "Esmeralda Knaap",
+           "Youri Reijne",
+           "Siwa Sardjoemissier",
+           "Barry de Vries",
+           "Jelle Witsen Elias"
+"""
+
 import pytest
 
 from app import app
@@ -15,7 +37,7 @@ def client():
 @pytest.mark.integration_test
 def test_main_page(client):
     rv = client.get('/')
-    assert b"Welcome to Highmood" in rv.data
+    assert b"Your Spotify usage analysed and visualised" in rv.data
 
 
 @pytest.mark.integration_test
@@ -26,4 +48,4 @@ def test_user_page(client):
                              'display_name': "Test Mood"}
     rv = client.get('/')
 
-    assert b"Welcome Test Mood (1115081075), Here's your mood" in rv.data
+    assert b"1115081075" in rv.data
