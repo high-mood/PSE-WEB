@@ -60,8 +60,8 @@ function fillDataset(dataset, data, chartType) {
  *
  * @param {Object} data
  * @param {Object} dataset
- * @param {*} height
- * @param {*} width
+ * @param {Number} height
+ * @param {Number} width
  * @returns
  */
 function getScalesSongs(data, dataset, height, width) {
