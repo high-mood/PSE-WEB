@@ -2,7 +2,7 @@ var mean_excitedness, mean_happiness;
 const graphTexts = ["\
 <b>Excited:</b> <br><br>\
 <i>\"Choose thoughts that give you the emotions of being alive and excited about life.\"</i> <br>\
-― Bryant McGill, Simple Reminders: Inspiration for Living Your Best Life <br><br>\
+Bryant McGill, Simple Reminders: Inspiration for Living Your Best Life <br><br>\
 Like this quote you choose to listen to music that makes you feel alive and excited about life. <br><br>\
 When you're excited you have a heightened state of energy, enthusiasm and eagerness, <br>\
 this means that the songs you listen to contain a high excitedness and happiness. <br>\
@@ -14,7 +14,7 @@ You seem to be a very cheerful and upbeat person.",
 <i>\"Anybody can become angry - that is easy, but to be angry with the right person <br>\
 and to the right degree and at the right time and for the right purpose, <br>\
 and in the right way - that is not within everybody's power and is not easy.\"</i> <br>\
- ― Aristotle <br><br>\
+Aristotle <br><br>\
 Like this quote you choose to become angry to the right degree, at the right time and\
 for the right purpose. You choose to listen to music to control your anger. <br><br>\
 When you're angry you show a strong feeling of displeasure, opposition or hostility, <br>\
@@ -25,7 +25,7 @@ You seem like someone that loves to feel empowered by music, or perhaps you're a
 "\
 <b>Mellow:</b> <br><br>\
 <i>\"You know, I'm a pretty mellow guy. I'm pretty easy-going. I see everyone's perspective.\"</i> <br>\
-― Paul Walker <br><br>\
+Paul Walker <br><br>\
 Like this quote you're a person who likes to listen to easy-going music. <br><br>\
 When you're mellow you are pleasant, agreeable and laid-back, <br>\
 this means that the songs you listen to contain a low excitedness and high happiness. <br>\
@@ -37,7 +37,7 @@ You seem like a very relaxed and mellow person.",
 <i>\"There is a sacredness in tears. They are not the mark of weakness, but of power. <br>\
 They speak more eloquently than ten thousand tongues. They are the messengers of <br>\
 overwhelming grief, of deep contrition, and of unspeakable love.\"</i> <br>\
-― Washington Irving <br><br>\
+Washington Irving <br><br>\
 Like this quote you show power in your sadness. You show your overwhelming grief, <br>\
 deep contrition and unspeakable love in the music that you listen to. <br><br>\
 When you're sad you express grief or unhappiness, <br>\
