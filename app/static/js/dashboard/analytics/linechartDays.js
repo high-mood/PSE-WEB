@@ -50,6 +50,34 @@ function getScalesDays(data, dataset, height, width) {
         return [dates, xScale, yScale, yScaleTempo, yScaleMoods];
 }
 
+function createDaysTooltip() {
+    // make tooltip
+    var tooltip = document.createElement("div");
+    
+    tooltip.setAttribute("id", "tooltipDays");
+    document.getElementById("lineDays").appendChild(tooltip);
+
+    d3.select("#tooltipDays").append("span")
+        .attr("id", "tooltipDaysSpan");
+    
+    // set proper style for tooltip
+    d3.select("#tooltipDays")
+        .style("width", "160px")
+        .style("height", "30px")
+        .style("position", "fixed")
+        .style("background-color", "steelblue")
+        .style("top", "0px")
+        .style("left", "0px")
+        .style("opacity", 0)
+        .style("border-radius", "10px")
+        .style("text-align", "center")
+    
+    // append text to tooltip
+    d3.select("#tooltipDaysSpan").append("text")
+        .attr("id", "tooltiptextDays")
+        .style("color", "#000000");
+}
+
 function createLineGraphDays(data, id, retriggered) {
     $(`#${id}`).empty();
     
@@ -88,33 +116,9 @@ function createLineGraphDays(data, id, retriggered) {
             .attr("id", svgId);
 
 
-    svg, xAxis = createAxes(svg, xScale, yScale, yScaleTempo, yScaleMoods, height, width);
-    
-    // make tooltip
-    var tooltip = document.createElement("div");
-    
-    tooltip.setAttribute("id", "tooltipDays");
-    document.getElementById("lineDays").appendChild(tooltip);
+    svg = createAxes(svg, xScale, yScale, yScaleTempo, yScaleMoods, height, width);
 
-    d3.select("#tooltipDays").append("span")
-        .attr("id", "tooltipDaysSpan");
-    
-    // set proper style for tooltip
-    d3.select("#tooltipDays")
-        .style("width", "160px")
-        .style("height", "30px")
-        .style("position", "fixed")
-        .style("background-color", "steelblue")
-        .style("top", "0px")
-        .style("left", "0px")
-        .style("opacity", 0)
-        .style("border-radius", "10px")
-        .style("text-align", "center")
-    
-    // append text to tooltip
-    d3.select("#tooltipDaysSpan").append("text")
-        .attr("id", "tooltiptextDays")
-        .style("color", "#000000");
+    createDaysTooltip();
 
     // draw proper lines
     drawLines('days', svgId, dataset, retriggered, null);
