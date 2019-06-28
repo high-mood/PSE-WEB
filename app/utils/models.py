@@ -44,6 +44,8 @@ class User(db.Model):
     def create_if_not_exist(json_info, refresh_token):
         """
         Create a new user in the database if it does not yet exist.
+        :param json_info: dict of all features of a user object.
+        :param refresh_token: A valid access token from the Spotify Accounts service.
         """
         user = User.query.filter_by(userid=json_info['id']).first()
         if user is None:
@@ -208,6 +210,7 @@ class Artist(db.Model):
     def create_if_not_exist(json_info):
         """
         Create an artist if it does not exist already.
+        :param json_info: dict of all features of a artists object.
         """
         artist = Artist.query.filter_by(artistid=json_info['artistid']).first()
         if artist is None:
@@ -236,6 +239,7 @@ class Songmood(db.Model):
     def create_if_not_exist(json_info):
         """
         Create a songmood if it doesnt exist already.
+        :param json_info: dict of all features of a songmood object.
         """
         songmood = Songmood.query.filter_by(songid=json_info['songid']).first()
         if songmood is None:
@@ -294,6 +298,7 @@ class SongArtist(db.Model):
     def create_if_not_exist(json_info):
         """
         Create a link between a song and artist if it does not already exists.
+        :param json_info: dict of all features of a songartists object.
         """
         song_artist = db.session.query(SongArtist).filter(SongArtist.songid == json_info['songid'],
                                                           SongArtist.artistid == json_info['artistid']).first()

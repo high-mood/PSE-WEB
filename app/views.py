@@ -26,7 +26,6 @@ import os
 from flask import send_from_directory, render_template, redirect, request, session, flash, url_for
 
 from app import app
-# Refactor later
 from app import spotifysso
 from app.API.track_calls import TopSongs
 from app.utils import influx, spotify
@@ -92,12 +91,11 @@ def authorized():
 
     access_token = resp['access_token']
     refresh_token = resp['refresh_token']
-    # TODO dynamic scopes
     scopes = resp['scope'].split(" ")
 
     json_user_info = spotify.get_user_info(access_token)
-    User.create_if_not_exist(json_user_info, refresh_token)  # TODO Add access token
-    session['json_info'] = json_user_info  # TODO change this laziness
+    User.create_if_not_exist(json_user_info, refresh_token)
+    session['json_info'] = json_user_info
     session['json_info']['refresh_token'] = refresh_token
 
     update_user_tracks(access_token)
