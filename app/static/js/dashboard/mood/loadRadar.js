@@ -1,4 +1,26 @@
-// Function to create a radarchart based off userdata
+/**
+ * Discription.
+ * 
+ * @copyright 2019 Moodify (High-Mood)
+ * @author Stan van den Broek
+ * @author Mitchell van den Bulk
+ * @author Mo Diallo
+ * @author Arthur van Eeden
+ * @author Elijah Erven
+ * @author Henok Ghebrenigus
+ * @author Jonas van der Ham
+ * @author Mounir El Kirafi
+ * @author Esmeralda Knaap
+ * @author Youri Reijne
+ * @author Siwa Sardjoemissier
+ * @author Barry de Vries
+ * @author Jelle Witsen Elias
+ */
+
+/** Function to create a radarchart based off userdata
+ * 
+ * @param {*} userdata 
+ */
 function createRadarChart(userdata) {
 
   // Set chart margin
