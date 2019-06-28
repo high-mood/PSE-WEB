@@ -27,7 +27,7 @@
  *  @param chartName     Name of currently selected mode.
  */
 function toggleHistory(chartName) {
-    if (chartName === 'Full history') {
+    if (chartName === 'history') {
         $('#historySelector').text("History ");
         $('#historySelector').append("<span class=\"caret\"></span>");
         document.getElementById("headerName").innerHTML = "History";
