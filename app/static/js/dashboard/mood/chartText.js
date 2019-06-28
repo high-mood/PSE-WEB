@@ -51,27 +51,35 @@ are displayed on the x and y axis.<br>\
 The intensity of the color is determined by the density of songs.<br><br>\
 The more songs are in that area the brighter red that spot will be.";
 
-/** Gives a div corresponding to a given id description of the user's mood.*/
+
+/** GiveText(data, id)
+ * Gives a div corresponding to a given id description of the user's mood.
+ * 
+ * @param {*} data Contains all data of a user, given back by an API call
+ * @param {String} id The id of the element to be filled
+ */
 function giveText(data, id) {
     var texts = graphTexts;
 
     mean_excitedness = data.mean_excitedness;
     mean_happiness = data.mean_happiness;
 
-   if (id == "heatmapText") {
+    if (id == "heatmapText") {
         $(`#${id}`).html(heatMapText);
-   } else {
+    } else {
         $(`#${id}`).html(getText(mean_excitedness, mean_happiness, texts));
-   }
+    }
 }
 
-/* After mouse out the text in the radarText div is reset. */
+/** After mouse out the text in the radarText div is reset. */
 function resetRadarText() {
     $("#radarText").html(getText(mean_excitedness, mean_happiness, graphTexts));
 }
 
 /** Hovering over a graphs quadrants changes the text.
- * DISCLAIMER: Only works for graphs that have a centered (0, 0).
+ * DISCLAIMER: Only works for graphs that have a centered (0, 0) (centered axes)
+ * 
+ * @param {HTMLElement} e The element to which you want to add hoverability.
  */
 function hoverRadar(e) {
     var xy_pos = getXYpos(this);
@@ -89,7 +97,12 @@ function hoverRadar(e) {
     $('#radarText').html(getText(y, x, graphTexts));
 }
 
-/** Gets the position of the mouse within a specific div.*/
+/** Get X and Y position of an element.
+ * 
+ * @param {HTMLElement} elem An HTML element of which the X and Y position are returned.
+ * 
+ * @return {Int, Int} Returns a tuple of two Integers, being the position of the element
+ */
 function getXYpos(elem) {
     var x = 0;
     var y = 0;
@@ -103,20 +116,27 @@ function getXYpos(elem) {
         elem = elem.offsetParent;    // set elem to its offsetParent
     }
 
-    //use while loop to check if elem is null
-    // if not then add current elem’s offsetLeft to x
-    //offsetTop to y and set elem to its offsetParent
+    // Use while loop to check if elem is null
+    // If not then add current elem’s offsetLeft to x
+    // offsetTop to y and set elem to its offsetParent
     while(elem != null) {
       x = parseInt(x) + parseInt(elem.offsetLeft);
       y = parseInt(y) + parseInt(elem.offsetTop);
       elem = elem.offsetParent;
     }
 
-    // returns an object with "xp" (Left), "=yp" (Top) position
+    // Returns an object with "xp" (Left), "yp" (Top) position
     return {'xp':x, 'yp':y};
   }
 
-/** Gets the corresponding text corresponding to which quadrant you hover over. */
+/** Gets the corresponding text corresponding to which quadrant you hover over.
+ * 
+ * @param {Double} m_excitedness The excitedness you want to give to determine the text.
+ * @param {Double} m_happiness The happiness you want to give to determine the text.
+ * @param {Array} texts An Array of all the texts {String}.
+ * 
+ * @return {String} Return the 'wanted' text.
+ */
 function getText(m_excitedness, m_happiness, texts) {
     if (m_excitedness >= 0) {
         if (m_happiness >= 0) {
