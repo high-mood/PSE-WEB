@@ -58,8 +58,8 @@ function fillDataset(dataset, data, chartType) {
 /**
  *
  *
- * @param {*} data
- * @param {*} dataset
+ * @param {Object} data
+ * @param {Object} dataset
  * @param {*} height
  * @param {*} width
  * @returns
@@ -181,9 +181,9 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
 /**
  * 
  * @param {*} svgId 
- * @param {*} dataset 
+ * @param {Object} dataset 
  * @param {*} name 
- * @param {*} data 
+ * @param {Object} data 
  */
 function drawLineSongs(svgId, dataset, name, data) {
     /**
@@ -301,7 +301,7 @@ function trimSongName(name) {
 /**
  *
  *
- * @param {*} data
+ * @param {Object} data
  * @returns
  */
 function dropNullData(data) {
@@ -319,7 +319,7 @@ function dropNullData(data) {
 /**
  *
  *
- * @param {*} data
+ * @param {Object} data
  * @param {*} id
  * @param {*} retriggered
  */
@@ -375,9 +375,9 @@ function createLineGraphSongs(data, id, retriggered) {
  *
  * @param {*} charttype
  * @param {*} svgId
- * @param {*} dataset
+ * @param {Object} dataset
  * @param {*} retriggered
- * @param {*} data
+ * @param {Object} data
  */
 function drawLines(charttype, svgId, dataset, retriggered, data) {
     // draw all lines, show wanted ones
@@ -415,9 +415,9 @@ function drawLines(charttype, svgId, dataset, retriggered, data) {
  * @summary Draws line for song history linechart.
  *
  * @param {*} svgId
- * @param {*} dataset
+ * @param {Object} dataset
  * @param {*} name
- * @param {*} data
+ * @param {Object} data
  */
 function drawLineSongs(svgId, dataset, name, data) {
     // make correct d3 line generator
@@ -529,7 +529,7 @@ function trimSongName(name) {
 /**
  * @summary Drops datapoints with no information from data.
  *
- * @param {*} data
+ * @param {Object} data
  * @returns
  */
 function dropNullData(data) {
