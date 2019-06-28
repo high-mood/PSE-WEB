@@ -54,9 +54,8 @@ function fillDataset(dataset, data, chartType) {
     return dataset;
 }
 
-// gets all scales for linechart
 /**
- *
+ * @summary Gets all scales for linechart.
  *
  * @param {Object} data
  * @param {Object} dataset
@@ -99,9 +98,9 @@ function getScalesSongs(data, dataset, height, width) {
     return [xScale, yScale, yScaleTempo, yScaleMoods, xScaleTicks];
 }
 
-// create tooltip for song history chart
+// 
 /**
- *
+ * @summary Create tooltip for song history chart.
  *
  */
 function createSongsTooltip() {
@@ -186,12 +185,6 @@ function createAxes(svg, xScaleTicks, yScale, yScaleTempo, yScaleMoods, height, 
  * @param {Object} data 
  */
 function drawLineSongs(svgId, dataset, name, data) {
-    /**
-     * Switches analytics chart description based on currently show chart.
-     *
-     * @param {String}   chartName           Name of the chart to display a description for.
-     */
-
     // make correct d3 line generator
     var line;
     if (name == "tempo") {
