@@ -23,16 +23,16 @@
  *            "Jelle Witsen Elias"
  */
 
-function toggleHistory(chartName) {
+function toggleHistory(listName) {
     /* Onclick handles for toggle. */
-    if (chartName === 'Full history') {
+    if (listName === 'history') {
         $('#historySelector').text("History ");
         $('#historySelector').append("<span class=\"caret\"></span>");
-        document.getElementById("headerName").innerHTML = "Full history";
+        document.getElementById("headerName").innerHTML = "History";
 
         window.curData = window.histData;
         fillScrollWindow();
-    } else if (chartName === 'favourites') {
+    } else if (listName === 'favourites') {
         $('#historySelector').text("Favourite songs");
         $('#historySelector').append("<span class=\"caret\"></span>");
 
@@ -185,22 +185,20 @@ function adjustSlider(song_index) {
 
 function sendFeedback() {
     /**  Allows user to send their feedback on songs mood-analysis **/
-    var happiness = document.getElementById("happiness_slider").value;
-    var excitedness = document.getElementById("excitedness_slider").value;
-
     var uri = "http://pse-ssh.diallom.com:5000/api/tracks/mood";
     var songid = window.curData[window.song_index].songid;
 
     var data = {
         "songid": songid,
-        "excitedness": excitedness,
-        "happiness": happiness
+        "excitedness": excitednessSlider.slider("getValue"),
+        "happiness": happinessSlider.slider("getValue")
     };
 
     var request = new XMLHttpRequest();
     request.open("POST", uri, true);
     request.setRequestHeader("Content-Type", 'application/json');
     request.setRequestHeader("Access-Control-Allow-Origin", 'pse-ssh.diallom.com:4000');
+    console.log(data)
     request.send(JSON.stringify(data));
 }
 
