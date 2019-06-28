@@ -1,4 +1,4 @@
-/* loadHistory.js
+/** loadHistory.js
  *
  * This file contains javascript code to properly render the 'Review' section.
  *
@@ -22,8 +22,11 @@
  *     @author "Jelle Witsen Elias"
  */
 
+/** @description         Onclick handler for toggling between modes..
+ *
+ *  @param chartName     Name of currently selected mode.
+ */
 function toggleHistory(chartName) {
-    /* Onclick handles for toggle. */
     if (chartName === 'Full history') {
         $('#historySelector').text("History ");
         $('#historySelector').append("<span class=\"caret\"></span>");
@@ -40,8 +43,10 @@ function toggleHistory(chartName) {
     }
 }
 
+/** @description    Request a users top ten songs and render the iframes to
+ *                  display them.
+ */
 function fillTopData() {
-    /* Request a users top ten songs and render the iframes to display them. */
     var topRequest = new XMLHttpRequest();
 
     topRequest.open('GET', 'http://localhost:5000/api/tracks/topsongs/' + userid + '/10', true);
@@ -59,19 +64,21 @@ function fillTopData() {
     topRequest.send();
 }
 
+/** @description        Generate similar songs based on a selected track.
+ *
+ *  @param clickEvent   The onclick event from a selected song.
+ */
 function histSelect(clickEvent) {
-    /** Generate similar songs based on a selected track.
-
-    @param clickEvent: The onclick event from a selected song. **/
 
     song_index = clickEvent.target.id;
     displaySimilarSongs(song_index);
 }
 
+/** @description        Displays the list of songs under 'More like this'.
+ *
+ * @param song_index    Index of the in History/Favourites list
+ */
 function displaySimilarSongs(song_index) {
-    /** Displays the list of songs under 'More like this'.
-
-	@param song_index: Index of the in History/Favourites list **/
 
     songId = window.curData[parseInt(song_index)].songid;
     window.song_index = song_index;
@@ -99,9 +106,10 @@ function displaySimilarSongs(song_index) {
     recRequest.send();
 }
 
+/** @description    Grab either 'Favourite songs' or 'History' and render
+  *                 iframes to display them.
+  */
 function fillScrollWindow() {
-    /* Grab either 'Favourite songs' or 'History' and render iframes to
-    display them. */
     data = window.curData;
     containerDiv = document.getElementById('scroll_window');
     containerDiv.innerHTML = '';
@@ -152,9 +160,12 @@ function fillScrollWindow() {
     }
 }
 
+/** @description        Changes the mood slider positions after a song is
+  *                     selected
+  *
+  * @param song_index   Index of the song in the history/favourites list
+  */
 function adjustSlider(song_index) {
-    /** Changes the mood slider positions after a song is selected
-	@param song_index: Index of the song in the history/favourites list **/
     if (song_index == null) {
         excitednessSlider.slider("setValue", 50);
         happinessSlider.slider("setValue", 50);
@@ -182,8 +193,9 @@ function adjustSlider(song_index) {
     happinessSlider.slider("setValue", Math.trunc(happiness_percentage));
 };
 
+/**  @description   Allows user to send their feedback on songs mood-analysis
+**/
 function sendFeedback() {
-    /**  Allows user to send their feedback on songs mood-analysis **/
     var happiness = document.getElementById("happiness_slider").value;
     var excitedness = document.getElementById("excitedness_slider").value;
     var uri = "http://pse-ssh.diallom.com:5000/api/tracks/mood";
@@ -202,8 +214,8 @@ function sendFeedback() {
     request.send(JSON.stringify(data));
 }
 
+/** @description    Reset feedback sliders to their original state. **/
 function resetFeedback() {
-    /** Reset feedback sliders to their original state. **/
     var current_track = window.song_index;
     adjustSlider(current_track);
 };

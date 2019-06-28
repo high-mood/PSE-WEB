@@ -1,4 +1,4 @@
-/* barChart.js
+/** barChart.js
  *
  * This file defines functions to create the barcharts used in the 'Analytics'
  * section.
@@ -20,7 +20,7 @@
  */
 
 
-/*
+/**
  * @description Create a barchart.
  *
  * @param divId    div in which the chart is rendered.

@@ -1,4 +1,4 @@
-/* userinput.js
+/** userinput.js
  *
  * This file defines JQuery UI slider objects used in the section 'Analytics'.
 
