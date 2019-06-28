@@ -30,11 +30,11 @@ function toggleHistory(chartName) {
     if (chartName === 'Full history') {
         $('#historySelector').text("History ");
         $('#historySelector').append("<span class=\"caret\"></span>");
-        document.getElementById("headerName").innerHTML = "Full history";
+        document.getElementById("headerName").innerHTML = "History";
 
         window.curData = window.histData;
         fillScrollWindow();
-    } else if (chartName === 'favourites') {
+    } else if (listName === 'favourites') {
         $('#historySelector').text("Favourite songs");
         $('#historySelector').append("<span class=\"caret\"></span>");
 
@@ -196,15 +196,13 @@ function adjustSlider(song_index) {
 /**  @description   Allows user to send their feedback on songs mood-analysis
 **/
 function sendFeedback() {
-    var happiness = document.getElementById("happiness_slider").value;
-    var excitedness = document.getElementById("excitedness_slider").value;
     var uri = "http://pse-ssh.diallom.com:5000/api/tracks/mood";
     var songid = window.curData[window.song_index].songid;
 
     var data = {
         "songid": songid,
-        "excitedness": excitedness,
-        "happiness": happiness
+        "excitedness": excitednessSlider.slider("getValue"),
+        "happiness": happinessSlider.slider("getValue")
     };
 
     var request = new XMLHttpRequest();

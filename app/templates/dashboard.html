@@ -150,11 +150,11 @@
         <div class="row text-center">
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" id="historySelector" data-toggle="dropdown">
-                    Full history
+                    History
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dashboard-dropdown dropdown-menu-center" role="menu">
-                    <li><a onclick="toggleHistory('history')">Full history</a></li>
+                    <li><a onclick="toggleHistory('history')">History</a></li>
                     <li><a onclick="toggleHistory('favourites')">Favourite songs</a></li>
                 </ul>
             </div>
@@ -225,7 +225,7 @@
 
         <div class="row">
             <div class="btn-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <button type="button" id="moodbutton" class="btn btn-block btn-dark dropdown-toggle btn-padding dropdown-menu-center" style="width: 50%" data-toggle="dropdown">Mood <span class="caret"></span></button>
+                <button type="button" id="moodbutton" class="btn btn-dark dropdown-toggle btn-padding dropdown-menu-center" data-toggle="dropdown">Mood <span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-padding dashboard-dropdown dropdown-menu-center" role="menu">
                   <li><a onclick="toggleMetric('excited')">Excited</a></li>
                   <li class="divider"></li>
@@ -236,12 +236,7 @@
                   <li><a onclick="toggleMetric('sad')">Sad</a></li>
                   <li class="divider"></li>
                   <li><a onclick="toggleMetric('angry')">Angry</a></li>
-                </ul>
-            </div>
-
-            <div class="btn-group col-xs-12 col-sm-12 col-md-12 col-lg-12" role="group">
-                <button type="button" id="themebutton" class="btn btn-block btn-dark dropdown-toggle btn-padding dropdown-menu-center" style="width: 50%;" data-toggle="dropdown">Theme <span class="caret"></span></button>
-                <ul class="dropdown-menu dropdown-padding dashboard-dropdown dropdown-menu-center" role="menu">
+                  <li class="divider"></li>
                   <li><a onclick="toggleMetric('dance')">Party</a></li>
                   <li class="divider"></li>
                   <li><a onclick="toggleMetric('karaoke')">Karaoke</a></li>
@@ -419,9 +414,9 @@
 
 
 <!-- Analytics scripts -->
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/buttonToggles.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/analyticsDescriptions.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/linechartSongs.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/linechartDays.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/linecharts.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/loadLineCharts.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('.static', filename='js/dashboard/analytics/barChart.js') }}"></script>
 
