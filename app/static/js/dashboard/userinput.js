@@ -1,10 +1,7 @@
 /* userinput.js
  *
  * This file defines JQuery UI slider objects used in the section 'Analytics'.
- *
- *     This file contains the structure of the playlist API with functions to handle basic GET and POST requests.
- *
- *
+
  *     :copyright: 2019 Moodify (High-Mood)
  *     :authors:
  *            "Stan van den Broek",
