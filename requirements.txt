@@ -15,7 +15,7 @@ Flask-SQLAlchemy==2.4.0
 idna==2.8
 influxdb==5.2.2
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 joblib==0.13.2
 jsonschema==3.0.1
 Mako==1.0.11
