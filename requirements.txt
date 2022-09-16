@@ -18,7 +18,7 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 joblib==0.13.2
 jsonschema==3.0.1
-Mako==1.0.11
+Mako==1.2.2
 MarkupSafe==1.1.1
 numpy==1.16.4
 oauth==1.0.1
