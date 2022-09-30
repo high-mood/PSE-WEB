@@ -16,7 +16,7 @@ idna==2.8
 influxdb==5.2.2
 itsdangerous==1.1.0
 Jinja2==2.10.1
-joblib==0.13.2
+joblib==1.2.0
 jsonschema==3.0.1
 Mako==1.0.11
 MarkupSafe==1.1.1
